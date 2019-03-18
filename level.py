@@ -10,7 +10,12 @@ class Level(object):
 	"""
 
 	def __init__(self):
-		pass
+		self.texture = None
+		self.player = None
+		self.entities = []
 
 	def update(self, deltatime):
-		pass
+		self.player.update(deltatime)
+		
+		for entity in self.entities:
+			entity.update(deltatime)

@@ -9,5 +9,5 @@ import sys
 
 
 def exit():
-	print("Arrêt de {name}...".format(constants.NAME))
+	print("Arrêt de {name}...".format(name=constants.NAME))
 	sys.exit()
