@@ -91,4 +91,5 @@ class Shot(Entity):
 	Classe définissant un tir de missile.
 	"""
 
-	pass
+	def __init__(self):
+		self.damage = constants.SHOT_DAMAGE
