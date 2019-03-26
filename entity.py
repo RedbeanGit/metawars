@@ -6,6 +6,7 @@ __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __version__ = "0.1.0"
 
 import math
+import random
 
 
 class Entity(object):
@@ -82,8 +83,9 @@ class Bonus(Entity):
 	"""
 	Classe définissant un bonus attrapable par le joueur.
 	"""
-
-	pass
+	def spawn(self):
+		self.pos = [random.randint(0,SCREEN_SIZE_X),random.randint(0,SCREEN_SIZE_Y)]
+		
 
 
 class Shot(Entity):
