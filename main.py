@@ -19,7 +19,13 @@ def main():
 	# Creer une boucle infinie pour tenir la fenetre en vie
     
     display = Display()
+    display.load_images()
+
     level = Level()
+    level.load_image(display)
+    level.init_player()
+    level.player.load_image(display)
+
     last_time = time.time()
 
     while True:

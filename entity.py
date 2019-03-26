@@ -13,20 +13,23 @@ class Entity(object):
 	Classe de base pour l'ensemble des entités.
 	"""
 
-    def __init__(self, level):
-    	self.level = level
-        self.size = [0, 0]
-        self.speed = 0
-        self.angle = 0
-        self.pos = [0, 0]
-        self.texture = None
+	def __init__(self, level):
+		self.level = level
+		self.size = [0, 0]
+		self.speed = 0
+		self.angle = 0
+		self.pos = [0, 0]
+		self.texture = None
 
-    def update(self, deltatime):
-    	self.move(deltatime)
+	def load_image(self, display):
+		pass
 
-    def move(self, deltatime):
-    	self.pos[0] += self.speed * math.cos(self.angle) * deltatime
-    	self.pos[1] += self.speed * math.sin(self.angle) * deltatime
+	def update(self, deltatime):
+		self.move(deltatime)
+
+	def move(self, deltatime):
+		self.pos[0] += self.speed * math.cos(self.angle) * deltatime
+		self.pos[1] += self.speed * math.sin(self.angle) * deltatime
 
 
 class Player(Entity):
@@ -34,17 +37,20 @@ class Player(Entity):
 	Classe définissant l'entité dirigée par le joueur.
 	"""
 
-    def shot(self):
-    	self.level.entities.append(Shot())
+	def load_image(self, display):
+		self.texture = display.get_image("data/images/player/player_0.png")
 
-    def forward(self):
-    	self.speed = constants.PLAYER_SPEED
+	def shot(self):
+		self.level.entities.append(Shot())
 
-    def backward(self):
-    	self.speed = -constants.PLAYER_SPEED
+	def forward(self):
+		self.speed = constants.PLAYER_SPEED
 
-    def stop(self):
-    	self.speed = 0
+	def backward(self):
+		self.speed = -constants.PLAYER_SPEED
+
+	def stop(self):
+		self.speed = 0
 
 
 class Enemy(Entity):
@@ -74,8 +80,8 @@ class Enemy(Entity):
 		else:
 			self.angle = -angle
 
-    def shot(self):
-    	self.level.entities.append(Shot())
+	def shot(self):
+		self.level.entities.append(Shot())
 
 
 class Bonus(Entity):
