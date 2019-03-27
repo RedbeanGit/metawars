@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import constants
-import util
+import constantes
+import utile
 
-from display import Display
-from level import Level
+from affichage import Affichage
+from niveau import Niveau
 
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __version__ = "0.1.0"
@@ -18,29 +18,27 @@ def main():
 	# Creer une fenetre
 	# Creer une boucle infinie pour tenir la fenetre en vie
     
-    display = Display()
-    display.load_images()
+    affichage = Affichage()
+    affichage.charge_images()
 
-    level = Level()
-    level.load_image(display)
-    level.init_player()
-    level.player.load_image(display)
+    niveau = Niveau()
+    niveau.charge_image(affichage)
 
-    last_time = time.time()
+    temps_precedent = time.time()
 
     while True:
-    	deltatime = time.time() - last_time
-    	last_time = time.time()
+    	temps_ecoule = time.time() - temps_precedent
+    	temps_precedent = time.time()
 
-    	display.update_events()
-    	level.update(deltatime)
-    	display.update(level)
+    	affichage.actualise_evenements()
+    	niveau.actualise(temps_ecoule)
+    	affichage.actualise(niveau)
 
-    	print("fps={fps}".format(fps=1 / deltatime))
+    	#print("fps={fps}".format(fps=1 / temps_ecoule))
 
 
 if __name__ == "__main__":
 	# Si notre fichier est lancé directement par python et pas
 	# importé par un autre script alors on lance le jeu
-    print("Démarrage de {name}...".format(name=constants.NAME))
+    print("Démarrage de {nom}...".format(nom=constantes.NOM))
     main()
