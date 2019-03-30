@@ -60,3 +60,5 @@ SONS = [
 	["tir.wav"],
 	["musique_demarrage.wav"]
 ]
+
+TYPE_DE_BONUS = ["soin", "frequence_de_tir_acceleree", "bouclier_solidifie", "vitesse_augmentee", "arme_amelioree"]

@@ -38,7 +38,10 @@ class Entite(object):
 			Cette methode doit retourner:
 			- True si entite est en collision avec self
 			- False sinon """
-		pass
+		if self.position == self.entite.position:
+			return True
+		else:
+			return False
 
 
 class Joueur(Entite):
@@ -116,12 +119,19 @@ class Bonus(Entite):
 		""" A implementer...
 			Cette methode doit definir aléatoirement le type du bonus
 			(exemples: meilleur_bouclier, soin, ...)"""
+		self.bonus = constantes.TYPE_DE_BONUS[random.randint(4)]
+
+
 
 	def actualise(self, temps):
-		super().actualise()
+		super().actualise(temps)
 		""" A implementer...
 			Cette methode doit tester si le bonus entre en collision
 			avec le joueur et appeler attrape si c'est le cas"""
+		if collisione(entite) == True:
+			attrape()
+
+
 
 	def apparait(self):
 		x = random.randint(0, constantes.TAILLE_CARTE[0])
