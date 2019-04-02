@@ -38,21 +38,21 @@ Constantes manquantes (peut encore évoluer):
 	* stop(): Fait
 	* meurt(): En cours [Doit arreter le niveau]
 
-- Ennemi(Entite): Fait
+- Ennemi(Entite): En cours
 	* __init__(niveau): En cours [Certains attributs comme la taille de l'ennemi doivent être redéfinis]
 	* charge_image(): En cours [Les ennemis n'ont toujours pas d'image]
 	* tir(): En cours [Doit créer un tir dont la direction et la position dépendent de celles de l'ennemi]
 	* actualise(temps): Fait
 	* oriente(): Fait
 
-- Bonus(Entite): Fait
+- Bonus(Entite): En cours
 	* __init__(niveau): En cours [Certains attributs comme la taille du bonus doivent être redéfinis]
 	* charge_image(affichage): En cours [Les bonus n'ont toujours pas d'image]
 	* actualise(temps): Fait
 	* apparait(): En cours [Un bug à corriger]
 	* attrape(): En cours [Doit modifier le joueur, pour l'instant, ne fait rien]
 
-- Tir(Entite): Fait
+- Tir(Entite): En cours
 	* __init__(niveau, tireur): En cours [L'entité ayant tiré doit être connue du tir]
 	* charge_image(affichage): En cours [Les tirs n'ont toujours pas d'image]
 	* actualise(temps): En cours [Les tirs doivent tester si elles touchent une entité]
