@@ -16,18 +16,19 @@ class Niveau(object):
 	"""
 
 	def __init__(self):
-		self.texture = None
+		self.image = None
 		self.joueur = Joueur(self)
 		self.entites = []
 
 	def charge_image(self, affichage):
-		# Cette methode ne fonctionne pas sur Windows
-		# a vous de regler le probleme ehe :-p
 		
-		#taille_pixel_x = constantes.TAILLE_CARTE[0] * constantes.ZOOM
-		#taille_pixel_y = constantes.TAILLE_CARTE[1] * constantes.ZOOM
-		#self.texture = affichage.obtenir_image(os.path.join("data", "images", "fond_carte.png"))
-		#self.texture = pygame.transform.scale(self.texture, (taille_pixel_x, taille_pixel_y))
+		# on a quelques petits soucis avec le chargement du fond de carte :-p
+		"""
+		taille_pixel_x = constantes.TAILLE_CARTE[0] * constantes.ZOOM
+		taille_pixel_y = constantes.TAILLE_CARTE[1] * constantes.ZOOM
+		self.image = affichage.obtenir_image(os.path.join("data", "images", "fond_carte.png"))
+		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
+		"""
 
 		self.joueur.charge_image(affichage)
 
@@ -36,3 +37,12 @@ class Niveau(object):
 		
 		for entite in self.entites:
 			entite.actualise(temps)
+
+	def fait_apparaitre(self, temps):
+		""" Doit aléatoirement faire apparaitre des ennemis et des bonus """
+		pass
+
+	def enleve_entite(self, entite):
+		""" Enleve l'entite de self.entites seulement
+			si elle fait parti de ce niveau """
+		pass

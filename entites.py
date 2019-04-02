@@ -22,7 +22,7 @@ class Entite(object):
 		self.vitesse = 0
 		self.angle = 0
 		self.position = [0, 0]
-		self.texture = None
+		self.image = None
 
 	def charge_image(self, affichage):
 		pass
@@ -35,7 +35,7 @@ class Entite(object):
 		self.position[0] += self.vitesse * math.cos(self.angle) * temps
 		self.position[1] += self.vitesse * math.sin(self.angle) * temps
 
-	def collisione(self, entite):
+	def collisionne(self, entite):
 		if self.position[0] + self.taille[0] / 2 > entite.position[0] - entite.taille[0] / 2: 
 			if self.position[0] - self.taille[0] / 2 < entite.position[0] + entite.taille[0] / 2:
 				if self.position[1] + self.taille[1] / 2 > entite.position[1] - entite.taille[1] / 2: 
@@ -52,8 +52,9 @@ class Joueur(Entite):
 	def charge_image(self, affichage):
 		taille_pixel_x = self.taille[0] * constantes.ZOOM
 		taille_pixel_y = self.taille[1] * constantes.ZOOM
-		self.texture = affichage.obtenir_image(os.path.join("data", "images", "joueur", "joueur_0.png"))
-		self.texture = pygame.transform.scale(self.texture, (taille_pixel_x, taille_pixel_y))
+
+		self.image = affichage.obtenir_image(os.path.join("data", "images", "joueur", "joueur_0.png"))
+		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
 
 	def tir(self):
 		self.niveau.entites.append(Tir())
@@ -77,11 +78,17 @@ class Ennemi(Entite):
 		super().__init__()
 		self.vitesse = constantes.VITESSE_ENNEMI
 
+	def charge_image(self, affichage):
+		""" A implementer...
+			Cette méthode doit charger la texture de l'ennemi
+			et la redimensionner à la bonne taille (en prenant en compte le zoom)"""
+		pass
+
 	def actualise(self, temps):
 		super().update(temps)
-		self.tourne()
+		self.oriente()
 
-	def tourne(self):
+	def oriente(self):
 		# on calcule la distance entre le joueur et l'ennemi
 		dx = self.position[0] - self.niveau.joueur.position[0]
 		dy = self.position[1] - self.niveau.joueur.position[1]
@@ -117,22 +124,22 @@ class Bonus(Entite):
 	"""
 	def __init__(self, niveau):
 		super().__init__(niveau)
-		""" A implementer...
-			Cette methode doit definir aléatoirement le type du bonus
-			(exemples: meilleur_bouclier, soin, ...)"""
+		# On choisi aléatoirement un bonus
 		self.bonus = constantes.TYPE_DE_BONUS[random.randint(4)]
 
-
+	def charge_image(self, affichage):
+		""" A implementer...
+			Cette méthode doit charger la texture du bonus (et du bon bonus)
+			et la redimensionner à la bonne taille (en prenant en compte le zoom)"""
+		pass
 
 	def actualise(self, temps):
 		super().actualise(temps)
-		""" A implementer...
-			Cette methode doit tester si le bonus entre en collision
-			avec le joueur et appeler attrape si c'est le cas"""
-		if collisione(entite) == True:
-			attrape()
-
-
+		
+		# il y a un probleme ici coco, car "entite" n'est pas defini.
+		# il faut tester si le bonus collisionne avec le joueur
+		if collisionne(entite) == True:
+			self.attrape()
 
 	def apparait(self):
 		x = random.randint(0, constantes.TAILLE_CARTE[0])
@@ -143,6 +150,7 @@ class Bonus(Entite):
 		""" A implementer...
 			Cette methode doit ajouter une modification au joueur
 			en fonction du type de bonus"""
+		pass
 
 
 class Tir(Entite):

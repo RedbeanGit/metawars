@@ -9,12 +9,12 @@ import os
 import sys
 
 
-def arret():
+def arreter():
 	print("Arrêt de {nom}...".format(nom=constantes.NOM))
 	sys.exit()
 
 
-def lit_fichier(chemin_fichier):
+def lire_fichier(chemin_fichier):
 	"""Permet de lire un fichier à l'emplacement 'chemin_fichier'"""
 
 	# On teste si le fichier existe bel et bien
@@ -29,7 +29,7 @@ def lit_fichier(chemin_fichier):
 		return False
 
 
-def ecrit_fichier(chemin_fichier, contenu):
+def ecrire_fichier(chemin_fichier, contenu):
 	"""Permet d'écrire 'contenu' dans un fichier à l'emplacement 'chemin_fichier'.
 	Si le fichier n'existe pas, il sera créé automatiquement par python."""
 

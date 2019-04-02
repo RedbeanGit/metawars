@@ -5,12 +5,14 @@ __version__ = "0.1.0"
 
 
 NOM = "MetaWars"
-VITESSE_JOUEUR = 40
-VITESSE_ENNEMI = 30
-DEGAT_TIR = 1
-TAILLE_ECRAN = (1000, 1000)
+TAILLE_ECRAN = (800, 800)
 TAILLE_CARTE = (100, 100)
 ZOOM = 300
+
+VITESSE_JOUEUR = 40
+VITESSE_ENNEMI = 30
+
+DEGAT_TIR = 1
 
 # Chemin de fichier vers l'ensemble des images du jeu
 # chaque nom de dossier et fichier est une chaine de caractère

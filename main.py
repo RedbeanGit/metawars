@@ -14,24 +14,31 @@ import time
 
 
 def main():
-	# Fonction principale du jeu
-	# Creer une fenetre
-	# Creer une boucle infinie pour tenir la fenetre en vie
+	""" Fonction principale du jeu (à ne lancer qu'une seule fois) """
     
+    # on creer un nouvel "affichage" (fenetre)
     affichage = Affichage()
+    # on charge l'ensemble des images du jeu
     affichage.charge_images()
 
+    # on creer un niveau de jeu
     niveau = Niveau()
+    # le niveau et les entités recupères les images dont elles ont besoin
     niveau.charge_image(affichage)
 
+    # cette variable retient le temps (en seconde) du dernier tick de jeu
     temps_precedent = time.time()
 
     while True:
+        # cette variable stocke le temps écoulé depuis le dernier tick de jeu
     	temps_ecoule = time.time() - temps_precedent
     	temps_precedent = time.time()
 
+        # on gère les evenements utilisateurs (clic, appui sur une touche, etc)
     	affichage.actualise_evenements()
+        # on actualise le niveau et les entités qu'il contient
     	niveau.actualise(temps_ecoule)
+        # on redessine la fenetre pour afficher de nouveau le niveau
     	affichage.actualise(niveau)
 
     	#print("fps={fps}".format(fps=1 / temps_ecoule))
