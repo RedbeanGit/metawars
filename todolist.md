@@ -59,7 +59,7 @@ Constantes manquantes (peut encore évoluer):
 	* touche(entite): En cours [Doit faire perdre de la vie à l'entité touchée]
 
 ## main.py
-Fichier de fonctions :
+Fichier de fonctions:
 - main(): En cours [Doit d'abord lancer l'animation de démarrage, puis le menu principale, puis le niveau]
 	[Doit enregistrer le score dans un fichier]
 
@@ -72,7 +72,7 @@ Fichier de fonctions :
 	* enleve_entite(entite): En cours [Doit enlever une entite de la liste des entites du niveau]
 
 ## utile.py
-Fichier des fonctions :
+Fichier des fonctions:
 - arreter(): Fait
 - lire_fichier(): Fait
 - ecrire_fichier(): Fait
