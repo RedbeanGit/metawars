@@ -6,6 +6,8 @@ __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __version__ = "0.1.0"
 
 import math
+import os
+import pygame
 import random
 
 
@@ -16,7 +18,7 @@ class Entite(object):
 
 	def __init__(self, niveau):
 		self.niveau = niveau
-		self.taille = [0, 0]
+		self.taille = [1, 1]
 		self.vitesse = 0
 		self.angle = 0
 		self.position = [0, 0]
@@ -34,14 +36,12 @@ class Entite(object):
 		self.position[1] += self.vitesse * math.sin(self.angle) * temps
 
 	def collisione(self, entite):
-		""" A implementer...
-			Cette methode doit retourner:
-			- True si entite est en collision avec self
-			- False sinon """
-		if self.position == self.entite.position:
-			return True
-		else:
-			return False
+		if self.position[0] + self.taille[0] / 2 > entite.position[0] - entite.taille[0] / 2: 
+			if self.position[0] - self.taille[0] / 2 < entite.position[0] + entite.taille[0] / 2:
+				if self.position[1] + self.taille[1] / 2 > entite.position[1] - entite.taille[1] / 2: 
+					if self.position[1] - self.taille[1] / 2 < entite.position[1] + entite.taille[1] / 2:
+						return True
+		return False
 
 
 class Joueur(Entite):
@@ -50,9 +50,10 @@ class Joueur(Entite):
 	"""
 
 	def charge_image(self, affichage):
-		# Cette methode ne fonctionne pas sur Windows
-		# a vous de regler le probleme ehe :-p
-		self.texture = affichage.obtenir_image("data/images/player/player_0.png")
+		taille_pixel_x = self.taille[0] * constantes.ZOOM
+		taille_pixel_y = self.taille[1] * constantes.ZOOM
+		self.texture = affichage.obtenir_image(os.path.join("data", "images", "joueur", "joueur_0.png"))
+		self.texture = pygame.transform.scale(self.texture, (taille_pixel_x, taille_pixel_y))
 
 	def tir(self):
 		self.niveau.entites.append(Tir())

@@ -14,6 +14,7 @@ from pygame.locals import QUIT
 class Affichage(object):
 	def __init__(self):
 		self.fenetre = pygame.display.set_mode(constantes.TAILLE_ECRAN)
+		pygame.display.set_caption(constantes.NOM)
 		self.images = {}
 
 	def charge_images(self):
@@ -39,7 +40,7 @@ class Affichage(object):
 
 	def actualise(self, niveau):
 		# On rend tous les pixels de la fenetre noir
-		self.fenetre.fill((0, 0, 0))
+		self.fenetre.fill((255, 255, 255))
 
 		# si le niveau a une texture, on affiche cette texture
 		if niveau.texture:
@@ -50,7 +51,10 @@ class Affichage(object):
 		# même si la division ne tombe pas juste
 		milieu_x = constantes.TAILLE_ECRAN[0] // 2
 		milieu_y = constantes.TAILLE_ECRAN[1] // 2
-		self.fenetre.blit(niveau.joueur.texture, (milieu_x, milieu_y))
+
+		milieu_image_x = niveau.joueur.taille[0] * constantes.ZOOM / 2
+		milieu_image_y = niveau.joueur.taille[1] * constantes.ZOOM / 2
+		self.fenetre.blit(niveau.joueur.texture, (milieu_x - milieu_image_x, milieu_y - milieu_image_y))
 
 		# On actualise l'écran
 		pygame.display.update()

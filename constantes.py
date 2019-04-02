@@ -8,8 +8,9 @@ NOM = "MetaWars"
 VITESSE_JOUEUR = 40
 VITESSE_ENNEMI = 30
 DEGAT_TIR = 1
-TAILLE_ECRAN = (500, 500)
+TAILLE_ECRAN = (1000, 1000)
 TAILLE_CARTE = (100, 100)
+ZOOM = 300
 
 # Chemin de fichier vers l'ensemble des images du jeu
 # chaque nom de dossier et fichier est une chaine de caractère
