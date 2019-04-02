@@ -58,11 +58,6 @@ Constantes manquantes (peut encore évoluer):
 	* actualise(temps): En cours [Les tirs doivent tester si elles touchent une entité]
 	* touche(entite): En cours [Doit faire perdre de la vie à l'entité touchée]
 
-## main.py
-Fichier de fonctions:
-- main(): En cours [Doit d'abord lancer l'animation de démarrage, puis le menu principale, puis le niveau]
-	[Doit enregistrer le score dans un fichier]
-
 ## niveau.py
 - Niveau: En cours
 	* __init__(): En cours [La gestion du score et des pièces doit être ajouté]
@@ -70,9 +65,3 @@ Fichier de fonctions:
 	* actualise(temps): En cours [Doit lancer Niveau.fait_apparaite()]
 	* fait_apparaite(temps): En cours [Doit faire apparaitre des ennemis et des bonus aléatoirement et en fonction du temps écoulé]
 	* enleve_entite(entite): En cours [Doit enlever une entite de la liste des entites du niveau]
-
-## utile.py
-Fichier des fonctions:
-- arreter(): Fait
-- lire_fichier(): Fait
-- ecrire_fichier(): Fait
