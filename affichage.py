@@ -52,9 +52,9 @@ class Affichage(object):
 		milieu_x = constantes.TAILLE_ECRAN[0] // 2
 		milieu_y = constantes.TAILLE_ECRAN[1] // 2
 
-		milieu_image_x = niveau.joueur.taille[0] * constantes.ZOOM / 2
-		milieu_image_y = niveau.joueur.taille[1] * constantes.ZOOM / 2
-		self.fenetre.blit(niveau.joueur.texture, (milieu_x - milieu_image_x, milieu_y - milieu_image_y))
+		milieu_joueur_x = niveau.joueur.taille[0] * constantes.ZOOM / 2
+		milieu_joueur_y = niveau.joueur.taille[1] * constantes.ZOOM / 2
+		self.fenetre.blit(niveau.joueur.texture, (milieu_x - milieu_joueur_x, milieu_y - milieu_joueur_y))
 
 		# On actualise l'écran
 		pygame.display.update()
