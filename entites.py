@@ -68,6 +68,9 @@ class Joueur(Entite):
 	def stop(self):
 		self.vitesse = 0
 
+	def vie(self):
+		self.vie = constantes.VIE_JOUEUR
+
 
 class Ennemi(Entite):
 	"""
@@ -116,6 +119,9 @@ class Ennemi(Entite):
 
 	def tir(self):
 		self.niveau.entites.append(Tir())
+
+	def vie(self):
+		self.vie = constantes.VIE_ENNEMI
 
 
 class Bonus(Entite):
