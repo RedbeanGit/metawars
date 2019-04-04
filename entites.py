@@ -137,7 +137,9 @@ class Bonus(Entite):
 		""" A implementer...
 			Cette méthode doit charger la texture du bonus (et du bon bonus)
 			et la redimensionner à la bonne taille (en prenant en compte le zoom)"""
-		pass
+		self.image = affichage.obtenir_image(os.path.join("data","images","bonus","{nom}".format(nom=self.bonus)))
+		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
+
 
 	def actualise(self, temps):
 		super().actualise(temps)
