@@ -48,6 +48,9 @@ class Joueur(Entite):
 	"""
 	Classe définissant l'entité dirigée par le joueur.
 	"""
+	def __init__(self):
+		super().__init__()
+		self.vie = constantes.VIE_JOUEUR
 
 	def charge_image(self, affichage):
 		taille_pixel_x = self.taille[0] * constantes.ZOOM
@@ -68,9 +71,6 @@ class Joueur(Entite):
 	def stop(self):
 		self.vitesse = 0
 
-	def vie(self):
-		self.vie = constantes.VIE_JOUEUR
-
 
 class Ennemi(Entite):
 	"""
@@ -80,6 +80,7 @@ class Ennemi(Entite):
 	def __init__(self):
 		super().__init__()
 		self.vitesse = constantes.VITESSE_ENNEMI
+		self.vie = constantes.VIE_ENNEMI
 
 	def charge_image(self, affichage):
 		""" A implementer...
@@ -119,9 +120,6 @@ class Ennemi(Entite):
 
 	def tir(self):
 		self.niveau.entites.append(Tir())
-
-	def vie(self):
-		self.vie = constantes.VIE_ENNEMI
 
 
 class Bonus(Entite):
