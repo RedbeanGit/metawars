@@ -48,6 +48,9 @@ class Joueur(Entite):
 	"""
 	Classe définissant l'entité dirigée par le joueur.
 	"""
+	def __init__(self):
+		super().__init__()
+		self.vie = constantes.VIE_JOUEUR
 
 	def charge_image(self, affichage):
 		taille_pixel_x = self.taille[0] * constantes.ZOOM
@@ -77,6 +80,7 @@ class Ennemi(Entite):
 	def __init__(self):
 		super().__init__()
 		self.vitesse = constantes.VITESSE_ENNEMI
+		self.vie = constantes.VIE_ENNEMI
 
 	def charge_image(self, affichage):
 		""" A implementer...
@@ -131,7 +135,9 @@ class Bonus(Entite):
 		""" A implementer...
 			Cette méthode doit charger la texture du bonus (et du bon bonus)
 			et la redimensionner à la bonne taille (en prenant en compte le zoom)"""
-		pass
+		self.image = affichage.obtenir_image(os.path.join("data","images","bonus","{nom}".format(nom=self.bonus)))
+		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
+
 
 	def actualise(self, temps):
 		super().actualise(temps)
