@@ -164,7 +164,10 @@ class Tir(Entite):
 			Cette methode doit tester si le tir entre en collision
 			avec un ennemi ou le joueur et appeler Tir.touche si c'est le cas"""
 
+		if self.collisionne(self.niveau.joueur):
+			self.touche(self.niveau.joueur)
+
 	def touche(self, entite):
 		""" A implementer...
 			Cette methode doit reduire la vie de entite"""
-		pass
+		entite.vie -= 1
