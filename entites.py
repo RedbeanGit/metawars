@@ -48,8 +48,8 @@ class Joueur(Entite):
 	"""
 	Classe définissant l'entité dirigée par le joueur.
 	"""
-	def __init__(self):
-		super().__init__()
+	def __init__(self, niveau):
+		super().__init__(niveau)
 		self.vie = constantes.VIE_JOUEUR
 
 	def charge_image(self, affichage):
@@ -77,8 +77,8 @@ class Ennemi(Entite):
 	Classe définissant une entité ennemie.
 	"""
 
-	def __init__(self):
-		super().__init__()
+	def __init__(self, niveau):
+		super().__init__(niveau)
 		self.vitesse = constantes.VITESSE_ENNEMI
 		self.vie = constantes.VIE_ENNEMI
 
@@ -129,13 +129,17 @@ class Bonus(Entite):
 	def __init__(self, niveau):
 		super().__init__(niveau)
 		# On choisi aléatoirement un bonus
-		self.bonus = constantes.TYPE_DE_BONUS[random.randint(4)]
+		self.bonus = random.choice(constantes.TYPE_BONUS)
 
 	def charge_image(self, affichage):
 		""" A implementer...
 			Cette méthode doit charger la texture du bonus (et du bon bonus)
 			et la redimensionner à la bonne taille (en prenant en compte le zoom)"""
-		self.image = affichage.obtenir_image(os.path.join("data","images","bonus","{nom}".format(nom=self.bonus)))
+
+		taille_pixel_x = self.taille[0] * constantes.ZOOM
+		taille_pixel_y = self.taille[1] * constantes.ZOOM
+
+		self.image = affichage.obtenir_image(os.path.join("data", "images", "bonus", self.bonus))
 		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
 
 
@@ -176,4 +180,4 @@ class Tir(Entite):
 	def touche(self, entite):
 		""" A implementer...
 			Cette methode doit reduire la vie de entite"""
-		entite.vie -= 1
+		entite.vie -= constantes.DEGAT_TIR

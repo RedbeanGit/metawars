@@ -40,7 +40,10 @@ class Niveau(object):
 
 	def fait_apparaitre(self, temps):
 		""" Doit aléatoirement faire apparaitre des ennemis et des bonus """
-		pass
+		nb = random.random(0, constantes.FREQUENCE_APPARITION_ENNEMI / temps)
+
+		if nb == 0:
+			# ajouter un ennemi
 
 	def enleve_entite(self, entite):
 		""" Enleve l'entite de self.entites seulement
