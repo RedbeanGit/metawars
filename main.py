@@ -22,9 +22,9 @@ def main():
     affichage.charge_images()
 
     # on creer un niveau de jeu
-    niveau = Niveau()
+    niveau = Niveau(affichage)
     # le niveau et les entités recupères les images dont elles ont besoin
-    niveau.charge_image(affichage)
+    niveau.charge_image()
 
     # cette variable retient le temps (en seconde) du dernier tick de jeu
     temps_precedent = time.time()

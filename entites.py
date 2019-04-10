@@ -86,17 +86,21 @@ class Ennemi(Entite):
 		""" A implementer...
 			Cette méthode doit charger la texture de l'ennemi
 			et la redimensionner à la bonne taille (en prenant en compte le zoom)"""
-		pass
+		taille_pixel_x = self.taille[0] * constantes.ZOOM
+		taille_pixel_y = self.taille[1] * constantes.ZOOM
+
+		self.image = affichage.obtenir_image(os.path.join("data", "images", "ennemi", "ennemi.png"))
+		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
 
 	def actualise(self, temps):
-		super().update(temps)
+		super().actualise(temps)
 		self.oriente()
 
 	def oriente(self):
 		# on calcule la distance entre le joueur et l'ennemi
 		dx = self.position[0] - self.niveau.joueur.position[0]
 		dy = self.position[1] - self.niveau.joueur.position[1]
-		d = math.sqrt(x ** 2 + y ** 2)
+		d = math.sqrt(dx ** 2 + dy ** 2)
 
 		# on divise la distance x par la distance totale
 		# pour connaitre l'importance de la distance x 
@@ -109,14 +113,14 @@ class Ennemi(Entite):
 
 		# seul un angle est bon donc
 		# on determine quelle valeur utiliser en fonction de y
-		if y >= 0:
+		if dy >= 0:
 			# si y > 0 alors on se trouve en haut du cercle trigonométrique
 			# donc l'angle est entre 0 et pi
-			self.angle = angle
+			self.angle = angle + math.pi
 		else:
 			# si y < 0 alors on se trouve ne bas du cercle trigonométrique
 			# donc l'angle est entre -pi et 0 (donc opposé)
-			self.angle = -angle
+			self.angle = -angle + math.pi
 
 	def tir(self):
 		self.niveau.entites.append(Tir())

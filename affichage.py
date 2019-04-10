@@ -53,15 +53,29 @@ class Affichage(object):
 
 		# On affiche la texture du joueur au milieu de la fenetre:
 		# on recuper le milieu de l'ecran
-		milieu_x = constantes.TAILLE_ECRAN[0] // 2
-		milieu_y = constantes.TAILLE_ECRAN[1] // 2
+		milieu_ecran_x = constantes.TAILLE_ECRAN[0] // 2
+		milieu_ecran_y = constantes.TAILLE_ECRAN[1] // 2
 
 		# on recupere le milieu du joueur
 		milieu_joueur_x = niveau.joueur.taille[0] * constantes.ZOOM / 2
 		milieu_joueur_y = niveau.joueur.taille[1] * constantes.ZOOM / 2
 
 		# on colle l'image du joueur
-		self.fenetre.blit(niveau.joueur.image, (milieu_x - milieu_joueur_x, milieu_y - milieu_joueur_y))
+		self.fenetre.blit(niveau.joueur.image, (milieu_ecran_x - milieu_joueur_x, milieu_ecran_y - milieu_joueur_y))
+
+		# on affiche les entités
+		for entite in niveau.entites:
+			# on recupère le milieu de l'entité
+			milieu_entite_x = entite.taille[0] * constantes.ZOOM / 2
+			milieu_entite_y = entite.taille[1] * constantes.ZOOM / 2
+
+			# on calcul la position de l'entité par rapport au joueur
+			# qui doit être centré en plein milieu de l'écran
+			entite_x = (entite.position[0] - niveau.joueur.position[0]) * constantes.ZOOM + milieu_ecran_x
+			entite_y = (entite.position[1] - niveau.joueur.position[1]) * constantes.ZOOM + milieu_ecran_y
+
+			# on colle l'image de l'entité
+			self.fenetre.blit(entite.image, (entite_x - milieu_entite_x, entite_y - milieu_entite_y))
 
 		# On actualise l'écran
 		pygame.display.update()
