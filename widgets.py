@@ -118,7 +118,7 @@ class Bouton(Widget):
 		# action est une fonction que l'on lancera lors du clic sur le bouton
 		self.action = action
 		# toutes les textures du boutons seront stockées dans cet attribut
-		self.surfaces = {}
+		self.images = {}
 		# l'état du bouton (entre 'normal', 'survol', 'clic_droit', 'clic_gauche', 'clic_central' et 'desactive')
 		self.etat = "normal"
 		# on charge toutes les images du bouton (normal, cliqué, désactivé, ...)
@@ -128,18 +128,18 @@ class Bouton(Widget):
 		etats = ("clic_central", "clic_droit", "clic_gauche", "desactive", "normal", "survol")
 
 		# pour chaque état que peut avoir le bouton, on charge une image
-		# que l'on 'stocke' dans 'self.surfaces'
+		# que l'on 'stocke' dans 'self.images'
 		for etat in etats:
 			chemin_image = os.path.join("data", "images", "bouton", "{etat}.png".format(etat=etat))
 			image = self.affichage.obtenir_image(chemin_image)
 
 			# il faut redimensionner l'image pour qu'elle fasse la taille du bouton
-			self.surfaces[etat] = pygame.transform.scale(image, self.taille)
+			self.images[etat] = pygame.transform.scale(image, self.taille)
 
 	def actualise(self):
 		# on dessine la texture correspondante à l'état actuelle du bouton sur la fenêtre
 		# à la position du coin supérieur gauche
-		self.affichage.fenetre.blit(self.surfaces[self.etat], self.obtenir_position_reelle())
+		self.affichage.fenetre.blit(self.images[self.etat], self.obtenir_position_reelle())
 
 	def actualise_evenement(self, evenement):
 		x, y = self.obtenir_position_reelle()

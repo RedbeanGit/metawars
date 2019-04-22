@@ -50,7 +50,6 @@ Constantes manquantes (peut encore évoluer):
 	* __init__(niveau): En cours [Certains attributs comme la taille du bonus doivent être redéfinis]
 	* charge_image(affichage): Fait
 	* actualise(temps): Fait
-	* apparait(): En cours [Un bug à corriger]
 	* attrape(): En cours [Doit modifier le joueur, pour l'instant, ne fait rien]
 
 - Tir(Entite): En cours
@@ -66,3 +65,21 @@ Constantes manquantes (peut encore évoluer):
 	* actualise(temps): Fait
 	* fait_apparaite(temps): En cours [Doit faire apparaitre des bonus aléatoirement et en fonction du temps écoulé]
 	* enleve_entite(entite): En cours [Doit enlever une entite de la liste des entites du niveau]
+
+## widgets.py
+- Widget: Fait
+	* __init__(affichage): Fait
+	* actualise(): Fait
+	* actualise_evenement(evenement): Fait
+	* obtenir_position_reelle(): Fait
+	* est_dans_widget(position): Fait
+
+- Text(Widget): Fait
+	* __init__(affichage, texte): Fait
+	* actualise(): Fait
+
+- Bouton(Widget): Fait
+	* __init__(affichage, action): Fait
+	* charge_images(): Fait
+	* actualise(): Fait
+	* actualise_evenement(evenement): Fait
