@@ -8,7 +8,6 @@ __version__ = "0.1.0"
 
 import os
 import pygame
-from pygame.locals import QUIT
 
 
 class Affichage(object):
@@ -85,5 +84,5 @@ class Affichage(object):
 		for evenement in pygame.event.get():
 			# si l'utilisateur a cliqué sur la croix rouge
 			# on arrete le jeu
-			if evenement.type == QUIT:
+			if evenement.type == pygame.QUIT:
 				utile.arreter()

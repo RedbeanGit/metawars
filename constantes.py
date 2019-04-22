@@ -8,6 +8,7 @@ NOM = "MetaWars"
 TAILLE_ECRAN = (800, 800)
 TAILLE_CARTE = (100, 100)
 ZOOM = 150
+POLICE = "police.ttf"
 
 FREQUENCE_APPARITION_ENNEMI = 4
 
@@ -70,4 +71,10 @@ SONS = [
 	["musique_demarrage.wav"]
 ]
 
-TYPE_DE_BONUS = ["soin", "frequence_de_tir_acceleree", "bouclier_solidifie", "vitesse_augmentee", "arme_amelioree"]
+TYPE_DE_BONUS = [
+	"soin",
+	"frequence_de_tir_acceleree",
+	"bouclier_solidifie",
+	"vitesse_augmentee",
+	"arme_amelioree"
+]

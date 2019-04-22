@@ -9,6 +9,7 @@ from niveau import Niveau
 
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __version__ = "0.1.0"
+__repo__ = "https://github.com/Ptijuju22/metawars.git"
 
 import time
 

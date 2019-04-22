@@ -133,7 +133,7 @@ class Bonus(Entite):
 	def __init__(self, niveau):
 		super().__init__(niveau)
 		# On choisi aléatoirement un bonus
-		self.bonus = random.choice(constantes.TYPE_BONUS)
+		self.type = random.choice(constantes.TYPE_BONUS)
 
 	def charge_image(self, affichage):
 		""" A implementer...
@@ -143,7 +143,7 @@ class Bonus(Entite):
 		taille_pixel_x = self.taille[0] * constantes.ZOOM
 		taille_pixel_y = self.taille[1] * constantes.ZOOM
 
-		self.image = affichage.obtenir_image(os.path.join("data", "images", "bonus", self.bonus))
+		self.image = affichage.obtenir_image(os.path.join("data", "images", "bonus", self.type))
 		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
 
 
@@ -154,11 +154,6 @@ class Bonus(Entite):
 		# il faut tester si le bonus collisionne avec le joueur
 		if collisionne(entite) == True:
 			self.attrape()
-
-	def apparait(self):
-		x = random.randint(0, constantes.TAILLE_CARTE[0])
-		y = random.randint(0, constantes.TAILLE_CARTE[1])
-		self.position = [x, y]
 
 	def attrape(self):
 		""" A implementer...
