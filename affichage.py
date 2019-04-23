@@ -3,6 +3,7 @@
 import constantes
 import utile
 from entites import Joueur
+import niveau
 
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __version__ = "0.1.0"
@@ -80,7 +81,7 @@ class Affichage(object):
 		# On actualise l'écran
 		pygame.display.update()
 
-	def actualise_evenements(self):
+	def actualise_evenements(self,niveau):
 		# on parcourt l'ensemble des evenements utilisateurs (clic, appui sur une touche, etc)
 
 		for evenement in pygame.event.get():
@@ -89,16 +90,16 @@ class Affichage(object):
 
 			if evenement.type == pygame.KEYDOWN:
 				if evenement.key == pygame.K_w:
-					Joueur.avance(self)
+					niveau.joueur.avance()
 					print("le Joueur avance")
 				if evenement.key == pygame.K_s:
-					Joueur.recule(self)
+					niveau.joueur.recule()
 					print("le Joueur recule")
 				if evenement.key == pygame.K_a:
-					Joueur.aller_gauche(self)
+					niveau.joueur.aller_gauche()
 					print("le Joueur va à gauche")
 				if evenement.key == pygame.K_d:
-					Joueur.aller_droite(self)
+					niveau.joueur.aller_droite()
 					print("le Joueur va à droite")
 
 

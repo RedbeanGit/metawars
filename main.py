@@ -36,7 +36,7 @@ def main():
         temps_precedent = time.time()
 
         # on gère les evenements utilisateurs (clic, appui sur une touche, etc)
-        affichage.actualise_evenements()
+        affichage.actualise_evenements(niveau)
         # on actualise le niveau et les entités qu'il contient
         niveau.actualise(temps_ecoule)
         # on redessine la fenetre pour afficher de nouveau le niveau
