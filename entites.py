@@ -44,7 +44,7 @@ class Entite(object):
 		return False
 
 	def meurt(self, entite):
-		del self.niveau.entite
+		self.niveau.entites.remove(self)
 
 class Joueur(Entite):
 	"""
@@ -53,6 +53,8 @@ class Joueur(Entite):
 	def __init__(self, niveau):
 		super().__init__(niveau)
 		self.vie = constantes.VIE_JOUEUR
+		self.degat_tir = constantes.DEGAT_TIR
+		self.frequence_de_tir = constantes.FREQUENCE_DE_TIR
 
 	def charge_image(self, affichage):
 		taille_pixel_x = self.taille[0] * constantes.ZOOM
@@ -157,32 +159,40 @@ class Bonus(Entite):
 		taille_pixel_x = self.taille[0] * constantes.ZOOM
 		taille_pixel_y = self.taille[1] * constantes.ZOOM
 
-		self.image = affichage.obtenir_image(os.path.join("data", "images", "bonus", self.type))
+		self.image = affichage.obtenir_image(os.path.join("data", "images", "bonus", self.type+".png"))
 		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
 
 	def actualise(self, temps):
 		super().actualise(temps)
-		
-		# il y a un probleme ici coco, car "entite" n'est pas defini.
-		# il faut tester si le bonus collisionne avec le joueur
-		if collisionne(entite) == True:
-			self.attrape()
 
-	def attrape(self):
+		if collisionne(self.niveau.joueur) == True:
+			self.attrape(self.niveau.joueur)
+
+	def attrape(self, entite):
 		""" A implementer...
 			Cette methode doit ajouter une modification au joueur
 			en fonction du type de bonus"""
-		if self.type == "soin" and self.niveau.joueur.vie < VIE_JOUEUR//2:
-			self.niveau.joueur.vie += VIE_JOUEUR//2
+		if self.type == "soin" and niveau.joueur.vie < VIE_JOUEUR//2:
+			entite.vie += VIE_JOUEUR//2
 		
-		elif self.type == "soin" and self.niveau.joueur.vie >= VIE_JOUEUR//2:
-			self.niveau.joueur.vie = VIE_JOUEUR
+		elif self.type == "soin" and niveau.joueur.vie >= VIE_JOUEUR//2:
+			entite.vie = VIE_JOUEUR
+
+		elif self.type == "vitesse_augmentee":
+			entite.vitesse += 0.4
+
+		elif self.type == "frequence_de_tir_acceleree":
+			entite.frequence_de_tir += 1
+
+		elif self.type == "arme_amelioree":
+			entite.tir.degat_tir += 0.5
+
 
 class Tir(Entite):
 	"""
 	Classe définissant un tir de missile.
 	"""
-
+	
 	def actualise(self, temps):
 		super().actualise(temps)
 		"""Cette methode doit tester si le tir entre en collision
