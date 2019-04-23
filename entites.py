@@ -70,12 +70,6 @@ class Joueur(Entite):
 	def recule(self):
 		self.vitesse = -constantes.VITESSE_JOUEUR
 
-	def aller_droite(self):
-		pass
-
-	def aller_gauche(self):
-		pass
-
 	def stop(self):
 		self.vitesse = 0
 
