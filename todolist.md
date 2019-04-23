@@ -27,7 +27,7 @@ Constantes manquantes (peut encore évoluer):
 	* actualise(temps): Fait
 	* bouge(temps): En cours [L'entité ne doit pas sortir de la carte]
 	* collisionne(): Fait
-	* meurt(): A créer [Supprime l'entitée du niveau]
+	* meurt(): En cours (à vérifier) [Supprime l'entitée du niveau] 
 
 - Joueur(Entite): En cours
 	* __init__(niveau): En cours [Certains attributs comme la taille du joueur doivent être redéfinis]

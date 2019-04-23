@@ -43,6 +43,8 @@ class Entite(object):
 						return True
 		return False
 
+	def meurt(self, entite):
+		del self.niveau.entite
 
 class Joueur(Entite):
 	"""
@@ -159,8 +161,11 @@ class Bonus(Entite):
 		""" A implementer...
 			Cette methode doit ajouter une modification au joueur
 			en fonction du type de bonus"""
-		pass
-
+		if self.type == "soin" and self.niveau.joueur.vie < VIE_JOUEUR//2:
+			self.niveau.joueur.vie += VIE_JOUEUR//2
+		
+		elif self.type == "soin" and self.niveau.joueur.vie >= VIE_JOUEUR//2:
+			self.niveau.joueur.vie = VIE_JOUEUR
 
 class Tir(Entite):
 	"""
@@ -169,14 +174,12 @@ class Tir(Entite):
 
 	def actualise(self, temps):
 		super().actualise(temps)
-		""" A implementer...
-			Cette methode doit tester si le tir entre en collision
+		"""Cette methode doit tester si le tir entre en collision
 			avec un ennemi ou le joueur et appeler Tir.touche si c'est le cas"""
 
 		if self.collisionne(self.niveau.joueur):
 			self.touche(self.niveau.joueur)
 
 	def touche(self, entite):
-		""" A implementer...
-			Cette methode doit reduire la vie de entite"""
+		"""Cette methode doit reduire la vie de entite"""
 		entite.vie -= constantes.DEGAT_TIR
