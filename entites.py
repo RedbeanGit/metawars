@@ -47,6 +47,7 @@ class Entite(object):
 
 	def meurt(self, entite):
 		self.niveau.entites.remove(self)
+		niveau.piece += constantes.PIECE_ENNEMI
 
 class Joueur(Entite):
 	"""
@@ -209,9 +210,15 @@ class Tir(Entite):
 		"""Cette methode doit tester si le tir entre en collision
 			avec un ennemi ou le joueur et appeler Tir.touche si c'est le cas"""
 
-		if self.collisionne(self.niveau.joueur):
-			self.touche(self.niveau.joueur)
+		if self.collisionne(self.niveau.entite):
+			self.touche(self.niveau.entite)
 
 	def touche(self, entite):
 		"""Cette methode doit reduire la vie de entite"""
 		entite.vie -= constantes.DEGAT_TIR
+	def charge_image(affichage):
+		taille_pixel_x = self.taille[0] * constantes.ZOOM
+		taille_pixel_y = self.taille[1] * constantes.ZOOM
+
+		self.image = affichage.obtenir_image(os.path.join("data", "images", "tir", "tir.png"))
+		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))

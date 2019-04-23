@@ -21,6 +21,7 @@ class Niveau(object):
 		self.joueur = Joueur(self)
 		self.affichage = affichage
 		self.entites = []
+		self.piece = 0
 
 	def charge_image(self):
 		
