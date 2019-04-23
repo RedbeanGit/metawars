@@ -53,6 +53,8 @@ class Joueur(Entite):
 	def __init__(self, niveau):
 		super().__init__(niveau)
 		self.vie = constantes.VIE_JOUEUR
+		self.degat_tir = constantes.DEGAT_TIR
+		self.frequence_de_tir = constantes.FREQUENCE_DE_TIR
 
 	def charge_image(self, affichage):
 		taille_pixel_x = self.taille[0] * constantes.ZOOM
@@ -190,11 +192,17 @@ class Bonus(Entite):
 		elif self.type == "soin" and self.niveau.joueur.vie >= VIE_JOUEUR//2:
 			self.niveau.joueur.vie = VIE_JOUEUR
 
+		elif self.type == "frequence_de_tir_acceleree":
+			self.niveau.joueur.frequence_de_tir += 1
+
+		elif self.type == "arme_amelioree":
+			self.niveau.tir.degat_tir += 0.5
+
 class Tir(Entite):
 	"""
 	Classe définissant un tir de missile.
 	"""
-
+	
 	def actualise(self, temps):
 		super().actualise(temps)
 		"""Cette methode doit tester si le tir entre en collision

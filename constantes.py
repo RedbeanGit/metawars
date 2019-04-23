@@ -19,6 +19,7 @@ VIE_ENNEMI = 5
 
 DEGAT_TIR = 1
 VITESSE_TIR = 1
+FREQUENCE_DE_TIR = 1
 DIS_MIN_ENNEMI = 1.2
 DIS_MAX_ENNEMI = 3.5
 ZONE_AUTOUR_JOUEUR = 0.6
@@ -76,7 +77,6 @@ SONS = [
 TYPE_DE_BONUS = [
 	"soin",
 	"frequence_de_tir_acceleree",
-	"bouclier_solidifie",
 	"vitesse_augmentee",
 	"arme_amelioree"
 ]
