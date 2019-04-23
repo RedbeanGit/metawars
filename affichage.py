@@ -61,8 +61,13 @@ class Affichage(object):
 		milieu_joueur_x = niveau.joueur.taille[0] * constantes.ZOOM / 2
 		milieu_joueur_y = niveau.joueur.taille[1] * constantes.ZOOM / 2
 
+		# on tourne l'image en fonction de l'angle du joueur
+		# il faut d'abord convertir l'angle du joueur en degrés
+		angle_degres = utile.radian_en_degres(niveau.joueur.angle)
+		image_joueur = pygame.transform.rotate(niveau.joueur.image, angle_degres)
+
 		# on colle l'image du joueur
-		self.fenetre.blit(niveau.joueur.image, (milieu_ecran_x - milieu_joueur_x, milieu_ecran_y - milieu_joueur_y))
+		self.fenetre.blit(image_joueur, (milieu_ecran_x - milieu_joueur_x, milieu_ecran_y - milieu_joueur_y))
 
 		# on affiche les entités
 		for entite in niveau.entites:
@@ -75,20 +80,24 @@ class Affichage(object):
 			entite_x = (entite.position[0] - niveau.joueur.position[0]) * constantes.ZOOM + milieu_ecran_x
 			entite_y = (entite.position[1] - niveau.joueur.position[1]) * constantes.ZOOM + milieu_ecran_y
 
+			# on tourne l'image en fonction de l'angle de l'entité
+			# il faut d'abord convertir l'angle de l'entité en degrés
+			angle_degres = utile.radian_en_degres(entite.angle)
+			image_entite = pygame.transform.rotate(entite.image, angle_degres)
+
 			# on colle l'image de l'entité
-			self.fenetre.blit(entite.image, (entite_x - milieu_entite_x, entite_y - milieu_entite_y))
+			self.fenetre.blit(image_entite, (entite_x - milieu_entite_x, entite_y - milieu_entite_y))
 
 		# On actualise l'écran
 		pygame.display.update()
 
-	def actualise_evenements(self,niveau):
+	def actualise_evenements(self, niveau):
 		# on parcourt l'ensemble des evenements utilisateurs (clic, appui sur une touche, etc)
-
 		for evenement in pygame.event.get():
-			# si l'utilisateur a cliqué sur la croix rouge
-			# on arrete le jeu
 
+			# si l'utilisateur appui sur une touche...
 			if evenement.type == pygame.KEYDOWN:
+				# si cette touche est W (ou Z sur les claviers français)
 				if evenement.key == pygame.K_w:
 					niveau.joueur.avance()
 					print("le Joueur avance")
@@ -102,7 +111,7 @@ class Affichage(object):
 					niveau.joueur.aller_droite()
 					print("le Joueur va à droite")
 
-
-
+			# si l'utilisateur a cliqué sur la croix rouge
+			# on arrete le jeu
 			if evenement.type == pygame.QUIT:
 				utile.arreter()

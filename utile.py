@@ -5,6 +5,7 @@ import constantes
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __version__ = "0.1.0"
 
+import math
 import os
 import sys
 
@@ -37,3 +38,11 @@ def ecrire_fichier(chemin_fichier, contenu):
 	# et on le stocke dans la variable 'fichier'
 	with open(chemin_fichier, "w") as fichier:
 		fichier.write(contenu)
+
+
+def radian_en_degres(angle):
+	return angle * 180 / math.pi
+
+
+def degres_en_radian(angle):
+	return angle * math.pi / 180

@@ -33,7 +33,9 @@ class Entite(object):
 	def bouge(self, temps):
 		# Un peu de trigonométrie...
 		self.position[0] += self.vitesse * math.cos(self.angle) * temps
-		self.position[1] += self.vitesse * math.sin(self.angle) * temps
+		# on soustrait la position car les coordonées de l'écran en pixels sont inversées
+		# elles vont de haut en bas au lieu d'aller de bas en haut 
+		self.position[1] -= self.vitesse * math.sin(self.angle) * temps
 
 	def collisionne(self, entite):
 		if self.position[0] + self.taille[0] / 2 > entite.position[0] - entite.taille[0] / 2: 
@@ -72,6 +74,12 @@ class Joueur(Entite):
 	def recule(self):
 		self.vitesse = -constantes.VITESSE_JOUEUR
 
+	def aller_droite(self):
+		pass
+
+	def aller_gauche(self):
+		pass
+
 	def stop(self):
 		self.vitesse = 0
 
@@ -99,8 +107,11 @@ class Ennemi(Entite):
 	def actualise(self, temps):
 		super().actualise(temps)
 		self.oriente()
-		if self.est_trop_pret() == True:
+
+		if self.est_trop_pret():
 			self.vitesse = 0
+		else:
+			self.vitesse = constantes.VITESSE_ENNEMI
 
 	def oriente(self):
 		# on calcule la distance entre le joueur et l'ennemi
@@ -122,11 +133,11 @@ class Ennemi(Entite):
 		if dy >= 0:
 			# si y > 0 alors on se trouve en haut du cercle trigonométrique
 			# donc l'angle est entre 0 et pi
-			self.angle = angle + math.pi
+			self.angle = -angle + math.pi
 		else:
 			# si y < 0 alors on se trouve ne bas du cercle trigonométrique
 			# donc l'angle est entre -pi et 0 (donc opposé)
-			self.angle = -angle + math.pi
+			self.angle = angle + math.pi
 
 	def tir(self):
 		self.niveau.entites.append(Tir())
