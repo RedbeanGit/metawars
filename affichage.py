@@ -2,6 +2,7 @@
 
 import constantes
 import utile
+from entites import Joueur
 
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __version__ = "0.1.0"
@@ -81,8 +82,26 @@ class Affichage(object):
 
 	def actualise_evenements(self):
 		# on parcourt l'ensemble des evenements utilisateurs (clic, appui sur une touche, etc)
+
 		for evenement in pygame.event.get():
 			# si l'utilisateur a cliqué sur la croix rouge
 			# on arrete le jeu
+
+			if evenement.type == pygame.KEYDOWN:
+				if evenement.key == pygame.K_w:
+					Joueur.avance(self)
+					print("le Joueur avance")
+				if evenement.key == pygame.K_s:
+					Joueur.recule(self)
+					print("le Joueur recule")
+				if evenement.key == pygame.K_a:
+					Joueur.aller_gauche(self)
+					print("le Joueur va à gauche")
+				if evenement.key == pygame.K_d:
+					Joueur.aller_droite(self)
+					print("le Joueur va à droite")
+
+
+
 			if evenement.type == pygame.QUIT:
 				utile.arreter()
