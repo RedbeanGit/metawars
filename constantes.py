@@ -21,6 +21,7 @@ DEGAT_TIR = 1
 VITESSE_TIR = 1
 DIS_MIN_ENNEMI = 1.2
 DIS_MAX_ENNEMI = 3.5
+ZONE_AUTOUR_JOUEUR = 0.6
 
 # Chemin de fichier vers l'ensemble des images du jeu
 # chaque nom de dossier et fichier est une chaine de caractère

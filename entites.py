@@ -97,6 +97,11 @@ class Ennemi(Entite):
 	def actualise(self, temps):
 		super().actualise(temps)
 		self.oriente()
+		if self.est_trop_pret() == True:
+			self.vitesse = 0
+
+
+
 
 	def oriente(self):
 		# on calcule la distance entre le joueur et l'ennemi
@@ -126,6 +131,18 @@ class Ennemi(Entite):
 
 	def tir(self):
 		self.niveau.entites.append(Tir())
+
+	def est_trop_pret(self):
+		dx = self.position[0] - self.niveau.joueur.position[0]
+		dy = self.position[1] - self.niveau.joueur.position[1]
+		d = math.sqrt(dx ** 2 + dy ** 2)
+
+		if d <= constantes.ZONE_AUTOUR_JOUEUR:
+			return True
+		else:
+			return False
+
+
 
 
 class Bonus(Entite):
