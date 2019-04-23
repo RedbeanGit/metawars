@@ -100,9 +100,6 @@ class Ennemi(Entite):
 		if self.est_trop_pret() == True:
 			self.vitesse = 0
 
-
-
-
 	def oriente(self):
 		# on calcule la distance entre le joueur et l'ennemi
 		dx = self.position[0] - self.niveau.joueur.position[0]
@@ -143,8 +140,6 @@ class Ennemi(Entite):
 			return False
 
 
-
-
 class Bonus(Entite):
 	"""
 	Classe définissant un bonus attrapable par le joueur.
@@ -164,7 +159,6 @@ class Bonus(Entite):
 
 		self.image = affichage.obtenir_image(os.path.join("data", "images", "bonus", self.type))
 		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
-
 
 	def actualise(self, temps):
 		super().actualise(temps)
