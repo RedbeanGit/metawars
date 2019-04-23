@@ -44,7 +44,7 @@ class Entite(object):
 		return False
 
 	def meurt(self, entite):
-		del self.niveau.entite
+		self.niveau.entites.remove(self)
 
 class Joueur(Entite):
 	"""
