@@ -24,6 +24,8 @@ DIS_MIN_ENNEMI = 1.2
 DIS_MAX_ENNEMI = 3.5
 ZONE_AUTOUR_JOUEUR = 1.5
 
+PIECE_ENNEMI = 10
+
 # Chemin de fichier vers l'ensemble des images du jeu
 # chaque nom de dossier et fichier est une chaine de caractère
 # le chemin est inscrit dans une liste
