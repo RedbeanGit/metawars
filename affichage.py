@@ -111,6 +111,11 @@ class Affichage(object):
 					niveau.joueur.aller_droite()
 					print("le Joueur va à droite")
 
+			if evenement.type == pygame.MOUSEBUTTONDOWN:
+				if evenement.button == 3:
+					niveau.joueur.tir()
+					print("Le joueur tir")
+
 			# si l'utilisateur a cliqué sur la croix rouge
 			# on arrete le jeu
 			if evenement.type == pygame.QUIT:
