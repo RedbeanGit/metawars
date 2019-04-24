@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import constantes
-from entites import Joueur, Ennemi
+from entites import Joueur, Ennemi,  Bonus
 
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __version__ = "0.1.0"
@@ -47,6 +47,29 @@ class Niveau(object):
 		""" Doit aléatoirement faire apparaitre des ennemis et des bonus """
 		# on pioche un nombre aléatoire
 		nb = random.random()
+
+		
+
+		if nb <= temps / constantes.FREQUENCE_APPARITION_BONUS:
+			# ...on crée un nouveau bonus
+			bonus = Bonus(self)
+
+			# on choisi aléatoirement la distance entre le joueur et le bonus
+			dx = (random.random() - 0.5) * 2 * constantes.DIS_MAX_BONUS
+			dy = (random.random() - 0.5) * 2 * constantes.DIS_MAX_BONUS
+
+			# on redéfinit la position du Bonus (pour l'instant sur le joueur)
+			bonus.position[0] = self.joueur.position[0] + dx
+			bonus.position[1] = self.joueur.position[1] + dy
+
+			# on lui fait charger ses images
+			bonus.charge_image(self.affichage)
+
+			# on ajoute le bonus a la liste des entités
+			self.entites.append(bonus)
+		
+
+
 
 		# si le nombre pioché est inférieur au temps écoulé divisé 
 		# par la fréquence moyenne d'apparition...
