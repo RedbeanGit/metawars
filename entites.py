@@ -67,7 +67,7 @@ class Joueur(Entite):
 		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
 
 	def tir(self):
-		self.niveau.entites.append(Tir())
+		self.niveau.entites.append(Tir(self.niveau))
 
 	def avance(self):
 		self.vitesse = constantes.VITESSE_JOUEUR
@@ -161,7 +161,7 @@ class Bonus(Entite):
 	def __init__(self, niveau):
 		super().__init__(niveau)
 		# On choisi aléatoirement un bonus
-		self.type = random.choice(constantes.TYPE_BONUS)
+		self.type = random.choice(constantes.TYPE_DE_BONUS)
 
 	def charge_image(self, affichage):
 		""" A implementer...
