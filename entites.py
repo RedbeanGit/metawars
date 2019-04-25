@@ -177,7 +177,7 @@ class Bonus(Entite):
 	def actualise(self, temps):
 		super().actualise(temps)
 
-		if collisionne(self.niveau.joueur) == True:
+		if self.collisionne(self.niveau.joueur) == True:
 			self.attrape(self.niveau.joueur)
 
 	def attrape(self, entite):
