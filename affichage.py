@@ -71,52 +71,17 @@ class Affichage(object):
 					niveau.joueur.haut()
 					print("Le joueur va en haut")
 
-					if evenement.key == pygame.K_a:
-						niveau.joueur.gauche()
-						print("Le joueur va à gauche")
-
-					if evenement.key == pygame.K_d:
-						niveau.joueur.droite()
-						print("Le joueur va à droite")
-
-
 				if evenement.key == pygame.K_s:
 					niveau.joueur.bas()
 					print("Le joueur va en bas")
-
-					if evenement.key == pygame.K_a:
-						niveau.joueur.gauche()
-						print("Le joueur va à gauche")
-
-					if evenement.key == pygame.K_d:
-						niveau.joueur.droite()
-						print("Le joueur va à droite")
-
 
 				if evenement.key == pygame.K_a:
 					niveau.joueur.gauche()
 					print("Le joueur va à gauche")
 
-					if evenement.key == pygame.K_w:
-						niveau.joueur.haut()
-						print("Le joueur va en haut")
-
-					if evenement.key == pygame.K_s:
-						niveau.joueur.bas()
-						print("Le joueur va en bas")
-
-
 				if evenement.key == pygame.K_d:
 					niveau.joueur.droite()
 					print("Le joueur va à droite")
-
-					if evenement.key == pygame.K_w:
-						niveau.joueur.haut()
-						print("Le joueur va en haut")
-
-					if evenement.key == pygame.K_s:
-						niveau.joueur.bas()
-						print("Le joueur va en bas")
 
 				if evenement.key == pygame.K_LSHIFT:
 					niveau.joueur.stop()
@@ -128,6 +93,21 @@ class Affichage(object):
 				if evenement.button == 1:
 					niveau.joueur.tir()
 					print("Le joueur tir")
+
+			# si la souris bouge
+			elif evenement.type == pygame.MOUSEMOTION:
+				x, y = evenement.pos
+
+				# on calcul l'écart entre la position de la souris et le milieu de la fenêtre
+				dx = x - constantes.TAILLE_ECRAN[0] / 2
+				dy = y - constantes.TAILLE_ECRAN[1] / 2
+
+				# on enlève le zoom pour convertir cet écart dans l'échelle du niveau
+				dx_niveau = dx / constantes.ZOOM
+				dy_niveau = dy / constantes.ZOOM
+
+				# on fait en sorte que le joueur regarde la position de la souris
+				niveau.joueur.regarde_position(dx_niveau, dy_niveau)
 
 			# si l'utilisateur a cliqué sur la croix rouge de la fenêtre
 			# on arrete le jeu
@@ -153,5 +133,14 @@ class Affichage(object):
 		angle_degres = utile.radian_en_degres(entite.angle)
 		image_tournee = pygame.transform.rotate(entite.image, angle_degres)
 
+		# la taille de l'image a peut-être changé en la tournant
+		# il faut donc calculer la différence de taille entre les 2 images
+		d_taille_x = image_tournee.get_size()[0] - entite.image.get_size()[0]
+		d_taille_y = image_tournee.get_size()[1] - entite.image.get_size()[1]
+
+		# on peut maintenant déterminer la position de l'image
+		x = int(entite_x - milieu_entite_x - d_taille_x / 2)
+		y = int(entite_y - milieu_entite_y - d_taille_y / 2)
+
 		# on colle l'image de l'entité
-		self.fenetre.blit(image_tournee, (entite_x - milieu_entite_x, entite_y - milieu_entite_y))
+		self.fenetre.blit(image_tournee, (x, y))

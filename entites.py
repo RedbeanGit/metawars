@@ -75,6 +75,19 @@ class Joueur(Entite):
 		self.image = affichage.obtenir_image(os.path.join("data", "images", "joueur", "joueur_0.png"))
 		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
 
+	def regarde_position(self, dx, dy):
+		""" Tourne le joueur de façon à ce qu'il regarde en direction de (dx, dy)"""
+		# on calcule la distance entre le joueur et cette position à l'aide de Pythagore
+		d = math.sqrt(dx ** 2 + dy ** 2)
+		# on détermine un angle possible à l'aide de Arc cosinus
+		angle = math.acos(dx / d)
+
+		# on détermine si on doit prendre la valeur négative ou positive de cette angle
+		if dy >= 0:
+			self.angle = -angle
+		else:
+			self.angle = angle
+
 	def tir(self):
 		# on crée un tir
 		tir = Tir(self.niveau, self)
