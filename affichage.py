@@ -68,17 +68,20 @@ class Affichage(object):
 			if evenement.type == pygame.KEYDOWN:
 				# si cette touche est W (ou Z sur les claviers français)
 				if evenement.key == pygame.K_w:
-					niveau.joueur.avance()
-					print("Le joueur avance")
+					niveau.joueur.haut()
+					print("Le joueur va en haut")
 				if evenement.key == pygame.K_s:
-					niveau.joueur.recule()
-					print("Le joueur recule")
+					niveau.joueur.bas()
+					print("Le joueur va en bas")
 				if evenement.key == pygame.K_a:
-					niveau.joueur.aller_gauche()
+					niveau.joueur.gauche()
 					print("Le joueur va à gauche")
 				if evenement.key == pygame.K_d:
-					niveau.joueur.aller_droite()
+					niveau.joueur.droite()
 					print("Le joueur va à droite")
+				if evenement.key == pygame.K_LSHIFT:
+					niveau.joueur.stop()
+					print("Le joueur s'arrete")
 
 			# si il clique avec la souris
 			elif evenement.type == pygame.MOUSEBUTTONDOWN:

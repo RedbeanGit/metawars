@@ -65,6 +65,7 @@ class Joueur(Entite):
 		self.degat_tir = constantes.DEGAT_JOUEUR
 		self.frequence_tir = constantes.FREQUENCE_TIR
 		self.bouclier = False
+		self.velocite = [0,0]
 
 	def charge_image(self):
 		affichage = self.niveau.affichage
@@ -82,20 +83,33 @@ class Joueur(Entite):
 		# on l'ajoute a la liste des entités du niveau
 		self.niveau.entites.append(tir)
 
-	def avance(self):
-		self.vitesse = constantes.VITESSE_JOUEUR
+	def bouge(self,temps):
+		
+		self.position[0] += self.velocite[0] * temps
+		self.position[1] -= self.velocite[1] * temps
+		
 
-	def recule(self):
-		self.vitesse = -constantes.VITESSE_JOUEUR
-
-	def aller_droite(self):
 		pass
 
-	def aller_gauche(self):
-		pass
+	def haut(self):
+		self.velocite[0] = 0 
+		self.velocite[1] = constantes.VITESSE_JOUEUR 
 
+	def bas(self):
+		self.velocite[0] = 0 
+		self.velocite[1] = -constantes.VITESSE_JOUEUR
+
+	def droite(self):
+		self.velocite[0] = constantes.VITESSE_JOUEUR 
+		self.velocite[1] = 0 
+
+	def gauche(self):
+		self.velocite[0] = -constantes.VITESSE_JOUEUR 
+		self.velocite[1] = 0 
 	def stop(self):
-		self.vitesse = 0
+		self.velocite[0] = 0
+		self.velocite[1] = 0
+
 
 
 class Ennemi(Entite):
