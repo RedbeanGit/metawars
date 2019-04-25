@@ -5,28 +5,38 @@ __version__ = "0.1.0"
 
 
 NOM = "MetaWars"
-TAILLE_ECRAN = (800, 800)
-TAILLE_CARTE = (100, 100)
 ZOOM = 150
 POLICE = "police.ttf"
 
 FREQUENCE_APPARITION_ENNEMI = 4
-FREQUENCE_APPARITION_BONUS = 1
+FREQUENCE_APPARITION_BONUS = 5
+FREQUENCE_TIR = 1
 
 VITESSE_JOUEUR = 1.2
 VITESSE_ENNEMI = 1
+VITESSE_TIR = 6
+
 VIE_JOUEUR = 20
 VIE_ENNEMI = 5
 
-DEGAT_TIR = 1
-VITESSE_TIR = 1
-FREQUENCE_DE_TIR = 1
+TAILLE_ECRAN = (800, 800)
+TAILLE_CARTE = (100, 100)
+TAILLE_BONUS = (0.5, 0.5)
+
+DEGAT_JOUEUR = 1
+DEGAT_ENNEMI = 0.5
+
 DIS_MIN_ENNEMI = 1.2
 DIS_MAX_ENNEMI = 3.5
 DIS_MAX_BONUS = 4
 ZONE_AUTOUR_JOUEUR = 1.5
 
 PIECE_ENNEMI = 10
+
+BONUS_SOIN = 10
+BONUS_VITESSE = 0.4
+BONUS_FREQUENCE_TIR = 2
+BONUS_DEGAT = 0.5
 
 # Chemin de fichier vers l'ensemble des images du jeu
 # chaque nom de dossier et fichier est une chaine de caractère
@@ -78,9 +88,9 @@ SONS = [
 	["musique_demarrage.wav"]
 ]
 
-TYPE_DE_BONUS = [
+TYPE_BONUS = [
 	"soin",
-	"frequence_de_tir_acceleree",
+	"frequence_tir_acceleree",
 	"vitesse_augmentee",
 	"arme_amelioree"
 ]

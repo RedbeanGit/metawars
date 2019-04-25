@@ -18,8 +18,8 @@ class Niveau(object):
 
 	def __init__(self, affichage):
 		self.image = None
-		self.joueur = Joueur(self)
 		self.affichage = affichage
+		self.joueur = Joueur(self)
 		self.entites = []
 		self.piece = 0
 
@@ -33,7 +33,7 @@ class Niveau(object):
 		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
 		"""
 
-		self.joueur.charge_image(self.affichage)
+		self.joueur.charge_image()
 
 	def actualise(self, temps):
 		self.joueur.actualise(temps)
@@ -48,8 +48,6 @@ class Niveau(object):
 		# on pioche un nombre aléatoire
 		nb = random.random()
 
-		
-
 		if nb <= temps / constantes.FREQUENCE_APPARITION_BONUS:
 			# ...on crée un nouveau bonus
 			bonus = Bonus(self)
@@ -63,13 +61,12 @@ class Niveau(object):
 			bonus.position[1] = self.joueur.position[1] + dy
 
 			# on lui fait charger ses images
-			bonus.charge_image(self.affichage)
+			bonus.charge_image()
 
 			# on ajoute le bonus a la liste des entités
 			self.entites.append(bonus)
-		
 
-
+		nb = random.random()
 
 		# si le nombre pioché est inférieur au temps écoulé divisé 
 		# par la fréquence moyenne d'apparition...
@@ -85,11 +82,15 @@ class Niveau(object):
 			ennemi.position[1] = self.joueur.position[1] + dy
 
 			# on lui fait charger ses images
-			ennemi.charge_image(self.affichage)
+			ennemi.charge_image()
 			# on ajoute l'ennemi a la liste des entités
 			self.entites.append(ennemi)
 
 	def enleve_entite(self, entite):
 		""" Enleve l'entite de self.entites seulement
 			si elle fait parti de ce niveau """
-		pass
+
+		# si l'entité fait bien parti de la liste des entités de ce niveau
+		if entite in self.entites:
+			# on la retire de la liste (elle ne fait donc plus parti du niveau)
+			self.entites.remove(entite)

@@ -41,7 +41,6 @@ class Affichage(object):
 			return self.images[chemin_image].convert_alpha()
 		else:
 			# sinon, on renvoie une surface noire de 50x50 pixels
-			print("[ERREUR] L'image demandée ({image}) n'a pas été chargée ! Création d'une surface noire".format(image=chemin_image))
 			return pygame.Surface((50, 50))
 
 	def actualise(self, niveau):
@@ -52,41 +51,11 @@ class Affichage(object):
 		if niveau.image:
 			self.fenetre.blit(niveau.image, (0, 0))
 
-		# On affiche la texture du joueur au milieu de la fenetre:
-		# on recuper le milieu de l'ecran
-		milieu_ecran_x = constantes.TAILLE_ECRAN[0] // 2
-		milieu_ecran_y = constantes.TAILLE_ECRAN[1] // 2
+		# on affiche les entités (dont le joueur)
+		self.affiche_entite(niveau.joueur)
 
-		# on recupere le milieu du joueur
-		milieu_joueur_x = niveau.joueur.taille[0] * constantes.ZOOM / 2
-		milieu_joueur_y = niveau.joueur.taille[1] * constantes.ZOOM / 2
-
-		# on tourne l'image en fonction de l'angle du joueur
-		# il faut d'abord convertir l'angle du joueur en degrés
-		angle_degres = utile.radian_en_degres(niveau.joueur.angle)
-		image_joueur = pygame.transform.rotate(niveau.joueur.image, angle_degres)
-
-		# on colle l'image du joueur
-		self.fenetre.blit(image_joueur, (milieu_ecran_x - milieu_joueur_x, milieu_ecran_y - milieu_joueur_y))
-
-		# on affiche les entités
 		for entite in niveau.entites:
-			# on recupère le milieu de l'entité
-			milieu_entite_x = entite.taille[0] * constantes.ZOOM / 2
-			milieu_entite_y = entite.taille[1] * constantes.ZOOM / 2
-
-			# on calcul la position de l'entité par rapport au joueur
-			# qui doit être centré en plein milieu de l'écran
-			entite_x = (entite.position[0] - niveau.joueur.position[0]) * constantes.ZOOM + milieu_ecran_x
-			entite_y = (entite.position[1] - niveau.joueur.position[1]) * constantes.ZOOM + milieu_ecran_y
-
-			# on tourne l'image en fonction de l'angle de l'entité
-			# il faut d'abord convertir l'angle de l'entité en degrés
-			angle_degres = utile.radian_en_degres(entite.angle)
-			image_entite = pygame.transform.rotate(entite.image, angle_degres)
-
-			# on colle l'image de l'entité
-			self.fenetre.blit(image_entite, (entite_x - milieu_entite_x, entite_y - milieu_entite_y))
+			self.affiche_entite(entite)
 
 		# On actualise l'écran
 		pygame.display.update()
@@ -95,28 +64,52 @@ class Affichage(object):
 		# on parcourt l'ensemble des evenements utilisateurs (clic, appui sur une touche, etc)
 		for evenement in pygame.event.get():
 
-			# si l'utilisateur appui sur une touche...
+			# si l'utilisateur appui sur une touche du clavier...
 			if evenement.type == pygame.KEYDOWN:
 				# si cette touche est W (ou Z sur les claviers français)
 				if evenement.key == pygame.K_w:
 					niveau.joueur.avance()
-					print("le Joueur avance")
+					print("Le joueur avance")
 				if evenement.key == pygame.K_s:
 					niveau.joueur.recule()
-					print("le Joueur recule")
+					print("Le joueur recule")
 				if evenement.key == pygame.K_a:
 					niveau.joueur.aller_gauche()
-					print("le Joueur va à gauche")
+					print("Le joueur va à gauche")
 				if evenement.key == pygame.K_d:
 					niveau.joueur.aller_droite()
-					print("le Joueur va à droite")
+					print("Le joueur va à droite")
 
-			if evenement.type == pygame.MOUSEBUTTONDOWN:
-				if evenement.button == 3:
+			# si il clique avec la souris
+			elif evenement.type == pygame.MOUSEBUTTONDOWN:
+				# si le bouton cliqué est le bouton droit de la souris (3)
+				if evenement.button == 1:
 					niveau.joueur.tir()
 					print("Le joueur tir")
 
-			# si l'utilisateur a cliqué sur la croix rouge
+			# si l'utilisateur a cliqué sur la croix rouge de la fenêtre
 			# on arrete le jeu
 			if evenement.type == pygame.QUIT:
 				utile.arreter()
+
+	def affiche_entite(self, entite):
+		# on recuper le milieu de l'ecran
+		milieu_ecran_x = constantes.TAILLE_ECRAN[0] // 2
+		milieu_ecran_y = constantes.TAILLE_ECRAN[1] // 2
+
+		# on recupere le milieu de l'entite
+		milieu_entite_x = entite.taille[0] * constantes.ZOOM / 2
+		milieu_entite_y = entite.taille[1] * constantes.ZOOM / 2
+
+		# on calcul la position de l'entité par rapport au joueur
+		# car celui-ci doit être centré en plein milieu de l'écran
+		entite_x = (entite.position[0] - entite.niveau.joueur.position[0]) * constantes.ZOOM + milieu_ecran_x
+		entite_y = (entite.position[1] - entite.niveau.joueur.position[1]) * constantes.ZOOM + milieu_ecran_y
+
+		# on applique une rotation sur l'image en fonction de l'angle de l'entite
+		# mais il faut d'abord convertir l'angle de l'entite en degrés (pygame travaille avec des degrés)
+		angle_degres = utile.radian_en_degres(entite.angle)
+		image_tournee = pygame.transform.rotate(entite.image, angle_degres)
+
+		# on colle l'image de l'entité
+		self.fenetre.blit(image_tournee, (entite_x - milieu_entite_x, entite_y - milieu_entite_y))
