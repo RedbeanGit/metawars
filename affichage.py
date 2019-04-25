@@ -70,15 +70,54 @@ class Affichage(object):
 				if evenement.key == pygame.K_w:
 					niveau.joueur.haut()
 					print("Le joueur va en haut")
+
+					if evenement.key == pygame.K_a:
+						niveau.joueur.gauche()
+						print("Le joueur va à gauche")
+
+					if evenement.key == pygame.K_d:
+						niveau.joueur.droite()
+						print("Le joueur va à droite")
+
+
 				if evenement.key == pygame.K_s:
 					niveau.joueur.bas()
 					print("Le joueur va en bas")
+
+					if evenement.key == pygame.K_a:
+						niveau.joueur.gauche()
+						print("Le joueur va à gauche")
+
+					if evenement.key == pygame.K_d:
+						niveau.joueur.droite()
+						print("Le joueur va à droite")
+
+
 				if evenement.key == pygame.K_a:
 					niveau.joueur.gauche()
 					print("Le joueur va à gauche")
+
+					if evenement.key == pygame.K_w:
+						niveau.joueur.haut()
+						print("Le joueur va en haut")
+
+					if evenement.key == pygame.K_s:
+						niveau.joueur.bas()
+						print("Le joueur va en bas")
+
+
 				if evenement.key == pygame.K_d:
 					niveau.joueur.droite()
 					print("Le joueur va à droite")
+
+					if evenement.key == pygame.K_w:
+						niveau.joueur.haut()
+						print("Le joueur va en haut")
+
+					if evenement.key == pygame.K_s:
+						niveau.joueur.bas()
+						print("Le joueur va en bas")
+
 				if evenement.key == pygame.K_LSHIFT:
 					niveau.joueur.stop()
 					print("Le joueur s'arrete")
