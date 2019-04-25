@@ -47,7 +47,8 @@ class Entite(object):
 
 	def meurt(self, entite):
 		self.niveau.entites.remove(self)
-		niveau.piece += constantes.PIECE_ENNEMI
+		#if self.niveau.entites == Ennemi():
+		#niveau.piece += constantes.PIECE_ENNEMI
 
 class Joueur(Entite):
 	"""
@@ -184,11 +185,11 @@ class Bonus(Entite):
 		""" A implementer...
 			Cette methode doit ajouter une modification au joueur
 			en fonction du type de bonus"""
-		if self.type == "soin" and niveau.joueur.vie < VIE_JOUEUR//2:
-			entite.vie += VIE_JOUEUR//2
+		if self.type == "soin" and entite.vie < constantes.VIE_JOUEUR//2:
+			entite.vie += constantes.VIE_JOUEUR//2
 		
-		elif self.type == "soin" and niveau.joueur.vie >= VIE_JOUEUR//2:
-			entite.vie = VIE_JOUEUR
+		elif self.type == "soin" and entite.vie >= constantes.VIE_JOUEUR//2:
+			entite.vie = constantes.VIE_JOUEUR
 
 		elif self.type == "vitesse_augmentee":
 			entite.vitesse += 0.4
@@ -197,8 +198,8 @@ class Bonus(Entite):
 			entite.frequence_de_tir += 1
 
 		elif self.type == "arme_amelioree":
-			entite.tir.degat_tir += 0.5
-
+			entite.degat_tir += 0.5
+		self.meurt(entite)
 
 class Tir(Entite):
 	"""
@@ -210,8 +211,8 @@ class Tir(Entite):
 		"""Cette methode doit tester si le tir entre en collision
 			avec un ennemi ou le joueur et appeler Tir.touche si c'est le cas"""
 
-		if self.collisionne(self.niveau.entite):
-			self.touche(self.niveau.entite)
+		if self.collisionne(self.niveau.entites):
+			self.touche(self.niveau.entites)
 
 	def touche(self, entite):
 		"""Cette methode doit reduire la vie de entite"""
