@@ -84,15 +84,13 @@ class Joueur(Entite):
 		self.niveau.entites.append(tir)
 
 	def bouge(self,temps):
-		
+		# on redéfinit cette méthode pour changer les déplacements du joueur
+		# il ne dépend plus de son angle de rotation
 		self.position[0] += self.velocite[0] * temps
 		self.position[1] -= self.velocite[1] * temps
-		
-
-		pass
 
 	def haut(self):
-		self.velocite[0] = 0 
+		self.velocite[0] = 0
 		self.velocite[1] = constantes.VITESSE_JOUEUR 
 
 	def bas(self):
@@ -105,11 +103,11 @@ class Joueur(Entite):
 
 	def gauche(self):
 		self.velocite[0] = -constantes.VITESSE_JOUEUR 
-		self.velocite[1] = 0 
+		self.velocite[1] = 0
+
 	def stop(self):
 		self.velocite[0] = 0
 		self.velocite[1] = 0
-
 
 
 class Ennemi(Entite):
