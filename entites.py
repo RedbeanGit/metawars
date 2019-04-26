@@ -105,20 +105,21 @@ class Joueur(Entite):
 		self.position[1] -= self.velocite[1] * temps * self.vitesse
 
 	def haut(self):
-		self.velocite[0] = 0 
-		self.velocite[1] = constantes.VITESSE_JOUEUR 
+		self.velocite[0] = 0
+		self.velocite[1] = constantes.VITESSE_JOUEUR
 
 	def bas(self):
-		self.velocite[0] = 0 
-		self.velocite[1] = -constantes.VITESSE_JOUEUR 
+		self.velocite[0] = 0
+		self.velocite[1] = -constantes.VITESSE_JOUEUR
 
 	def droite(self):
-		self.velocite[0] = constantes.VITESSE_JOUEUR 
+		self.velocite[0] = constantes.VITESSE_JOUEUR
 		self.velocite[1] = 0
 
 	def gauche(self):
-		self.velocite[0] = -constantes.VITESSE_JOUEUR 
-		self.velocite[1] = 0 
+		self.velocite[0] = -constantes.VITESSE_JOUEUR
+		self.velocite[1] = 0
+		
 	def stop(self):
 		self.velocite[0] = 0
 		self.velocite[1] = 0
@@ -155,12 +156,7 @@ class Ennemi(Entite):
 		else:
 			# sinon... et ben il avance lol
 			self.vitesse = constantes.VITESSE_ENNEMI
-'''
-		if self.est_trop_pret_ennemi():
-			self.vitesse = 0
-		else:
-			self.vitesse = constantes.VITESSE_ENNEMI
-'''
+
 	def oriente(self):
 		# on calcule la distance entre le joueur et l'ennemi
 		dx = self.position[0] - self.niveau.joueur.position[0]
@@ -205,17 +201,6 @@ class Ennemi(Entite):
 		else:
 			return False
 
-'''	def est_trop_pret_ennemi(self):
-		 '' Si l'ennemi est trop proche d'un autre ennemi, il s'arrete ''
-		dx = self.position[0] - self.niveau.ennemi.position[0]
-		dy = self.position[1] - self.niveau.ennemi.position[1]
-		d = math.sqrt(dx ** 2 + dy ** 2)
-
-		if d <= constantes.ZONE_AUTOUR_ENNEMI:
-			return True
-		else:
-			return False '''
-
 	def meurt(self):
 		super().meurt()
 		self.niveau.piece += constantes.PIECE_ENNEMI
@@ -233,7 +218,7 @@ class Bonus(Entite):
 
 	def charge_image(self):
 		""" Cette méthode doit charger la texture du bonus (et du bon bonus)
-			et la redimensionner à la bonne taille (en prenant en compte le zoom)"""
+			et la redimensionner à la bonne taille (en prenant en compte le zoom) """
 
 		affichage = self.niveau.affichage
 		taille_pixel_x = int(self.taille[0] * constantes.ZOOM)
