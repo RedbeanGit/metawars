@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import constantes
-from entites import Joueur, Ennemi,  Bonus
+from entites import Joueur, Ennemi, Bonus
 
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __version__ = "0.1.0"

@@ -155,7 +155,12 @@ class Ennemi(Entite):
 		else:
 			# sinon... et ben il avance lol
 			self.vitesse = constantes.VITESSE_ENNEMI
-
+'''
+		if self.est_trop_pret_ennemi():
+			self.vitesse = 0
+		else:
+			self.vitesse = constantes.VITESSE_ENNEMI
+'''
 	def oriente(self):
 		# on calcule la distance entre le joueur et l'ennemi
 		dx = self.position[0] - self.niveau.joueur.position[0]
@@ -199,6 +204,17 @@ class Ennemi(Entite):
 			return True
 		else:
 			return False
+
+'''	def est_trop_pret_ennemi(self):
+		 '' Si l'ennemi est trop proche d'un autre ennemi, il s'arrete ''
+		dx = self.position[0] - self.niveau.ennemi.position[0]
+		dy = self.position[1] - self.niveau.ennemi.position[1]
+		d = math.sqrt(dx ** 2 + dy ** 2)
+
+		if d <= constantes.ZONE_AUTOUR_ENNEMI:
+			return True
+		else:
+			return False '''
 
 	def meurt(self):
 		super().meurt()
