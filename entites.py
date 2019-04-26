@@ -26,6 +26,7 @@ class Entite(object):
 		# on charge une image vide par défaut pour éviter les problèmes
 		# comme ça, toutes les entités on une image par défaut
 		self.image = niveau.affichage.obtenir_image("")
+		self.hitbox = constantes.HIT_BOX
 
 	def charge_image(self):
 		pass
@@ -42,10 +43,10 @@ class Entite(object):
 
 	def collisionne(self, entite):
 		# on renvoie True si une entité déborde sur une autre
-		if self.position[0] + self.taille[0] / 2 > entite.position[0] - entite.taille[0] / 2: 
-			if self.position[0] - self.taille[0] / 2 < entite.position[0] + entite.taille[0] / 2:
-				if self.position[1] + self.taille[1] / 2 > entite.position[1] - entite.taille[1] / 2: 
-					if self.position[1] - self.taille[1] / 2 < entite.position[1] + entite.taille[1] / 2:
+		if self.position[0] + self.hitbox[0] / 2 > entite.position[0] - entite.hitbox[0] / 2: 
+			if self.position[0] - self.hitbox[0] / 2 < entite.position[0] + entite.hitbox[0] / 2:
+				if self.position[1] + self.hitbox[1] / 2 > entite.position[1] - entite.hitbox[1] / 2: 
+					if self.position[1] - self.hitbox[1] / 2 < entite.position[1] + entite.hitbox[1] / 2:
 						return True
 		return False
 
@@ -287,6 +288,7 @@ class Tir(Entite):
 					if type(entite) == Ennemi:
 						# alors on appelle la méthode touche()
 						self.touche(entite)
+
 		else:
 			# sinon, c'est que le tir vient d'un ennemi
 			# si le tir touche le joueur
@@ -297,3 +299,4 @@ class Tir(Entite):
 	def touche(self, entite):
 		"""Cette methode reduit la vie de entite"""
 		entite.vie -= self.tireur.degat_tir
+		self.meurt()
