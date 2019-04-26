@@ -66,6 +66,7 @@ class Joueur(Entite):
 		self.frequence_tir = constantes.FREQUENCE_TIR
 		self.bouclier = False
 		self.velocite = [0,0]
+		self.vitesse = 1
 
 	def charge_image(self):
 		affichage = self.niveau.affichage
@@ -99,25 +100,24 @@ class Joueur(Entite):
 	def bouge(self,temps):
 		# on redéfinit cette méthode pour changer les déplacements du joueur
 		# il ne dépend plus de son angle de rotation
-		self.position[0] += self.velocite[0] * temps
-		self.position[1] -= self.velocite[1] * temps
+		self.position[0] += self.velocite[0] * temps * self.vitesse
+		self.position[1] -= self.velocite[1] * temps * self.vitesse
 
 	def haut(self):
-		self.velocite[0] = 0
+		self.velocite[0] = 0 
 		self.velocite[1] = constantes.VITESSE_JOUEUR 
 
 	def bas(self):
 		self.velocite[0] = 0 
-		self.velocite[1] = -constantes.VITESSE_JOUEUR
+		self.velocite[1] = -constantes.VITESSE_JOUEUR 
 
 	def droite(self):
 		self.velocite[0] = constantes.VITESSE_JOUEUR 
-		self.velocite[1] = 0 
+		self.velocite[1] = 0
 
 	def gauche(self):
 		self.velocite[0] = -constantes.VITESSE_JOUEUR 
-		self.velocite[1] = 0
-
+		self.velocite[1] = 0 
 	def stop(self):
 		self.velocite[0] = 0
 		self.velocite[1] = 0
