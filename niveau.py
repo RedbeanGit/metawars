@@ -57,8 +57,8 @@ class Niveau(object):
 			dy = (random.random() - 0.5) * 2 * constantes.DIS_MAX_BONUS
 
 			# on redéfinit la position du Bonus (pour l'instant sur le joueur)
-			bonus.position[0] = self.joueur.position[0] + dx
-			bonus.position[1] = self.joueur.position[1] + dy
+			bonus.position[0] = self.joueur.position[0] + dx + 4
+			bonus.position[1] = self.joueur.position[1] + dy + 8
 
 			# on lui fait charger ses images
 			bonus.charge_image()
@@ -78,8 +78,8 @@ class Niveau(object):
 			dx = (random.random() - 0.5) * 2 * constantes.DIS_MAX_ENNEMI
 			dy = (random.random() - 0.5) * 2 * constantes.DIS_MAX_ENNEMI
 			# on redéfinit la position de l'ennemi (pour l'instant sur le joueur)
-			ennemi.position[0] = self.joueur.position[0] + dx
-			ennemi.position[1] = self.joueur.position[1] + dy
+			ennemi.position[0] = self.joueur.position[0] + dx + 4
+			ennemi.position[1] = self.joueur.position[1] + dy + 8
 
 			# on lui fait charger ses images
 			ennemi.charge_image()
