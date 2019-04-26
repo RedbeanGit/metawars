@@ -105,21 +105,20 @@ class Joueur(Entite):
 		self.position[1] -= self.velocite[1] * temps * self.vitesse
 
 	def haut(self):
-		self.velocite[0] = 0
-		self.velocite[1] = constantes.VITESSE_JOUEUR
+		self.velocite[0] = 0 
+		self.velocite[1] = constantes.VITESSE_JOUEUR 
 
 	def bas(self):
-		self.velocite[0] = 0
-		self.velocite[1] = -constantes.VITESSE_JOUEUR
+		self.velocite[0] = 0 
+		self.velocite[1] = -constantes.VITESSE_JOUEUR 
 
 	def droite(self):
-		self.velocite[0] = constantes.VITESSE_JOUEUR
+		self.velocite[0] = constantes.VITESSE_JOUEUR 
 		self.velocite[1] = 0
 
 	def gauche(self):
-		self.velocite[0] = -constantes.VITESSE_JOUEUR
-		self.velocite[1] = 0
-		
+		self.velocite[0] = -constantes.VITESSE_JOUEUR 
+		self.velocite[1] = 0 
 	def stop(self):
 		self.velocite[0] = 0
 		self.velocite[1] = 0
@@ -156,6 +155,9 @@ class Ennemi(Entite):
 		else:
 			# sinon... et ben il avance lol
 			self.vitesse = constantes.VITESSE_ENNEMI
+
+		if self.vie <= 0:
+			self.meurt()
 
 	def oriente(self):
 		# on calcule la distance entre le joueur et l'ennemi
@@ -218,7 +220,7 @@ class Bonus(Entite):
 
 	def charge_image(self):
 		""" Cette méthode doit charger la texture du bonus (et du bon bonus)
-			et la redimensionner à la bonne taille (en prenant en compte le zoom) """
+			et la redimensionner à la bonne taille (en prenant en compte le zoom)"""
 
 		affichage = self.niveau.affichage
 		taille_pixel_x = int(self.taille[0] * constantes.ZOOM)
