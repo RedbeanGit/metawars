@@ -275,6 +275,7 @@ class Tir(Entite):
 		self.position = self.tireur.position[:]
 		self.angle = self.tireur.angle
 		self.vitesse = constantes.VITESSE_TIR
+		self.taille = constantes.TAILLE_TIR
 
 	def charge_image(self):
 		affichage = self.niveau.affichage
