@@ -66,25 +66,46 @@ class Affichage(object):
 
 			# si l'utilisateur appui sur une touche du clavier...
 			if evenement.type == pygame.KEYDOWN:
-				# si cette touche est W (ou Z sur les claviers français)
-				if evenement.unicode == "z":
+				# en fonction de la touche appuyée, on appelle la fonction
+				# commandant le déplacement correspondant
+				if evenement.key == pygame.K_w:
 					niveau.joueur.haut()
 					print("Le joueur va en haut")
 
-				if evenement.unicode == "s":
+				if evenement.key == pygame.K_s:
 					niveau.joueur.bas()
 					print("Le joueur va en bas")
 
-				if evenement.unicode == "q":
+				if evenement.key == pygame.K_a:
 					niveau.joueur.gauche()
 					print("Le joueur va à gauche")
 
-				if evenement.unicode == "d":
+				if evenement.key == pygame.K_d:
 					niveau.joueur.droite()
 					print("Le joueur va à droite")
 
 				if evenement.key == pygame.K_ESCAPE:
 					utile.arreter()
+
+			# si l'utilisateur relache une touche du clavier...
+			elif evenement.type == pygame.KEYUP:
+				# en fonction de la touche appuyée, on appelle la fonction
+				# commandant le déplacement inverse
+				if evenement.key == pygame.K_w:
+					niveau.joueur.bas()
+					print("Le joueur va en haut")
+
+				if evenement.key == pygame.K_s:
+					niveau.joueur.haut()
+					print("Le joueur va en bas")
+
+				if evenement.key == pygame.K_a:
+					niveau.joueur.droite()
+					print("Le joueur va à gauche")
+
+				if evenement.key == pygame.K_d:
+					niveau.joueur.gauche()
+					print("Le joueur va à droite")
 
 			# si il clique avec la souris
 			elif evenement.type == pygame.MOUSEBUTTONDOWN:

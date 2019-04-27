@@ -81,14 +81,17 @@ class Joueur(Entite):
 		""" Tourne le joueur de façon à ce qu'il regarde en direction de (dx, dy)"""
 		# on calcule la distance entre le joueur et cette position à l'aide de Pythagore
 		d = math.sqrt(dx ** 2 + dy ** 2)
-		# on détermine un angle possible à l'aide de Arc cosinus
-		angle = math.acos(dx / d)
 
-		# on détermine si on doit prendre la valeur négative ou positive de cette angle
-		if dy >= 0:
-			self.angle = -angle
-		else:
-			self.angle = angle
+		# si la souris est à une distance de 0 du joueur, on ne peut pas définir d'angle
+		if d != 0:
+			# on détermine un angle possible à l'aide de Arc cosinus
+			angle = math.acos(dx / d)
+
+			# on détermine si on doit prendre la valeur négative ou positive de cette angle
+			if dy >= 0:
+				self.angle = -angle
+			else:
+				self.angle = angle
 
 	def tir(self):
 		# on crée un tir
@@ -102,23 +105,20 @@ class Joueur(Entite):
 		# on redéfinit cette méthode pour changer les déplacements du joueur
 		# il ne dépend plus de son angle de rotation
 		self.position[0] += self.velocite[0] * temps * self.vitesse
-		self.position[1] -= self.velocite[1] * temps * self.vitesse
+		self.position[1] += self.velocite[1] * temps * self.vitesse
 
 	def haut(self):
-		self.velocite[0] = 0 
-		self.velocite[1] = constantes.VITESSE_JOUEUR 
+		self.velocite[1] -= constantes.VITESSE_JOUEUR
 
 	def bas(self):
-		self.velocite[0] = 0 
-		self.velocite[1] = -constantes.VITESSE_JOUEUR 
+		self.velocite[1] += constantes.VITESSE_JOUEUR
 
 	def droite(self):
-		self.velocite[0] = constantes.VITESSE_JOUEUR 
-		self.velocite[1] = 0
+		self.velocite[0] += constantes.VITESSE_JOUEUR
 
 	def gauche(self):
-		self.velocite[0] = -constantes.VITESSE_JOUEUR 
-		self.velocite[1] = 0 
+		self.velocite[0] -= constantes.VITESSE_JOUEUR
+
 	def stop(self):
 		self.velocite[0] = 0
 		self.velocite[1] = 0
