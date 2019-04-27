@@ -3,8 +3,9 @@
 import constantes
 import utile
 from entites import Joueur
-import niveau
 
+import niveau
+from widgets import Texte
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __version__ = "0.1.0"
 
@@ -44,12 +45,15 @@ class Affichage(object):
 			# sinon, on renvoie une surface noire de 50x50 pixels
 			return pygame.Surface((50, 50))
 
-	def actualise(self, niveau):
+	def actualise(self, niveau, temps):
 		# On rend tous les pixels de la fenetre blanc
 		self.fenetre.fill((255, 255, 255))
 
 		# on affiche le fond du niveau
 		self.afficher_carte(niveau)
+
+		# on affiche le score
+		self.afficher_score(niveau, temps)
 
 		# on affiche les entités (dont le joueur)
 		self.affiche_entite(niveau.joueur)
@@ -188,3 +192,7 @@ class Affichage(object):
 		for x in range(nb_texture_x):
 			for y in range(nb_texture_y):
 				self.fenetre.blit(niveau.image, (x * largeur - distance_joueur_x, y * hauteur - distance_joueur_y))
+
+
+	def afficher_score(self, niveau, temps):
+		score = Texte(temps, (12,50))

@@ -40,7 +40,7 @@ def main():
         # on actualise le niveau et les entités qu'il contient
         niveau.actualise(temps_ecoule)
         # on redessine la fenetre pour afficher de nouveau le niveau
-        affichage.actualise(niveau)
+        affichage.actualise(niveau, temps_ecoule)
 
         #print("fps={fps}".format(fps=1 / temps_ecoule))
 

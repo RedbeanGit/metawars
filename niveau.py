@@ -89,3 +89,4 @@ class Niveau(object):
 		if entite in self.entites:
 			# on la retire de la liste (elle ne fait donc plus parti du niveau)
 			self.entites.remove(entite)
+

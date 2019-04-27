@@ -76,7 +76,7 @@ class Texte(Widget):
 	"""
 
 	def __init__(self, affichage, texte, position=(0, 0), ancrage=(-1, -1), taille_police=20):
-		super().__init__(affichage, position, taille, ancrage)
+		super().__init__(affichage, position, taille_police, ancrage)
 
 		self.texte = texte
 		self.taille_police = taille_police
@@ -178,3 +178,4 @@ class Bouton(Widget):
 			else:
 				# sinon, on le remet dans l'état 'normal'
 				self.etat = "normal"
+
