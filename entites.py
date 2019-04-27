@@ -69,6 +69,10 @@ class Joueur(Entite):
 		self.velocite = [0,0]
 		self.vitesse = 1
 
+		# cette variable permet de savoir si l'entité est en animation de dégat
+		self.est_touche = False
+		self.temps_animation_degat = 0
+
 	def charge_image(self):
 		affichage = self.niveau.affichage
 		taille_pixel_x = int(self.taille[0] * constantes.ZOOM)
@@ -93,6 +97,15 @@ class Joueur(Entite):
 			else:
 				self.angle = angle
 
+	def actualise(self, temps):
+		super().actualise(temps)
+
+		# si l'animation a assez duré, on l'arrête et on recharge l'image par défaut du joueur
+		if self.temps_animation_degat >= constantes.DUREE_ANIMATION_DEGAT:
+			self.est_touche = False
+			self.temps_animation_degat = 0
+			self.charge_image()
+
 	def tir(self):
 		# on crée un tir
 		tir = Tir(self.niveau, self)
@@ -106,6 +119,17 @@ class Joueur(Entite):
 		# il ne dépend plus de son angle de rotation
 		self.position[0] += self.velocite[0] * temps * self.vitesse
 		self.position[1] += self.velocite[1] * temps * self.vitesse
+
+	def touche(self):
+		self.est_touche = True
+
+		# on change l'image du joueur pour qu'il ai l'image du joueur touché
+		affichage = self.niveau.affichage
+		taille_pixel_x = int(self.taille[0] * constantes.ZOOM)
+		taille_pixel_y = int(self.taille[1] * constantes.ZOOM)
+
+		self.image = affichage.obtenir_image(os.path.join("data", "images", "joueur", "joueur_touche.png"))
+		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
 
 	def haut(self):
 		self.velocite[1] -= constantes.VITESSE_JOUEUR
@@ -135,6 +159,10 @@ class Ennemi(Entite):
 		self.degat_tir = constantes.DEGAT_ENNEMI
 		self.vie = constantes.VIE_ENNEMI
 
+		# cette variable permet de savoir si l'entité est en animation de dégat
+		self.est_touche = False
+		self.temps_animation_degat = 0
+
 	def charge_image(self):
 		""" Cette méthode doit charger la texture de l'ennemi
 			et la redimensionner à la bonne taille (en prenant en compte le zoom)"""
@@ -148,6 +176,17 @@ class Ennemi(Entite):
 	def actualise(self, temps):
 		super().actualise(temps)
 		self.oriente()
+
+		# si l'entité est touchée, on augmente le temps
+		# qu'elle passe pendant son animation de touche
+		if self.est_touche:
+			self.temps_animation_degat += temps
+
+		# si l'animation a assez duré, on l'arrête et on recharge l'image par défaut de l'ennemi
+		if self.temps_animation_degat >= constantes.DUREE_ANIMATION_DEGAT:
+			self.est_touche = False
+			self.temps_animation_degat = 0
+			self.charge_image()
 
 		# si l'ennemi est trop près du joueur, on l'arrête
 		if self.est_trop_pret():
@@ -184,6 +223,17 @@ class Ennemi(Entite):
 			# si y < 0 alors on se trouve ne bas du cercle trigonométrique
 			# donc l'angle est entre -pi et 0 (donc opposé)
 			self.angle = angle + math.pi
+
+	def touche(self):
+		self.est_touche = True
+
+		# on change l'image de l'ennemi pour qu'il est l'image d'un ennemi touché
+		affichage = self.niveau.affichage
+		taille_pixel_x = int(self.taille[0] * constantes.ZOOM)
+		taille_pixel_y = int(self.taille[1] * constantes.ZOOM)
+
+		self.image = affichage.obtenir_image(os.path.join("data", "images", "ennemi", "ennemi_touche.png"))
+		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
 
 	def tir(self):
 		# on crée un tir
@@ -309,4 +359,5 @@ class Tir(Entite):
 	def touche(self, entite):
 		"""Cette methode reduit la vie de entite"""
 		entite.vie -= self.tireur.degat_tir
+		entite.touche()
 		self.meurt()
