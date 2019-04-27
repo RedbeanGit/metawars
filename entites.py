@@ -74,7 +74,7 @@ class Joueur(Entite):
 		taille_pixel_x = int(self.taille[0] * constantes.ZOOM)
 		taille_pixel_y = int(self.taille[1] * constantes.ZOOM)
 
-		self.image = affichage.obtenir_image(os.path.join("data", "images", "joueur", "joueur_0.png"))
+		self.image = affichage.obtenir_image(os.path.join("data", "images", "joueur", "joueur.png"))
 		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
 
 	def regarde_position(self, dx, dy):
@@ -98,7 +98,7 @@ class Joueur(Entite):
 		# on l'ajoute a la liste des entités du niveau
 		self.niveau.entites.append(tir)
 
-	def bouge(self,temps):
+	def bouge(self, temps):
 		# on redéfinit cette méthode pour changer les déplacements du joueur
 		# il ne dépend plus de son angle de rotation
 		self.position[0] += self.velocite[0] * temps * self.vitesse
@@ -166,7 +166,7 @@ class Ennemi(Entite):
 		d = math.sqrt(dx ** 2 + dy ** 2)
 
 		# on divise la distance x par la distance totale
-		# pour connaitre l'importance de la distance x 
+		# pour connaitre l'importance de la distance x
 		# dans la distance totale (on aurait aussi pu le faire pour y)
 		c = dx / d
 
@@ -217,6 +217,7 @@ class Bonus(Entite):
 		# On choisi aléatoirement un bonus
 		self.taille = constantes.TAILLE_BONUS
 		self.type = random.choice(constantes.TYPE_BONUS)
+		self.temps_vie = 0
 
 	def charge_image(self):
 		""" Cette méthode doit charger la texture du bonus (et du bon bonus)
@@ -231,6 +232,11 @@ class Bonus(Entite):
 
 	def actualise(self, temps):
 		super().actualise(temps)
+
+		self.temps_vie += temps
+
+		if self.temps_vie >= constantes.DUREE_BONUS:
+			self.meurt()
 
 		if self.collisionne(self.niveau.joueur):
 			self.attrape(self.niveau.joueur)

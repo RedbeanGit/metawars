@@ -42,11 +42,11 @@ def main():
         # on redessine la fenetre pour afficher de nouveau le niveau
         affichage.actualise(niveau)
 
-    	#print("fps={fps}".format(fps=1 / temps_ecoule))
+        #print("fps={fps}".format(fps=1 / temps_ecoule))
 
 
 if __name__ == "__main__":
-	# Si notre fichier est lancé directement par python et pas
-	# importé par un autre script alors on lance le jeu
+    # Si notre fichier est lancé directement par python et pas
+    # importé par un autre script alors on lance le jeu
     print("Démarrage de {nom}...".format(nom=constantes.NOM))
     main()

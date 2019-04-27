@@ -24,15 +24,10 @@ class Niveau(object):
 		self.piece = 0
 
 	def charge_image(self):
-		
-		# on a quelques petits soucis avec le chargement du fond de carte :-p
-		"""
-		taille_pixel_x = constantes.TAILLE_CARTE[0] * constantes.ZOOM
-		taille_pixel_y = constantes.TAILLE_CARTE[1] * constantes.ZOOM
-		self.image = affichage.obtenir_image(os.path.join("data", "images", "fond_carte.png"))
-		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
-		"""
+		# on charge le fond du niveau
+		self.image = self.affichage.obtenir_image(os.path.join("data", "images", "fond_carte.png"))
 
+		# on fait en sorte que le joueur charge son image
 		self.joueur.charge_image()
 
 	def actualise(self, temps):

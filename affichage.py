@@ -8,6 +8,7 @@ import niveau
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __version__ = "0.1.0"
 
+import math
 import os
 import pygame
 
@@ -47,9 +48,8 @@ class Affichage(object):
 		# On rend tous les pixels de la fenetre blanc
 		self.fenetre.fill((255, 255, 255))
 
-		# si le niveau a une image de fond, on l'affiche
-		if niveau.image:
-			self.fenetre.blit(niveau.image, (0, 0))
+		# on affiche le fond du niveau
+		self.afficher_carte(niveau)
 
 		# on affiche les entités (dont le joueur)
 		self.affiche_entite(niveau.joueur)
@@ -67,25 +67,24 @@ class Affichage(object):
 			# si l'utilisateur appui sur une touche du clavier...
 			if evenement.type == pygame.KEYDOWN:
 				# si cette touche est W (ou Z sur les claviers français)
-				if evenement.key == pygame.K_w:
+				if evenement.unicode == "z":
 					niveau.joueur.haut()
 					print("Le joueur va en haut")
 
-				if evenement.key == pygame.K_s:
+				if evenement.unicode == "s":
 					niveau.joueur.bas()
 					print("Le joueur va en bas")
 
-				if evenement.key == pygame.K_a:
+				if evenement.unicode == "q":
 					niveau.joueur.gauche()
 					print("Le joueur va à gauche")
 
-				if evenement.key == pygame.K_d:
+				if evenement.unicode == "d":
 					niveau.joueur.droite()
 					print("Le joueur va à droite")
 
-				if evenement.key == pygame.K_LSHIFT:
-					niveau.joueur.stop()
-					print("Le joueur s'arrete")
+				if evenement.key == pygame.K_ESCAPE:
+					utile.arreter()
 
 			# si il clique avec la souris
 			elif evenement.type == pygame.MOUSEBUTTONDOWN:
@@ -144,3 +143,27 @@ class Affichage(object):
 
 		# on colle l'image de l'entité
 		self.fenetre.blit(image_tournee, (x, y))
+
+	def afficher_carte(self, niveau):
+		largeur, hauteur = niveau.image.get_size()
+		joueur_x, joueur_y = niveau.joueur.position
+
+		distance_joueur_x = (joueur_x * constantes.ZOOM) % largeur
+		distance_joueur_y = (joueur_y * constantes.ZOOM) % hauteur
+
+		# on calcule le nombre de texture qu'il va falloir afficher à l'écran
+		# en largeur (x) et en hauteur (y)
+		# math.ceil renvoie la valeur arrondi supérieure ou égale
+		# car il vaut mieux afficher des textures en trop que pas assez
+		# sinon il va rester du vide
+		nb_texture_x = math.ceil(constantes.TAILLE_ECRAN[0] / largeur)
+		nb_texture_y = math.ceil(constantes.TAILLE_ECRAN[1] / hauteur)
+
+		if distance_joueur_x != 0:
+			nb_texture_x += 1
+		if distance_joueur_y != 0:
+			nb_texture_y += 1
+
+		for x in range(nb_texture_x):
+			for y in range(nb_texture_y):
+				self.fenetre.blit(niveau.image, (x * largeur - distance_joueur_x, y * hauteur - distance_joueur_y))
