@@ -9,6 +9,8 @@ import os
 import pygame
 import pygame.freetype
 
+pygame.freetype.init()
+
 
 class Widget(object):
 	""" Classe de base pour tous les widgets (éléments graphiques indépendants)
