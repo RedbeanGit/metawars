@@ -8,7 +8,7 @@ NOM = "MetaWars"
 ZOOM = 110
 POLICE = "police.ttf"
 
-FREQUENCE_APPARITION_ENNEMI = 3
+FREQUENCE_APPARITION_ENNEMI = 2.5
 FREQUENCE_APPARITION_BONUS = 3
 FREQUENCE_TIR_JOUEUR = 1
 FREQUENCE_TIR_ENNEMI = 1
@@ -40,10 +40,10 @@ DUREE_ANIMATION_DEGAT = 0.1
 
 PIECE_ENNEMI = 10
 
-BONUS_SOIN = 10
+BONUS_SOIN = 2
 BONUS_VITESSE = 0.2
 BONUS_FREQUENCE_TIR = 2
-BONUS_DEGAT = 0.5
+BONUS_DEGAT = 0.25
 
 # Chemin de fichier vers l'ensemble des images du jeu
 # chaque nom de dossier et fichier est une chaine de caractère
