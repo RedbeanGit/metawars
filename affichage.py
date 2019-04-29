@@ -51,9 +51,11 @@ class Affichage(object):
 
 		texte_temps = Texte(self, "Temps: 0", (10, 10))
 		texte_pieces = Texte(self, "Pièces: 0", (10, 40))
+		texte_vie = Texte(self, "Vie: 0", (10,80))
 
 		self.widgets.append(texte_temps)
 		self.widgets.append(texte_pieces)
+		self.widgets.append(texte_vie)
 
 	def creer_widgets_menu(self):
 		""" Doit créer un """
@@ -216,6 +218,8 @@ class Affichage(object):
 	def actualise_scores(self, niveau):
 		texte_temps = self.widgets[0]
 		texte_pieces = self.widgets[1]
+		texte_vie = self.widgets[2]
 
 		texte_temps.texte = "Temps: {temps}".format(temps=int(niveau.temps_total))
 		texte_pieces.texte = "Pièces: {pieces}".format(pieces=niveau.piece)
+		texte_vie.texte = "Vie: {vie}".format(vie=int(niveau.joueur.vie))
