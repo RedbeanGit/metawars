@@ -22,6 +22,8 @@ class Niveau(object):
 		self.joueur = Joueur(self)
 		self.entites = []
 		self.piece = 0
+		self.temps_total = 0
+		self.en_pause = False
 
 	def charge_image(self):
 		# on charge le fond du niveau
@@ -31,12 +33,15 @@ class Niveau(object):
 		self.joueur.charge_image()
 
 	def actualise(self, temps):
-		self.joueur.actualise(temps)
-		
-		for entite in self.entites:
-			entite.actualise(temps)
+		if not self.en_pause:
+			self.temps_total += temps
 
-		self.fait_apparaitre(temps)
+			self.joueur.actualise(temps)
+			
+			for entite in self.entites:
+				entite.actualise(temps)
+
+			self.fait_apparaitre(temps)
 
 	def fait_apparaitre(self, temps):
 		""" Doit aléatoirement faire apparaitre des ennemis et des bonus """
@@ -90,3 +95,5 @@ class Niveau(object):
 			# on la retire de la liste (elle ne fait donc plus parti du niveau)
 			self.entites.remove(entite)
 
+	def termine(self):
+		self.en_pause = True

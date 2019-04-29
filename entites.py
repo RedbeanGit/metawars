@@ -43,10 +43,10 @@ class Entite(object):
 
 	def collisionne(self, entite):
 		# on renvoie True si une entité déborde sur une autre
-		if self.position[0] + self.hitbox[0] / 2 > entite.position[0] - entite.hitbox[0] / 2: 
-			if self.position[0] - self.hitbox[0] / 2 < entite.position[0] + entite.hitbox[0] / 2:
-				if self.position[1] + self.hitbox[1] / 2 > entite.position[1] - entite.hitbox[1] / 2: 
-					if self.position[1] - self.hitbox[1] / 2 < entite.position[1] + entite.hitbox[1] / 2:
+		if self.position[0] + self.taille[0] / 2 > entite.position[0] - entite.taille[0] / 2: 
+			if self.position[0] - self.taille[0] / 2 < entite.position[0] + entite.taille[0] / 2:
+				if self.position[1] + self.taille[1] / 2 > entite.position[1] - entite.taille[1] / 2: 
+					if self.position[1] - self.taille[1] / 2 < entite.position[1] + entite.taille[1] / 2:
 						return True
 		return False
 
@@ -64,7 +64,7 @@ class Joueur(Entite):
 		self.vie = constantes.VIE_JOUEUR
 
 		self.degat_tir = constantes.DEGAT_JOUEUR
-		self.frequence_tir = constantes.FREQUENCE_TIR
+		self.frequence_tir = constantes.FREQUENCE_TIR_JOUEUR
 		self.bouclier = False
 		self.velocite = [0,0]
 		self.vitesse = 1
@@ -100,11 +100,16 @@ class Joueur(Entite):
 	def actualise(self, temps):
 		super().actualise(temps)
 
+		self.temps_animation_degat += temps
+
 		# si l'animation a assez duré, on l'arrête et on recharge l'image par défaut du joueur
 		if self.temps_animation_degat >= constantes.DUREE_ANIMATION_DEGAT:
 			self.est_touche = False
 			self.temps_animation_degat = 0
 			self.charge_image()
+
+		if self.vie <= 0:
+			self.meurt()
 
 	def tir(self):
 		# on crée un tir
@@ -147,6 +152,10 @@ class Joueur(Entite):
 		self.velocite[0] = 0
 		self.velocite[1] = 0
 
+	def meurt(self):
+		print("Le joueur est mort !")
+		self.niveau.termine()
+
 
 class Ennemi(Entite):
 	"""
@@ -176,6 +185,7 @@ class Ennemi(Entite):
 	def actualise(self, temps):
 		super().actualise(temps)
 		self.oriente()
+		self.doit_tirer(temps)
 
 		# si l'entité est touchée, on augmente le temps
 		# qu'elle passe pendant son animation de touche
@@ -257,6 +267,13 @@ class Ennemi(Entite):
 		super().meurt()
 		self.niveau.piece += constantes.PIECE_ENNEMI
 
+	def doit_tirer(self, temps):
+		nb = random.random()
+
+		if nb <= temps / constantes.FREQUENCE_TIR_ENNEMI:
+			# ...on tir
+			self.tir()
+
 
 class Bonus(Entite):
 	"""
@@ -327,6 +344,8 @@ class Tir(Entite):
 		self.vitesse = constantes.VITESSE_TIR
 		self.taille = constantes.TAILLE_TIR
 
+		self.temps_vie = 0
+
 	def charge_image(self):
 		affichage = self.niveau.affichage
 		taille_pixel_x = int(self.taille[0] * constantes.ZOOM)
@@ -337,6 +356,11 @@ class Tir(Entite):
 	
 	def actualise(self, temps):
 		super().actualise(temps)
+
+		self.temps_vie += temps
+
+		if self.temps_vie >= constantes.DUREE_TIR:
+			self.meurt()
 
 		# si le tireur est un joueur
 		if type(self.tireur) == Joueur:

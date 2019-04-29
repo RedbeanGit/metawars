@@ -2,10 +2,9 @@
 
 import constantes
 import utile
-from entites import Joueur
-
 import niveau
 from widgets import Texte
+
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __version__ = "0.1.0"
 
@@ -19,6 +18,7 @@ class Affichage(object):
 		# on cree une fenetre
 		self.fenetre = pygame.display.set_mode(constantes.TAILLE_ECRAN)
 		self.images = {}
+		self.widgets = []
 
 		# on defini un titre a notre fenetre (ici: MetaWars)
 		pygame.display.set_caption(constantes.NOM)
@@ -45,6 +45,20 @@ class Affichage(object):
 			# sinon, on renvoie une surface noire de 50x50 pixels
 			return pygame.Surface((50, 50))
 
+	def creer_widgets_niveau(self):
+		""" Doit créer un Text pour le temps passé sur le niveau, un pour les pièces
+			et un pour indiquer la vie du joueur """
+
+		texte_temps = Texte(self, "Temps: 0", (10, 10))
+		texte_pieces = Texte(self, "Pièces: 0", (10, 40))
+
+		self.widgets.append(texte_temps)
+		self.widgets.append(texte_pieces)
+
+	def creer_widgets_menu(self):
+		""" Doit créer un """
+		pass
+
 	def actualise(self, niveau, temps):
 		# On rend tous les pixels de la fenetre blanc
 		self.fenetre.fill((255, 255, 255))
@@ -52,14 +66,16 @@ class Affichage(object):
 		# on affiche le fond du niveau
 		self.afficher_carte(niveau)
 
-		# on affiche le score
-		self.afficher_score(niveau, temps)
-
 		# on affiche les entités (dont le joueur)
 		self.affiche_entite(niveau.joueur)
 
 		for entite in niveau.entites:
 			self.affiche_entite(entite)
+
+		# on actualise le score en fonction de celui du niveau
+		self.actualise_scores(niveau)
+		# on redessine les widgets
+		self.afficher_widgets()
 
 		# On actualise l'écran
 		pygame.display.update()
@@ -193,6 +209,13 @@ class Affichage(object):
 			for y in range(nb_texture_y):
 				self.fenetre.blit(niveau.image, (x * largeur - distance_joueur_x, y * hauteur - distance_joueur_y))
 
+	def afficher_widgets(self):
+		for widget in self.widgets:
+			widget.actualise()
 
-	def afficher_score(self, niveau, temps):
-		score = Texte(temps, (12,50))
+	def actualise_scores(self, niveau):
+		texte_temps = self.widgets[0]
+		texte_pieces = self.widgets[1]
+
+		texte_temps.texte = "Temps: {temps}".format(temps=int(niveau.temps_total))
+		texte_pieces.texte = "Pièces: {pieces}".format(pieces=niveau.piece)

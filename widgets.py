@@ -77,11 +77,12 @@ class Texte(Widget):
 		taille_police (int): Optionnel, la hauteur de la police en pixels
 	"""
 
-	def __init__(self, affichage, texte, position=(0, 0), ancrage=(-1, -1), taille_police=20):
-		super().__init__(affichage, position, taille_police, ancrage)
+	def __init__(self, affichage, texte, position=(0, 0), ancrage=(-1, -1), taille_police=20, couleur=(255, 255, 255)):
+		super().__init__(affichage, position, (1, 1), ancrage)
 
 		self.texte = texte
 		self.taille_police = taille_police
+		self.couleur = couleur
 
 		chemin_fichier_police = os.path.join("data", constantes.POLICE)
 
@@ -95,7 +96,7 @@ class Texte(Widget):
 
 	def actualise(self):
 		# on créer une surface à partir du texte donné, en utilisant la police définie
-		surface, rect = self.police.render(self.text)
+		surface, rect = self.police.render(self.texte, self.couleur, size=self.taille_police)
 		
 		# on redéfini la taille du widget, car sa taille dépend du texte donné
 		# elle a donc peut être changé

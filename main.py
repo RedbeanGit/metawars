@@ -21,6 +21,8 @@ def main():
     affichage = Affichage()
     # on charge l'ensemble des images du jeu
     affichage.charge_images()
+    # on crée les widgets
+    affichage.creer_widgets_niveau()
 
     # on creer un niveau de jeu
     niveau = Niveau(affichage)
@@ -41,8 +43,6 @@ def main():
         niveau.actualise(temps_ecoule)
         # on redessine la fenetre pour afficher de nouveau le niveau
         affichage.actualise(niveau, temps_ecoule)
-
-        #print("fps={fps}".format(fps=1 / temps_ecoule))
 
 
 if __name__ == "__main__":
