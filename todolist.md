@@ -5,66 +5,80 @@
 	* __init__(): Fait
 	* charge_images(): Fait
 	* obtenir_images(chemin_image): Fait
-	* creer_splash(): A créer [Permet d'afficher la petite animation de démarrage]
-	* creer_menu(): A créer [Permet d'afficher un bouton "Jouer", un titre, etc]
-	* creer_niveau(): A créer [Permet d'afficher le score, les pièces, ...]
-	* actualise(niveau): En cours [Les widgets ne sont pas encore affichés]
-	* actualise_evenements(): En cours [Rajouter des evenements pour bouger le joueur]
+	* creer_widgets_splash(): A créer [Permet d'afficher la petite animation de démarrage]
+	* creer_widgets_menu(): A créer [Permet d'afficher un bouton "Jouer", un titre, etc]
+	* creer_widgets_niveau(): En cours [Un bouton "retour" ne serait pas de trop]
+	* creer_widgets_fin_niveau(): A créer
+	* actualise(niveau): Fait
+	* actualise_evenements(niveau): En cours [Ajouter un évènement pour mettre le jeu en pause]
+	* actualise_scores(niveau): Fait
+	* affiche_entite(entite): Fait
+	* affiche_carte(niveau): Fait
+	* affiche_widgets(): Fait
 
 ## constantes.py
-Constantes manquantes (peut encore évoluer):
-- TAILLE_JOUEUR
-- TAILLE_ENNEMI
-- TAILLE_BONUS
-- TAILLE_TIR
-- VITESSE_TIR
-- FREQUENCE_BONUS
+- Supprimer "frequence_tir" des bonus car inutile
 
 ## entities.py
-- Entite: En cours
+- Entite: Fait
 	* __init__(niveau): Fait
-	* charge_image(affichage): Fait
+	* charge_image(): Fait
 	* actualise(temps): Fait
-	* bouge(temps): En cours [L'entité ne doit pas sortir de la carte]
+	* bouge(temps): Fait
 	* collisionne(): Fait
-	* meurt(): En cours (à vérifier) [Supprime l'entitée du niveau] 
+	* meurt(): Fait
 
-- Joueur(Entite): En cours
-	* __init__(niveau): En cours [Certains attributs comme la taille du joueur doivent être redéfinis]
-	* charge_image(affichage): Fait
-	* tir(): En cours [Doit créer un tir dont la direction et la position dépendent de celles du joueur]
-	* avance(): Fait
-	* recule(): Fait
+- Joueur(Entite): En cours [L'attribut frequence_tir est inutile]
+	* __init__(niveau): Fait
+	* charge_image(): Fait
+	* charge_image_touche(): A créer
+	* charge_image_bouclier(): A créer
+	* regarde_position(dx, dy): Fait
+	* bouge(temps): Fait
+	* tir(): Fait
+	* haut(): Fait
+	* bas(): Fait
+	* droite(): Fait
+	* gauche(): Fait
 	* stop(): Fait
-	* meurt(): En cours [Doit arreter le niveau]
+	* attaque(degat): A créer [Doit utiliser charge_image_touche() au lieu de changer l'image elle-même]
+		[Doit prendre en compte le bouclier]
+		[Doit remplacer touche()]
+	* meurt(): Fait
 
 - Ennemi(Entite): En cours
-	* __init__(niveau): En cours [Certains attributs comme la taille de l'ennemi doivent être redéfinis]
+	* __init__(niveau): Fait
 	* charge_image(): Fait
-	* tir(): En cours [Doit créer un tir dont la direction et la position dépendent de celles de l'ennemi]
+	* charge_image_touche(): A créer
 	* actualise(temps): Fait
 	* oriente(): Fait
+	* attaque(degat): A créer [Doit utiliser charge_image_touche() au lieu de changer l'image elle-même]
+		[Doit remplacer touche()]
 	* tir(): Fait
+	* est_trop_pres(): Fait
 
 - Bonus(Entite): En cours
-	* __init__(niveau): En cours [Certains attributs comme la taille du bonus doivent être redéfinis]
-	* charge_image(affichage): Fait
+	* __init__(niveau): Fait
+	* charge_image(): Fait
 	* actualise(temps): Fait
-	* attrape(): En cours [Doit modifier le joueur, pour l'instant, ne fait rien]
+	* attrape(): En cours [Il faut supprimer la condition concernant la frequence de tir]
 
 - Tir(Entite): En cours
-	* __init__(niveau, tireur): En cours [L'entité ayant tiré doit être connue du tir]
-	* charge_image(affichage): En cours [Les tirs n'ont toujours pas d'image]
-	* actualise(temps): En cours [Les tirs doivent tester si ils touchent une entité]
-	* touche(entite): En cours [Doit faire perdre de la vie à l'entité touchée]
+	* __init__(niveau, tireur): Fait
+	* charge_image(): Fait
+	* actualise(temps): Fait
+	* touche(entite): En cours [Ne doit plus faire perdre de la vie à l'entité touchée mais appeler entite.attaque(degat)]
 
 ## niveau.py
 - Niveau: En cours
-	* __init__(): En cours [La gestion du score et des pièces doit être ajouté]
-	* charge_image(affichage): En cours [Bug avec le fond de carte]
+	* __init__(): Fait
+	* charge_image(): Fait
 	* actualise(temps): Fait
-	* fait_apparaite(temps): En cours [Doit faire apparaitre des bonus aléatoirement et en fonction du temps écoulé]
-	* enleve_entite(entite): En cours [Doit enlever une entite de la liste des entites du niveau]
+	* fait_apparaite(temps): En cours [Doit utiliser cree_bonus() et cree_ennemi()]
+	* enleve_entite(entite): Fait
+	* cree_bonus(): A créer [Crée un nouveau bonus et lui attribue une position aléatoire autour du joueur]
+	* cree_ennemi(): A créer [Crée un nouvel ennemi et lui attribue une position aléatoire autour du joueur]
+	* termine(): En cours [Doit appeler Affichage.creer_widgets_fin_niveau()]
 
 ## widgets.py
 - Widget: Fait

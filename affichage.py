@@ -66,7 +66,7 @@ class Affichage(object):
 		self.fenetre.fill((255, 255, 255))
 
 		# on affiche le fond du niveau
-		self.afficher_carte(niveau)
+		self.affiche_carte(niveau)
 
 		# on affiche les entités (dont le joueur)
 		self.affiche_entite(niveau.joueur)
@@ -77,7 +77,7 @@ class Affichage(object):
 		# on actualise le score en fonction de celui du niveau
 		self.actualise_scores(niveau)
 		# on redessine les widgets
-		self.afficher_widgets()
+		self.affiche_widgets()
 
 		# On actualise l'écran
 		pygame.display.update()
@@ -187,7 +187,7 @@ class Affichage(object):
 		# on colle l'image de l'entité
 		self.fenetre.blit(image_tournee, (x, y))
 
-	def afficher_carte(self, niveau):
+	def affiche_carte(self, niveau):
 		largeur, hauteur = niveau.image.get_size()
 		joueur_x, joueur_y = niveau.joueur.position
 
@@ -211,7 +211,7 @@ class Affichage(object):
 			for y in range(nb_texture_y):
 				self.fenetre.blit(niveau.image, (x * largeur - distance_joueur_x, y * hauteur - distance_joueur_y))
 
-	def afficher_widgets(self):
+	def affiche_widgets(self):
 		for widget in self.widgets:
 			widget.actualise()
 
