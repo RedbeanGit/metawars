@@ -61,7 +61,7 @@ class Affichage(object):
 		""" Doit créer un """
 		pass
 
-	def actualise(self, niveau, temps):
+	def actualise(self, niveau):
 		# On rend tous les pixels de la fenetre blanc
 		self.fenetre.fill((255, 255, 255))
 
