@@ -42,7 +42,7 @@ def main():
         # on actualise le niveau et les entités qu'il contient
         niveau.actualise(temps_ecoule)
         # on redessine la fenetre pour afficher de nouveau le niveau
-        affichage.actualise(niveau, temps_ecoule)
+        affichage.actualise(niveau)
 
 
 if __name__ == "__main__":

@@ -184,8 +184,14 @@ class Ennemi(Entite):
 
 	def actualise(self, temps):
 		super().actualise(temps)
+
+		# l'ennemi s'oriente en direction du joueur
 		self.oriente()
-		self.doit_tirer(temps)
+		
+		# si l'ennemi doit tirer
+		if self.doit_tirer(temps):
+			# il le fait !!!
+			self.tir()
 
 		# si l'entité est touchée, on augmente le temps
 		# qu'elle passe pendant son animation de touche
@@ -271,8 +277,8 @@ class Ennemi(Entite):
 		nb = random.random()
 
 		if nb <= temps / constantes.FREQUENCE_TIR_ENNEMI:
-			# ...on tir
-			self.tir()
+			return True
+		return False
 
 
 class Bonus(Entite):
