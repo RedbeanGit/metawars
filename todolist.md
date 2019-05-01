@@ -32,7 +32,7 @@
 	* __init__(niveau): Fait
 	* charge_image(): Fait
 	* charge_image_touche(): Fait (En cours de vérification par le major Ptijuju22)
-	* charge_image_bouclier(): Fait (En cours de vérification par le major Ptijuju22)
+	* charge_image_bouclier(): Fait (En cours de vérification par le major Ptijuju22 + creer image du joueur avec le bouclier)
 	* regarde_position(dx, dy): Fait
 	* bouge(temps): Fait
 	* tir(): Fait
