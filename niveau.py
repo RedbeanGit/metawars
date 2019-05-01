@@ -94,6 +94,11 @@ class Niveau(object):
 		if entite in self.entites:
 			# on la retire de la liste (elle ne fait donc plus parti du niveau)
 			self.entites.remove(entite)
+	def cree_bonus(self):
+		pass
+
+	def cree_ennemi(self):
+		pass
 
 	def termine(self):
 		self.en_pause = True

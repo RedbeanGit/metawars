@@ -81,6 +81,24 @@ class Joueur(Entite):
 		self.image = affichage.obtenir_image(os.path.join("data", "images", "joueur", "joueur.png"))
 		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
 
+	def charge_image_touche(self):
+		affichage = self.niveau.affichage
+
+		taille_pixel_x = int(self.taille[0] * constantes.ZOOM)
+		taille_pixel_y = int(self.taille[1] * constantes.ZOOM)
+
+		self.image = affichage.obtenir_image(os.path.join("data","images","joueur","joueur_touche.png"))
+		self.image = pygame.transform.scale(self.image, (taille_pixel_x,taille_pixel_y))
+
+	def charge_image_bouclier(self):
+		affichage = self.niveau.affichage
+
+		taille_pixel_x = int(self.taille[0] * constantes.ZOOM)
+		taille_pixel_y = int(self.taille[1] * constantes.ZOOM)
+
+		self.image = affichage.obtenir_image(os.path.join("data","images","joueur","joueur_bouclier.png"))
+		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
+
 	def regarde_position(self, dx, dy):
 		""" Tourne le joueur de façon à ce qu'il regarde en direction de (dx, dy)"""
 		# on calcule la distance entre le joueur et cette position à l'aide de Pythagore
@@ -151,6 +169,9 @@ class Joueur(Entite):
 	def stop(self):
 		self.velocite[0] = 0
 		self.velocite[1] = 0
+
+	def attaque(degat):
+		pass
 
 	def meurt(self):
 		print("Le joueur est mort !")
@@ -327,8 +348,8 @@ class Bonus(Entite):
 		elif self.type == "vitesse_augmentee":
 			joueur.vitesse += constantes.BONUS_VITESSE
 
-		elif self.type == "frequence_tir_acceleree":
-			joueur.frequence_tir /= constantes.BONUS_FREQUENCE_TIR
+			if joueur.vitesse >= 4 * constantes.BONUS_VITESSE:
+				joueur.vitesse = 4 * constantes.BONUS_VITESSE
 
 		elif self.type == "arme_amelioree":
 			joueur.degat_tir += constantes.BONUS_DEGAT

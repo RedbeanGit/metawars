@@ -65,6 +65,7 @@ IMAGES = (
 	("ennemi", "ennemi_touche.png"),
 	("joueur", "joueur.png"),
 	("joueur", "joueur_touche.png"),
+	("joueur", "joueur_bouclier.png")
 	("tir", "gros_tir.png"),
 	("tir", "tir.png"),
 	("companie.png",),

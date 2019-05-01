@@ -31,8 +31,8 @@
 - Joueur(Entite): En cours [L'attribut frequence_tir est inutile]
 	* __init__(niveau): Fait
 	* charge_image(): Fait
-	* charge_image_touche(): A créer
-	* charge_image_bouclier(): A créer
+	* charge_image_touche(): Fait (En cours de vérification par le major Ptijuju22)
+	* charge_image_bouclier(): Fait (En cours de vérification par le major Ptijuju22)
 	* regarde_position(dx, dy): Fait
 	* bouge(temps): Fait
 	* tir(): Fait
@@ -41,7 +41,7 @@
 	* droite(): Fait
 	* gauche(): Fait
 	* stop(): Fait
-	* attaque(degat): A créer [Doit utiliser charge_image_touche() au lieu de changer l'image elle-même]
+	* attaque(degat): En cours [Doit utiliser charge_image_touche() au lieu de changer l'image elle-même]
 		[Doit prendre en compte le bouclier]
 		[Doit remplacer touche()]
 	* meurt(): Fait
@@ -61,7 +61,7 @@
 	* __init__(niveau): Fait
 	* charge_image(): Fait
 	* actualise(temps): Fait
-	* attrape(): En cours [Il faut supprimer la condition concernant la frequence de tir]
+	* attrape(): En cours [il faudrait rajouter des limites au bonus restant car il devienne trop pété après mdrrr]
 
 - Tir(Entite): En cours
 	* __init__(niveau, tireur): Fait
@@ -76,8 +76,8 @@
 	* actualise(temps): Fait
 	* fait_apparaite(temps): En cours [Doit utiliser cree_bonus() et cree_ennemi()]
 	* enleve_entite(entite): Fait
-	* cree_bonus(): A créer [Crée un nouveau bonus et lui attribue une position aléatoire autour du joueur]
-	* cree_ennemi(): A créer [Crée un nouvel ennemi et lui attribue une position aléatoire autour du joueur]
+	* cree_bonus(): En cours [Crée un nouveau bonus et lui attribue une position aléatoire autour du joueur]
+	* cree_ennemi(): En cours [Crée un nouvel ennemi et lui attribue une position aléatoire autour du joueur]
 	* termine(): En cours [Doit appeler Affichage.creer_widgets_fin_niveau()]
 
 ## widgets.py
