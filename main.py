@@ -21,8 +21,11 @@ def main():
     affichage = Affichage()
     # on charge l'ensemble des images du jeu
     affichage.charge_images()
-    # on crée les widgets
+    # on crée les widgets du niveau
     affichage.creer_widgets_niveau()
+
+    # on crée les widgets du menu
+    affichage.creer_widgets_menu()
 
     # on creer un niveau de jeu
     niveau = Niveau(affichage)

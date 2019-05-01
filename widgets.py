@@ -115,9 +115,9 @@ class Bouton(Widget):
 		action (function): Une méthode ou fonction à executer lors du clic de la souris
 	"""
 
-	def __init__(self, affichage, action, position=(0, 0), taille=(1, 1), ancrage=(-1, -1)):
+	def __init__(self, affichage, texte, action, position=(0, 0), taille=(1, 1), ancrage=(-1, -1)):
 		super().__init__(affichage, position, taille, ancrage)
-
+		self.texte = texte		
 		# action est une fonction que l'on lancera lors du clic sur le bouton
 		self.action = action
 		# toutes les textures du boutons seront stockées dans cet attribut
