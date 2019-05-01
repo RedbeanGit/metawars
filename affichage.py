@@ -3,7 +3,7 @@
 import constantes
 import utile
 import niveau
-from widgets import Texte
+from widgets import Texte, Bouton
 
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __version__ = "0.1.0"
@@ -59,7 +59,12 @@ class Affichage(object):
 
 	def creer_widgets_menu(self):
 		""" Doit créer un """
-		pass
+		milieu_ecran_x = constantes.TAILLE_ECRAN[0] // 2
+		milieu_ecran_y = constantes.TAILLE_ECRAN[1] // 2
+
+		bouton_jouer_menu = Bouton(self, "Jouer", commencer_partie(), (milieu_ecran_x, milieu_ecran_y))
+
+		self.widgets.append(bouton_jouer_menu)
 
 	def actualise(self, niveau):
 		# On rend tous les pixels de la fenetre blanc
