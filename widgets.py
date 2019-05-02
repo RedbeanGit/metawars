@@ -48,7 +48,6 @@ class Widget(object):
 	def obtenir_position_reelle(self):
 		""" Renvoie la position du coin supérieur gauche du widget
 			en fonction de ses attributs 'position' et 'ancrage' """
-
 		x, y = self.position
 		w, h = self.taille
 		ax, ay = self.ancrage
@@ -115,9 +114,10 @@ class Bouton(Widget):
 		action (function): Une méthode ou fonction à executer lors du clic de la souris
 	"""
 
-	def __init__(self, affichage, texte, action, position=(0, 0), taille=(1, 1), ancrage=(-1, -1)):
+	def __init__(self, affichage, action, texte="", position=(0, 0), taille=(1, 1), ancrage=(-1, -1), taille_police=20):
 		super().__init__(affichage, position, taille, ancrage)
-		self.texte = texte		
+		# on crée un widget Texte qui sera affiché sur le bouton (centré sur le bouton)
+		self.texte = Texte(affichage, texte, position=self.obtenir_position_texte(), ancrage=(0, 0), taille_police=taille_police)
 		# action est une fonction que l'on lancera lors du clic sur le bouton
 		self.action = action
 		# toutes les textures du boutons seront stockées dans cet attribut
@@ -143,6 +143,8 @@ class Bouton(Widget):
 		# on dessine la texture correspondante à l'état actuelle du bouton sur la fenêtre
 		# à la position du coin supérieur gauche
 		self.affichage.fenetre.blit(self.images[self.etat], self.obtenir_position_reelle())
+		# on actualise le texte sur le bouton
+		self.texte.actualise()
 
 	def actualise_evenement(self, evenement):
 		x, y = self.obtenir_position_reelle()
@@ -182,3 +184,8 @@ class Bouton(Widget):
 				# sinon, on le remet dans l'état 'normal'
 				self.etat = "normal"
 
+	def obtenir_position_texte(self):
+		x, y = self.obtenir_position_reelle()
+		w, h = self.taille
+
+		return (x + w//2, y + h//2)

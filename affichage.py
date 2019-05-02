@@ -162,6 +162,10 @@ class Affichage(object):
 			if evenement.type == pygame.QUIT:
 				utile.arreter()
 
+			# on actualise les évenements pour chaque widget
+			for widget in self.widgets:
+				widget.actualise_evenement(evenement)
+
 	def affiche_entite(self, entite):
 		# on recuper le milieu de l'ecran
 		milieu_ecran_x = constantes.TAILLE_ECRAN[0] // 2
