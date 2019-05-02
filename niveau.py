@@ -44,47 +44,20 @@ class Niveau(object):
 			self.fait_apparaitre(temps)
 
 	def fait_apparaitre(self, temps):
-		""" Doit aléatoirement faire apparaitre des ennemis et des bonus """
 		# on pioche un nombre aléatoire
-		nb = random.random()
-
-		if nb <= temps / constantes.FREQUENCE_APPARITION_BONUS:
-			# ...on crée un nouveau bonus
-			bonus = Bonus(self)
-
-			# on choisi aléatoirement la distance entre le joueur et le bonus
-			dx = (random.random() - 0.5) * 2 * constantes.DIS_MAX_BONUS
-			dy = (random.random() - 0.5) * 2 * constantes.DIS_MAX_BONUS
-
-			# on redéfinit la position du Bonus (pour l'instant sur le joueur)
-			bonus.position[0] = self.joueur.position[0] + dx
-			bonus.position[1] = self.joueur.position[1] + dy
-
-			# on lui fait charger ses images
-			bonus.charge_image()
-
-			# on ajoute le bonus a la liste des entités
-			self.entites.append(bonus)
-
 		nb = random.random()
 
 		# si le nombre pioché est inférieur au temps écoulé divisé 
 		# par la fréquence moyenne d'apparition...
 		if nb <= temps / constantes.FREQUENCE_APPARITION_ENNEMI:
-			# ...on crée un nouvel ennemi
-			ennemi = Ennemi(self)
-			
-			# on choisi aléatoirement la distance entre l'ennemi et le joueur
-			dx = (random.random() - 0.5) * 2 * constantes.DIS_MAX_ENNEMI
-			dy = (random.random() - 0.5) * 2 * constantes.DIS_MAX_ENNEMI
-			# on redéfinit la position de l'ennemi (pour l'instant sur le joueur)
-			ennemi.position[0] = self.joueur.position[0] + dx
-			ennemi.position[1] = self.joueur.position[1] + dy
+			# on crée un ennemi
+			self.cree_ennemi()
 
-			# on lui fait charger ses images
-			ennemi.charge_image()
-			# on ajoute l'ennemi a la liste des entités
-			self.entites.append(ennemi)
+		# pareil pour les bonus
+		nb = random.random()
+
+		if nb <= temps / constantes.FREQUENCE_APPARITION_BONUS:
+			self.cree_bonus()
 
 	def enleve_entite(self, entite):
 		""" Enleve l'entite de self.entites seulement
@@ -94,12 +67,40 @@ class Niveau(object):
 		if entite in self.entites:
 			# on la retire de la liste (elle ne fait donc plus parti du niveau)
 			self.entites.remove(entite)
-			
+
 	def cree_bonus(self):
-		pass
+		# on crée un bonus
+		bonus = Bonus(self)
+
+		# on choisi aléatoirement la distance entre le joueur et le bonus
+		dx = (random.random() - 0.5) * 2 * constantes.DIS_MAX_BONUS
+		dy = (random.random() - 0.5) * 2 * constantes.DIS_MAX_BONUS
+
+		# on redéfinit la position du Bonus autour le joueur
+		bonus.position[0] = self.joueur.position[0] + dx
+		bonus.position[1] = self.joueur.position[1] + dy
+
+		# on lui fait charger son image
+		bonus.charge_image()
+
+		# on ajoute le bonus a la liste des entités
+		self.entites.append(bonus)
 
 	def cree_ennemi(self):
-		pass
+		# on crée un ennemi
+		ennemi = Ennemi(self)
+		
+		# on choisi aléatoirement la distance entre l'ennemi et le joueur
+		dx = (random.random() - 0.5) * 2 * constantes.DIS_MAX_ENNEMI
+		dy = (random.random() - 0.5) * 2 * constantes.DIS_MAX_ENNEMI
+		# on redéfinit la position de l'ennemi autour du joueur
+		ennemi.position[0] = self.joueur.position[0] + dx
+		ennemi.position[1] = self.joueur.position[1] + dy
+
+		# on lui fait charger ses images
+		ennemi.charge_image()
+		# on ajoute l'ennemi a la liste des entités
+		self.entites.append(ennemi)
 
 	def termine(self):
 		self.en_pause = True

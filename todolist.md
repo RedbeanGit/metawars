@@ -33,7 +33,7 @@
 	* collisionne(): Fait
 	* meurt(): Fait
 
-- Joueur(Entite): En cours [L'attribut frequence_tir est inutile]
+- Joueur(Entite): En cours
 	* __init__(niveau): Fait
 	* charge_image(): Fait
 	* charge_image_touche(): Fait
@@ -79,10 +79,10 @@
 	* __init__(): Fait
 	* charge_image(): Fait
 	* actualise(temps): Fait
-	* fait_apparaite(temps): En cours [Doit utiliser cree_bonus() et cree_ennemi()]
+	* fait_apparaite(temps): En cours [Doit faire apparaitre de plus en plus d'ennemis en fonction du temps total]
 	* enleve_entite(entite): Fait
-	* cree_bonus(): En cours [Crée un nouveau bonus et lui attribue une position aléatoire autour du joueur]
-	* cree_ennemi(): En cours [Crée un nouvel ennemi et lui attribue une position aléatoire autour du joueur]
+	* cree_bonus(): Fait
+	* cree_ennemi(): Fait
 	* termine(): En cours [Doit appeler Affichage.creer_widgets_fin_niveau()]
 
 ## widgets.py

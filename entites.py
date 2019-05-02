@@ -71,7 +71,6 @@ class Joueur(Entite):
 		self.vie = constantes.VIE_JOUEUR
 
 		self.degat_tir = constantes.DEGAT_JOUEUR
-		self.frequence_tir = constantes.FREQUENCE_TIR_JOUEUR
 		self.bouclier = False
 		self.velocite = [0,0]
 		self.vitesse = 1
