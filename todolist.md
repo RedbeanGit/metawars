@@ -1,5 +1,8 @@
 # MetaWars, TO DO LIST
 
+## data
+- data/images/joueur/joueur_bouclier.png
+
 ## affichage.py
 - Affichage: En cours
 	* __init__(): Fait
@@ -8,7 +11,7 @@
 	* creer_widgets_splash(): A créer [Permet d'afficher la petite animation de démarrage]
 	* creer_widgets_menu(): A créer [Permet d'afficher un bouton "Jouer", un titre, etc]
 	* creer_widgets_niveau(): En cours [Un bouton "retour" ne serait pas de trop]
-	* creer_widgets_fin_niveau(): A créer
+	* creer_widgets_fin_niveau(): A créer [Doit afficher un bouton pour revenir au menu principal, le temps et les pièces]
 	* actualise(niveau): Fait
 	* actualise_evenements(niveau): En cours [Ajouter un évènement pour mettre le jeu en pause]
 	* actualise_scores(niveau): Fait
@@ -17,11 +20,13 @@
 	* affiche_widgets(): Fait
 
 ## constantes.py
-- Supprimer "frequence_tir" des bonus car inutile
+- Supprimer FREQUENCE_TIR_JOUEUR
+- Supprimer "frequence_tir_acceleree" des bonus car inutile
 
 ## entities.py
 - Entite: Fait
 	* __init__(niveau): Fait
+	* __charge_image__(chemin_image): Fait
 	* charge_image(): Fait
 	* actualise(temps): Fait
 	* bouge(temps): Fait
@@ -31,8 +36,8 @@
 - Joueur(Entite): En cours [L'attribut frequence_tir est inutile]
 	* __init__(niveau): Fait
 	* charge_image(): Fait
-	* charge_image_touche(): Fait (En cours de vérification par le major Ptijuju22)
-	* charge_image_bouclier(): Fait (En cours de vérification par le major Ptijuju22 + creer image du joueur avec le bouclier)
+	* charge_image_touche(): Fait
+	* charge_image_bouclier(): Fait
 	* regarde_position(dx, dy): Fait
 	* bouge(temps): Fait
 	* tir(): Fait
@@ -41,19 +46,19 @@
 	* droite(): Fait
 	* gauche(): Fait
 	* stop(): Fait
-	* attaque(degat): En cours [Doit utiliser charge_image_touche() au lieu de changer l'image elle-même]
+	* attaque(degat): En cours [Doit remplacer touche()]
 		[Doit prendre en compte le bouclier]
-		[Doit remplacer touche()]
+		[Doit utiliser charge_image_touche() au lieu de changer l'image elle-même]
 	* meurt(): Fait
 
 - Ennemi(Entite): En cours
 	* __init__(niveau): Fait
 	* charge_image(): Fait
-	* charge_image_touche(): A créer
+	* charge_image_touche(): Fait
 	* actualise(temps): Fait
 	* oriente(): Fait
-	* attaque(degat): A créer [Doit utiliser charge_image_touche() au lieu de changer l'image elle-même]
-		[Doit remplacer touche()]
+	* attaque(degat): A créer [Doit remplacer touche()]
+		[Doit utiliser charge_image_touche() au lieu de changer l'image elle-même]
 	* tir(): Fait
 	* est_trop_pres(): Fait
 
@@ -93,7 +98,7 @@
 	* actualise(): Fait
 
 - Bouton(Widget): Fait
-	* __init__(affichage, action): Fait
+	* __init__(affichage, texte, action): En cours [Doit afficher un texte centré]
 	* charge_images(): Fait
 	* actualise(): Fait
 	* actualise_evenement(evenement): Fait

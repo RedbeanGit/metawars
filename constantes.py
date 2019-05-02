@@ -32,7 +32,6 @@ DIS_MAX_ENNEMI = 5
 DIS_MAX_BONUS = 4
 ZONE_AUTOUR_JOUEUR = 1.5
 ZONE_AUTOUR_ENNEMI = 0.5
-HIT_BOX = (0.2, 0.2)
 
 DUREE_BONUS = 5
 DUREE_TIR = 2.5
@@ -65,7 +64,7 @@ IMAGES = (
 	("ennemi", "ennemi_touche.png"),
 	("joueur", "joueur.png"),
 	("joueur", "joueur_touche.png"),
-	("joueur", "joueur_bouclier.png")
+	("joueur", "joueur_bouclier.png"),
 	("tir", "gros_tir.png"),
 	("tir", "tir.png"),
 	("companie.png",),

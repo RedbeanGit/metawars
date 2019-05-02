@@ -26,7 +26,14 @@ class Entite(object):
 		# on charge une image vide par défaut pour éviter les problèmes
 		# comme ça, toutes les entités on une image par défaut
 		self.image = niveau.affichage.obtenir_image("")
-		self.hitbox = constantes.HIT_BOX
+
+	def __charge_image__(self, chemin_image):
+		affichage = self.niveau.affichage
+		taille_pixel_x = int(self.taille[0] * constantes.ZOOM)
+		taille_pixel_y = int(self.taille[1] * constantes.ZOOM)
+
+		self.image = affichage.obtenir_image(chemin_image)
+		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
 
 	def charge_image(self):
 		pass
@@ -74,30 +81,13 @@ class Joueur(Entite):
 		self.temps_animation_degat = 0
 
 	def charge_image(self):
-		affichage = self.niveau.affichage
-		taille_pixel_x = int(self.taille[0] * constantes.ZOOM)
-		taille_pixel_y = int(self.taille[1] * constantes.ZOOM)
-
-		self.image = affichage.obtenir_image(os.path.join("data", "images", "joueur", "joueur.png"))
-		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
+		self.__charge_image__(os.path.join("data", "images", "joueur", "joueur.png"))
 
 	def charge_image_touche(self):
-		affichage = self.niveau.affichage
-
-		taille_pixel_x = int(self.taille[0] * constantes.ZOOM)
-		taille_pixel_y = int(self.taille[1] * constantes.ZOOM)
-
-		self.image = affichage.obtenir_image(os.path.join("data","images","joueur","joueur_touche.png"))
-		self.image = pygame.transform.scale(self.image, (taille_pixel_x,taille_pixel_y))
+		self.__charge_image__(os.path.join("data", "images", "joueur", "joueur_touche.png"))
 
 	def charge_image_bouclier(self):
-		affichage = self.niveau.affichage
-
-		taille_pixel_x = int(self.taille[0] * constantes.ZOOM)
-		taille_pixel_y = int(self.taille[1] * constantes.ZOOM)
-
-		self.image = affichage.obtenir_image(os.path.join("data","images","joueur","joueur_bouclier.png"))
-		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
+		self.__charge_image__(os.path.join("data", "images", "joueur", "joueur_bouclier.png"))
 
 	def regarde_position(self, dx, dy):
 		""" Tourne le joueur de façon à ce qu'il regarde en direction de (dx, dy)"""
@@ -194,14 +184,10 @@ class Ennemi(Entite):
 		self.temps_animation_degat = 0
 
 	def charge_image(self):
-		""" Cette méthode doit charger la texture de l'ennemi
-			et la redimensionner à la bonne taille (en prenant en compte le zoom)"""
-		affichage = self.niveau.affichage
-		taille_pixel_x = int(self.taille[0] * constantes.ZOOM)
-		taille_pixel_y = int(self.taille[1] * constantes.ZOOM)
+		self.__charge_image__(os.path.join("data", "images", "ennemi", "ennemi.png"))
 
-		self.image = affichage.obtenir_image(os.path.join("data", "images", "ennemi", "ennemi.png"))
-		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
+	def charge_image_touche(self):
+		self.__charge_image__(os.path.join("data", "images", "ennemi", "ennemi_touche.png"))
 
 	def actualise(self, temps):
 		super().actualise(temps)
@@ -314,15 +300,7 @@ class Bonus(Entite):
 		self.temps_vie = 0
 
 	def charge_image(self):
-		""" Cette méthode doit charger la texture du bonus (et du bon bonus)
-			et la redimensionner à la bonne taille (en prenant en compte le zoom)"""
-
-		affichage = self.niveau.affichage
-		taille_pixel_x = int(self.taille[0] * constantes.ZOOM)
-		taille_pixel_y = int(self.taille[1] * constantes.ZOOM)
-
-		self.image = affichage.obtenir_image(os.path.join("data", "images", "bonus", self.type + ".png"))
-		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
+		self.__charge_image__(os.path.join("data", "images", "bonus", self.type + ".png"))
 
 	def actualise(self, temps):
 		super().actualise(temps)
@@ -374,12 +352,7 @@ class Tir(Entite):
 		self.temps_vie = 0
 
 	def charge_image(self):
-		affichage = self.niveau.affichage
-		taille_pixel_x = int(self.taille[0] * constantes.ZOOM)
-		taille_pixel_y = int(self.taille[1] * constantes.ZOOM)
-
-		self.image = affichage.obtenir_image(os.path.join("data", "images", "tir", "tir.png"))
-		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
+		self.__charge_image__(os.path.join("data", "images", "tir", "tir.png"))
 	
 	def actualise(self, temps):
 		super().actualise(temps)
@@ -399,7 +372,6 @@ class Tir(Entite):
 					if type(entite) == Ennemi:
 						# alors on appelle la méthode touche()
 						self.touche(entite)
-
 		else:
 			# sinon, c'est que le tir vient d'un ennemi
 			# si le tir touche le joueur
