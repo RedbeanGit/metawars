@@ -14,7 +14,7 @@ __repo__ = "https://github.com/Ptijuju22/metawars.git"
 import time
 
 
-def main():
+def lancer_jeu():
     """ Fonction principale du jeu (à ne lancer qu'une seule fois) """
     
     # on creer un nouvel "affichage" (fenetre)
@@ -24,13 +24,10 @@ def main():
     # on crée les widgets du niveau
     affichage.creer_widgets_niveau()
 
-    # on crée les widgets du menu
-    affichage.creer_widgets_menu()
-
     # on creer un niveau de jeu
-    niveau = Niveau(affichage)
+    niveau_menu = Niveau(affichage)
     # le niveau et les entités recupères les images dont elles ont besoin
-    niveau.charge_image()
+    niveau_menu.charge_image()
 
     # cette variable retient le temps (en seconde) du dernier tick de jeu
     temps_precedent = time.time()
@@ -41,15 +38,19 @@ def main():
         temps_precedent = time.time()
 
         # on gère les evenements utilisateurs (clic, appui sur une touche, etc)
-        affichage.actualise_evenements(niveau)
+        affichage.actualise_evenements(niveau_menu)
         # on actualise le niveau et les entités qu'il contient
-        niveau.actualise(temps_ecoule)
+        niveau_menu.actualise(temps_ecoule)
         # on redessine la fenetre pour afficher de nouveau le niveau
-        affichage.actualise(niveau)
+        affichage.actualise(niveau_menu)
+
+
+def lancer_partie(affichage):
+    pass
 
 
 if __name__ == "__main__":
     # Si notre fichier est lancé directement par python et pas
     # importé par un autre script alors on lance le jeu
     print("Démarrage de {nom}...".format(nom=constantes.NOM))
-    main()
+    lancer_jeu()

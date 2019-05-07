@@ -13,7 +13,7 @@ FREQUENCE_APPARITION_BONUS = 3
 FREQUENCE_TIR_JOUEUR = 1
 FREQUENCE_TIR_ENNEMI = 1
 
-VITESSE_JOUEUR = 3
+VITESSE_JOUEUR = 4
 VITESSE_ENNEMI = 1
 VITESSE_TIR = 8
 
@@ -40,7 +40,7 @@ DUREE_ANIMATION_DEGAT = 0.1
 PIECE_ENNEMI = 10
 
 BONUS_SOIN = 2
-BONUS_VITESSE = 0.2
+BONUS_VITESSE = 0.15
 BONUS_FREQUENCE_TIR = 2
 BONUS_DEGAT = 0.25
 
@@ -50,7 +50,6 @@ BONUS_DEGAT = 0.25
 # ainsi, "bonus/life_restore.png" donnera ("bonus", "life_restore.png")
 IMAGES = (
 	("bonus", "soin.png"),
-	("bonus", "frequence_de_tir_acceleree.png"),
 	("bonus", "bouclier_solidifie.png"),
 	("bonus", "vitesse_augmentee.png"),
 	("bonus", "arme_amelioree.png"),
@@ -87,7 +86,6 @@ SONS = (
 
 TYPE_BONUS = (
 	"soin",
-	"frequence_tir_acceleree",
 	"vitesse_augmentee",
 	"arme_amelioree"
 )

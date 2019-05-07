@@ -189,3 +189,33 @@ class Bouton(Widget):
 		w, h = self.taille
 
 		return (x + w//2, y + h//2)
+
+
+class Image(Widget):
+	""" Permet de créer une image qui se redéssine seule à une position définie lors de sa création.
+		L'image est chargée automatiquement par le widget lors de sa création.
+
+		chemin_image (str): Le chemin de l'image (absolue ou relatif)	
+	"""
+
+	def __init__(self, affichage, chemin_image, position=(0, 0), taille=(0, 0), ancrage=(-1, -1)):
+		super().__init__(affichage, position, taille, ancrage)
+
+		self.chemin_image = chemin_image
+		self.charge_image()
+
+	def charge_image(self):
+		# on charge l'image demandée
+		self.image = affichage.obtenir_image(self.chemin_image)
+
+		# si la taille définie est différente de 0x0 pixels:
+		if self.taille != (0, 0):
+			# on la redimensionne à la taille voulue
+			self.image = pygame.transform.scale(self.image, self.taille)
+		else:
+			# sinon on change l'attribut taille pour qu'il corresponde à la taille de l'image chargée
+			self.taille = self.image.get_size()
+
+	def actualise(self):
+		# on colle l'image sur la fenêtre à la position du coin supérieur gauche
+		self.affichage.fenetre.blit(self.image, self.obtenir_position_reelle())

@@ -49,7 +49,7 @@ class Affichage(object):
 		""" Doit créer un Text pour le temps passé sur le niveau, un pour les pièces
 			et un pour indiquer la vie du joueur """
 
-		texte_temps = Texte(self, "Temps: 0", (10, 10))
+		texte_temps = Texte(self, "Temps: 0s", (10, 10))
 		texte_pieces = Texte(self, "Pièces: 0", (10, 40))
 		texte_vie = Texte(self, "Vie: 0", (10, 70))
 
@@ -57,13 +57,12 @@ class Affichage(object):
 		self.widgets.append(texte_pieces)
 		self.widgets.append(texte_vie)
 
-	def creer_widgets_menu(self):
+	def creer_widgets_menu(self, fct_partie):
 		""" Doit créer un """
 		milieu_ecran_x = constantes.TAILLE_ECRAN[0] // 2
 		milieu_ecran_y = constantes.TAILLE_ECRAN[1] // 2
 
-		# On verra un peu plus tard pour cette partie là
-		#bouton_jouer_menu = Bouton(self, "Jouer", self.commencer_partie, (milieu_ecran_x, milieu_ecran_y))
+		bouton_jouer_menu = Bouton(self, fct_partie, "Jouer", (milieu_ecran_x, milieu_ecran_y))
 
 		#self.widgets.append(bouton_jouer_menu)
 
@@ -82,6 +81,7 @@ class Affichage(object):
 
 		# on actualise le score en fonction de celui du niveau
 		self.actualise_scores(niveau)
+
 		# on redessine les widgets
 		self.affiche_widgets()
 
@@ -98,19 +98,15 @@ class Affichage(object):
 				# commandant le déplacement correspondant
 				if evenement.key == pygame.K_w:
 					niveau.joueur.haut()
-					print("Le joueur va en haut")
 
 				if evenement.key == pygame.K_s:
 					niveau.joueur.bas()
-					print("Le joueur va en bas")
 
 				if evenement.key == pygame.K_a:
 					niveau.joueur.gauche()
-					print("Le joueur va à gauche")
 
 				if evenement.key == pygame.K_d:
 					niveau.joueur.droite()
-					print("Le joueur va à droite")
 
 				if evenement.key == pygame.K_ESCAPE:
 					utile.arreter()
@@ -121,26 +117,21 @@ class Affichage(object):
 				# commandant le déplacement inverse
 				if evenement.key == pygame.K_w:
 					niveau.joueur.bas()
-					print("Le joueur va en haut")
 
 				if evenement.key == pygame.K_s:
 					niveau.joueur.haut()
-					print("Le joueur va en bas")
 
 				if evenement.key == pygame.K_a:
 					niveau.joueur.droite()
-					print("Le joueur va à gauche")
 
 				if evenement.key == pygame.K_d:
 					niveau.joueur.gauche()
-					print("Le joueur va à droite")
 
 			# si il clique avec la souris
 			elif evenement.type == pygame.MOUSEBUTTONDOWN:
 				# si le bouton cliqué est le bouton droit de la souris (3)
 				if evenement.button == 1:
 					niveau.joueur.tir()
-					print("Le joueur tir")
 
 			# si la souris bouge
 			elif evenement.type == pygame.MOUSEMOTION:
@@ -230,6 +221,6 @@ class Affichage(object):
 		texte_pieces = self.widgets[1]
 		texte_vie = self.widgets[2]
 
-		texte_temps.texte = "Temps: {temps}".format(temps=int(niveau.temps_total))
+		texte_temps.texte = "Temps: {temps}s".format(temps=int(niveau.temps_total))
 		texte_pieces.texte = "Pièces: {pieces}".format(pieces=niveau.piece)
 		texte_vie.texte = "Vie: {vie}".format(vie=int(niveau.joueur.vie))

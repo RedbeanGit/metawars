@@ -58,7 +58,6 @@ class Entite(object):
 		return False
 
 	def meurt(self):
-		print("Une entité est morte")
 		self.niveau.enleve_entite(self)
 
 
@@ -325,8 +324,8 @@ class Bonus(Entite):
 		elif self.type == "vitesse_augmentee":
 			joueur.vitesse += constantes.BONUS_VITESSE
 
-			if joueur.vitesse >= 4 * constantes.BONUS_VITESSE:
-				joueur.vitesse = 4 * constantes.BONUS_VITESSE
+			if joueur.vitesse >= 4 * constantes.BONUS_VITESSE + 1:
+				joueur.vitesse = 4 * constantes.BONUS_VITESSE + 1
 
 		elif self.type == "arme_amelioree":
 			joueur.degat_tir += constantes.BONUS_DEGAT

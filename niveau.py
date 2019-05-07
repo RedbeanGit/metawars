@@ -104,3 +104,5 @@ class Niveau(object):
 
 	def termine(self):
 		self.en_pause = True
+		print("La partie s'est terminée avec {pieces} pièces après {temps} seconde(s) de jeu" \
+			.format(pieces=self.pieces, temps=self.temps_total))
