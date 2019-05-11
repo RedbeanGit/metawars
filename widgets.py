@@ -114,10 +114,13 @@ class Bouton(Widget):
 		action (function): Une méthode ou fonction à executer lors du clic de la souris
 	"""
 
-	def __init__(self, affichage, action, texte="", position=(0, 0), taille=(1, 1), ancrage=(-1, -1), taille_police=20):
+	def __init__(self, affichage, action, texte="", arguments_action=(), position=(0, 0), taille=(1, 1), ancrage=(-1, -1), \
+			taille_police=20):
 		super().__init__(affichage, position, taille, ancrage)
 		# on crée un widget Texte qui sera affiché sur le bouton (centré sur le bouton)
 		self.texte = Texte(affichage, texte, position=self.obtenir_position_texte(), ancrage=(0, 0), taille_police=taille_police)
+		# tuple contenant tous les arguments à passer à la fonction 'action'
+		self.arguments_action = arguments_action
 		# action est une fonction que l'on lancera lors du clic sur le bouton
 		self.action = action
 		# toutes les textures du boutons seront stockées dans cet attribut
@@ -168,7 +171,7 @@ class Bouton(Widget):
 			if self.est_dans_widget(evenement.pos):
 				# si le bouton relaché est le clic gauche, on execute l'action associée au bouton
 				if evenement.button == 1:
-					self.action()
+					self.action(*self.arguments_action)
 				
 				self.etat = "survol"
 			else:

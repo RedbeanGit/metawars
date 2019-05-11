@@ -22,7 +22,7 @@ def lancer_jeu():
     # on charge l'ensemble des images du jeu
     affichage.charge_images()
     # on crée les widgets du niveau
-    affichage.creer_widgets_niveau()
+    affichage.creer_widgets_menu(lancer_partie)
 
     # on creer un niveau de jeu
     niveau_menu = Niveau(affichage)
@@ -38,16 +38,45 @@ def lancer_jeu():
         temps_precedent = time.time()
 
         # on gère les evenements utilisateurs (clic, appui sur une touche, etc)
-        affichage.actualise_evenements(niveau_menu)
+        affichage.actualise_evenements(niveau_menu, False)
         # on actualise le niveau et les entités qu'il contient
         niveau_menu.actualise(temps_ecoule)
         # on redessine la fenetre pour afficher de nouveau le niveau
-        affichage.actualise(niveau_menu)
+        affichage.actualise(niveau_menu, False)
 
 
     
 def lancer_partie(affichage):
-    pass
+    # on supprime tous les widgets de la fenêtre
+    affichage.supprimer_widgets()
+    # on crée les widgets du niveau
+    affichage.creer_widgets_niveau()
+
+    # on creer un niveau de jeu
+    niveau_jeu = Niveau(affichage)
+    # le niveau et les entités recupères les images dont elles ont besoin
+    niveau_jeu.charge_image()
+
+    # cette variable retient le temps (en seconde) du dernier tick de jeu
+    temps_precedent = time.time()
+
+    while True:
+        # cette variable stocke le temps écoulé depuis le dernier tick de jeu
+        temps_ecoule = time.time() - temps_precedent
+        temps_precedent = time.time()
+
+        # on gère les evenements utilisateurs (clic, appui sur une touche, etc)
+        affichage.actualise_evenements(niveau_jeu, True)
+        # on actualise le niveau et les entités qu'il contient
+        niveau_jeu.actualise(temps_ecoule)
+        # on redessine la fenetre pour afficher de nouveau le niveau
+        affichage.actualise(niveau_jeu, True)
+
+    # une fois sortie de la boucle, on re-supprime tous les widgets
+    affichage.supprimer_widgets()
+    # puis on recrée les widgets du menu
+    affichage.creer_widgets_menu(lancer_partie)
+
 
 if __name__ == "__main__":
     # Si notre fichier est lancé directement par python et pas

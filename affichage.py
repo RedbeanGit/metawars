@@ -45,6 +45,9 @@ class Affichage(object):
 			# sinon, on renvoie une surface noire de 50x50 pixels
 			return pygame.Surface((50, 50))
 
+	def supprimer_widgets(self):
+		self.widgets.clear() # vide la liste des widgets de cet affichage
+
 	def creer_widgets_niveau(self):
 		""" Doit créer un Text pour le temps passé sur le niveau, un pour les pièces
 			et un pour indiquer la vie du joueur """
@@ -62,11 +65,12 @@ class Affichage(object):
 		milieu_ecran_x = constantes.TAILLE_ECRAN[0] // 2
 		milieu_ecran_y = constantes.TAILLE_ECRAN[1] // 2
 
-		bouton_jouer_menu = Bouton(self, fct_partie, "Jouer", (milieu_ecran_x, milieu_ecran_y))
+		bouton_jouer_menu = Bouton(self, fct_partie, "Jouer", position=(milieu_ecran_x, milieu_ecran_y), \
+			taille=(300, 50), ancrage=(0, 0), taille_police=20, arguments_action=(self,))
 
 		self.widgets.append(bouton_jouer_menu)
 
-	def actualise(self, niveau):
+	def actualise(self, niveau, en_partie):
 		# On rend tous les pixels de la fenetre blanc
 		self.fenetre.fill((255, 255, 255))
 
@@ -79,8 +83,10 @@ class Affichage(object):
 		for entite in niveau.entites:
 			self.affiche_entite(entite)
 
-		# on actualise le score en fonction de celui du niveau
-		self.actualise_scores(niveau)
+		# si on est en partie, on actualise le score
+		if en_partie:
+			# on actualise le score en fonction de celui du niveau
+			self.actualise_scores(niveau)
 
 		# on redessine les widgets
 		self.affiche_widgets()
@@ -88,70 +94,72 @@ class Affichage(object):
 		# On actualise l'écran
 		pygame.display.update()
 
-	def actualise_evenements(self, niveau):
+	def actualise_evenements(self, niveau, en_partie):
 		# on parcourt l'ensemble des evenements utilisateurs (clic, appui sur une touche, etc)
 		for evenement in pygame.event.get():
-
-			# si l'utilisateur appui sur une touche du clavier...
-			if evenement.type == pygame.KEYDOWN:
-				# en fonction de la touche appuyée, on appelle la fonction
-				# commandant le déplacement correspondant
-				if evenement.key == pygame.K_w:
-					niveau.joueur.haut()
-
-				if evenement.key == pygame.K_s:
-					niveau.joueur.bas()
-
-				if evenement.key == pygame.K_a:
-					niveau.joueur.gauche()
-
-				if evenement.key == pygame.K_d:
-					niveau.joueur.droite()
-
-				if evenement.key == pygame.K_ESCAPE:
-					utile.arreter()
-
-			# si l'utilisateur relache une touche du clavier...
-			elif evenement.type == pygame.KEYUP:
-				# en fonction de la touche appuyée, on appelle la fonction
-				# commandant le déplacement inverse
-				if evenement.key == pygame.K_w:
-					niveau.joueur.bas()
-
-				if evenement.key == pygame.K_s:
-					niveau.joueur.haut()
-
-				if evenement.key == pygame.K_a:
-					niveau.joueur.droite()
-
-				if evenement.key == pygame.K_d:
-					niveau.joueur.gauche()
-
-			# si il clique avec la souris
-			elif evenement.type == pygame.MOUSEBUTTONDOWN:
-				# si le bouton cliqué est le bouton droit de la souris (3)
-				if evenement.button == 1:
-					niveau.joueur.tir()
-
-			# si la souris bouge
-			elif evenement.type == pygame.MOUSEMOTION:
-				x, y = evenement.pos
-
-				# on calcul l'écart entre la position de la souris et le milieu de la fenêtre
-				dx = x - constantes.TAILLE_ECRAN[0] / 2
-				dy = y - constantes.TAILLE_ECRAN[1] / 2
-
-				# on enlève le zoom pour convertir cet écart dans l'échelle du niveau
-				dx_niveau = dx / constantes.ZOOM
-				dy_niveau = dy / constantes.ZOOM
-
-				# on fait en sorte que le joueur regarde la position de la souris
-				niveau.joueur.regarde_position(dx_niveau, dy_niveau)
 
 			# si l'utilisateur a cliqué sur la croix rouge de la fenêtre
 			# on arrete le jeu
 			if evenement.type == pygame.QUIT:
 				utile.arreter()
+
+			# sinon si on est en partie (et pas dans le menu principal)
+			elif en_partie:
+				# si l'utilisateur appui sur une touche du clavier...
+				if evenement.type == pygame.KEYDOWN:
+					# en fonction de la touche appuyée, on appelle la fonction
+					# commandant le déplacement correspondant
+					if evenement.key == pygame.K_w:
+						niveau.joueur.haut()
+
+					if evenement.key == pygame.K_s:
+						niveau.joueur.bas()
+
+					if evenement.key == pygame.K_a:
+						niveau.joueur.gauche()
+
+					if evenement.key == pygame.K_d:
+						niveau.joueur.droite()
+
+					if evenement.key == pygame.K_ESCAPE:
+						utile.arreter()
+
+				# si l'utilisateur relache une touche du clavier...
+				elif evenement.type == pygame.KEYUP:
+					# en fonction de la touche appuyée, on appelle la fonction
+					# commandant le déplacement inverse
+					if evenement.key == pygame.K_w:
+						niveau.joueur.bas()
+
+					if evenement.key == pygame.K_s:
+						niveau.joueur.haut()
+
+					if evenement.key == pygame.K_a:
+						niveau.joueur.droite()
+
+					if evenement.key == pygame.K_d:
+						niveau.joueur.gauche()
+
+				# si il clique avec la souris
+				elif evenement.type == pygame.MOUSEBUTTONDOWN:
+					# si le bouton cliqué est le bouton droit de la souris (3)
+					if evenement.button == 1:
+						niveau.joueur.tir()
+
+				# si la souris bouge
+				elif evenement.type == pygame.MOUSEMOTION:
+					x, y = evenement.pos
+
+					# on calcul l'écart entre la position de la souris et le milieu de la fenêtre
+					dx = x - constantes.TAILLE_ECRAN[0] / 2
+					dy = y - constantes.TAILLE_ECRAN[1] / 2
+
+					# on enlève le zoom pour convertir cet écart dans l'échelle du niveau
+					dx_niveau = dx / constantes.ZOOM
+					dy_niveau = dy / constantes.ZOOM
+
+					# on fait en sorte que le joueur regarde la position de la souris
+					niveau.joueur.regarde_position(dx_niveau, dy_niveau)
 
 			# on actualise les évenements pour chaque widget
 			for widget in self.widgets:
