@@ -15,9 +15,6 @@ import time
 import pygame
 
 def lancer_jeu():
-    pass
-    
-def lancer_partie():
     """ Fonction principale du jeu (à ne lancer qu'une seule fois) """
     
     # on creer un nouvel "affichage" (fenetre)
@@ -48,6 +45,9 @@ def lancer_partie():
         affichage.actualise(niveau_menu)
 
 
+    
+def lancer_partie(affichage):
+    pass
 
 if __name__ == "__main__":
     # Si notre fichier est lancé directement par python et pas
