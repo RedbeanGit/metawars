@@ -52,7 +52,7 @@ class Affichage(object):
 		texte_temps = Texte(self, "Temps: 0s", (10, 10))
 		texte_pieces = Texte(self, "Pièces: 0", (10, 40))
 		texte_vie = Texte(self, "Vie: 0", (10, 70))
-
+		
 		self.widgets.append(texte_temps)
 		self.widgets.append(texte_pieces)
 		self.widgets.append(texte_vie)
@@ -64,7 +64,7 @@ class Affichage(object):
 
 		bouton_jouer_menu = Bouton(self, fct_partie, "Jouer", (milieu_ecran_x, milieu_ecran_y))
 
-		#self.widgets.append(bouton_jouer_menu)
+		self.widgets.append(bouton_jouer_menu)
 
 	def actualise(self, niveau):
 		# On rend tous les pixels de la fenetre blanc

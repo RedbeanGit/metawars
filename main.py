@@ -12,9 +12,16 @@ __version__ = "0.1.0"
 __repo__ = "https://github.com/Ptijuju22/metawars.git"
 
 import time
-
+import pygame
 
 def lancer_jeu():
+    while True:
+        ecran = pygame.display.set_mode((640,480))
+        fond = pygame.Surface(ecran.get_size())
+        fond.fill((100,100,00))
+        ecran.blit(fond,(0,0))
+    
+def lancer_partie():
     """ Fonction principale du jeu (à ne lancer qu'une seule fois) """
     
     # on creer un nouvel "affichage" (fenetre)
@@ -44,9 +51,6 @@ def lancer_jeu():
         # on redessine la fenetre pour afficher de nouveau le niveau
         affichage.actualise(niveau_menu)
 
-
-def lancer_partie(affichage):
-    pass
 
 
 if __name__ == "__main__":
