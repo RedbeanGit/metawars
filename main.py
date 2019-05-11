@@ -53,4 +53,4 @@ if __name__ == "__main__":
     # Si notre fichier est lancé directement par python et pas
     # importé par un autre script alors on lance le jeu
     print("Démarrage de {nom}...".format(nom=constantes.NOM))
-    lancer_partie()
+    lancer_jeu()
