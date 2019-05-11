@@ -276,7 +276,7 @@ class Ennemi(Entite):
 
 	def meurt(self):
 		super().meurt()
-		self.niveau.piece += constantes.PIECE_ENNEMI
+		self.niveau.pieces += constantes.PIECE_ENNEMI
 
 	def doit_tirer(self, temps):
 		nb = random.random()

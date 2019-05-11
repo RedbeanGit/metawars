@@ -21,7 +21,7 @@ class Niveau(object):
 		self.affichage = affichage
 		self.joueur = Joueur(self)
 		self.entites = []
-		self.piece = 0
+		self.pieces = 0
 		self.temps_total = 0
 		self.en_pause = False
 

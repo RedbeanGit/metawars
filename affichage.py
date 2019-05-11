@@ -222,5 +222,5 @@ class Affichage(object):
 		texte_vie = self.widgets[2]
 
 		texte_temps.texte = "Temps: {temps}s".format(temps=int(niveau.temps_total))
-		texte_pieces.texte = "Pièces: {pieces}".format(pieces=niveau.piece)
+		texte_pieces.texte = "Pièces: {pieces}".format(pieces=niveau.pieces)
 		texte_vie.texte = "Vie: {vie}".format(vie=int(niveau.joueur.vie))
