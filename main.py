@@ -15,11 +15,7 @@ import time
 import pygame
 
 def lancer_jeu():
-    while True:
-        ecran = pygame.display.set_mode((640,480))
-        fond = pygame.Surface(ecran.get_size())
-        fond.fill((100,100,00))
-        ecran.blit(fond,(0,0))
+    pass
     
 def lancer_partie():
     """ Fonction principale du jeu (à ne lancer qu'une seule fois) """
@@ -57,4 +53,4 @@ if __name__ == "__main__":
     # Si notre fichier est lancé directement par python et pas
     # importé par un autre script alors on lance le jeu
     print("Démarrage de {nom}...".format(nom=constantes.NOM))
-    lancer_jeu()
+    lancer_partie()
