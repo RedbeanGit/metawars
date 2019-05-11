@@ -7,22 +7,15 @@
 - "data/images/fond.png" doit être modifié car mauvais pour les yeux
 
 ## main.py
-- main(): En cours
-	[Le niveau ne doit plus être actualisé par les actions utilisateur (car utilisé en fond du menu principal)]
-
-- lancer_partie(affichage): A créer
-	[Identique à main() excepté qu'il ne gère pas le menu principal mais l'écran de jeu lui-même]
-	[Doit supprimer les widgets de affichage et appeler 'creer_widgets_niveau()']
-	[Doit actualiser le niveau avec les évènements utilisateurs (comme jusqu'a maintenant en fait)]
+- lancer_partie(affichage): En cours
+	[La boucle doit s'arrêter si le joueur n'a plus de vie]
 	
 ## affichage.py
 - Affichage: En cours
 	* creer_widgets_splash(): A créer [Permet d'afficher la petite animation de démarrage]
-	* creer_widgets_menu(fct_partie): En cours [Permet d'afficher un bouton "Jouer", un titre, etc]
-	* creer_widgets_niveau(): En cours [Un bouton "retour" ne serait pas de trop]
+	* creer_widgets_menu(fct_partie): En cours [Ajouter une image de titre, un texte pour la version et un pour les devs]
 	* creer_widgets_fin_niveau(): A créer [Doit afficher un bouton pour revenir au menu principal, le temps et les pièces]
 	* actualise_evenements(niveau, en_partie): En cours [Ajouter un évènement pour mettre le jeu en pause]
-		[Si 'en_partie' vaut True, il ne faut pas faire bouger le joueur ni le faire tirer]
 
 ## entities.py
 - Joueur(Entite): En cours

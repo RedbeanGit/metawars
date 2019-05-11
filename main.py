@@ -15,19 +15,16 @@ import time
 import pygame
 
 def lancer_jeu():
-    pass
-    
-def lancer_partie():
     """ Fonction principale du jeu (à ne lancer qu'une seule fois) """
     
     # on creer un nouvel "affichage" (fenetre)
     affichage = Affichage()
     # on charge l'ensemble des images du jeu
     affichage.charge_images()
-    # on crée les widgets du niveau
-    affichage.creer_widgets_niveau()
+    # on crée les widgets du menu
+    affichage.creer_widgets_menu(lancer_partie)
 
-    # on creer un niveau de jeu
+    # on creer un niveau de jeu pour l'arrière plan du menu principal
     niveau_menu = Niveau(affichage)
     # le niveau et les entités recupères les images dont elles ont besoin
     niveau_menu.charge_image()
@@ -41,16 +38,44 @@ def lancer_partie():
         temps_precedent = time.time()
 
         # on gère les evenements utilisateurs (clic, appui sur une touche, etc)
-        affichage.actualise_evenements(niveau_menu)
+        affichage.actualise_evenements(niveau_menu, False)
         # on actualise le niveau et les entités qu'il contient
         niveau_menu.actualise(temps_ecoule)
         # on redessine la fenetre pour afficher de nouveau le niveau
-        affichage.actualise(niveau_menu)
+        affichage.actualise(niveau_menu, False)
+    
 
+def lancer_partie(affichage):
+    """ Cette fonction assure la création d'un niveau de jeu et de la boucle de jeu """
+
+    # on supprime les widgets présents sur la fenêtre
+    affichage.supprimer_widgets()
+    # on crée les widgets du niveau
+    affichage.creer_widgets_niveau()
+
+    # on creer un niveau de jeu
+    niveau_jeu = Niveau(affichage)
+    # le niveau et les entités recupères les images dont elles ont besoin
+    niveau_jeu.charge_image()
+
+    # cette variable retient le temps (en seconde) du dernier tick de jeu
+    temps_precedent = time.time()
+
+    while True:
+        # cette variable stocke le temps écoulé depuis le dernier tick de jeu
+        temps_ecoule = time.time() - temps_precedent
+        temps_precedent = time.time()
+
+        # on gère les evenements utilisateurs (clic, appui sur une touche, etc)
+        affichage.actualise_evenements(niveau_jeu, True)
+        # on actualise le niveau et les entités qu'il contient
+        niveau_jeu.actualise(temps_ecoule)
+        # on redessine la fenetre pour afficher de nouveau le niveau
+        affichage.actualise(niveau_jeu, True)
 
 
 if __name__ == "__main__":
     # Si notre fichier est lancé directement par python et pas
     # importé par un autre script alors on lance le jeu
     print("Démarrage de {nom}...".format(nom=constantes.NOM))
-    lancer_partie()
+    lancer_jeu()
