@@ -209,7 +209,7 @@ class Image(Widget):
 
 	def charge_image(self):
 		# on charge l'image demandée
-		self.image = affichage.obtenir_image(self.chemin_image)
+		self.image = self.affichage.obtenir_image(self.chemin_image)
 
 		# si la taille définie est différente de 0x0 pixels:
 		if self.taille != (0, 0):

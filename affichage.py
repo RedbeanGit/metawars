@@ -3,7 +3,7 @@
 import constantes
 import utile
 import niveau
-from widgets import Texte, Bouton
+from widgets import Texte, Bouton, Image
 
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __version__ = "0.1.0"
@@ -64,9 +64,13 @@ class Affichage(object):
 		""" Doit créer un """
 		milieu_ecran_x = constantes.TAILLE_ECRAN[0] // 2
 		milieu_ecran_y = constantes.TAILLE_ECRAN[1] // 2
+		milieu_du_milieu_ecran_y = milieu_ecran_y // 2
 
 		bouton_jouer_menu = Bouton(self, fct_partie, "Jouer", position=(milieu_ecran_x, milieu_ecran_y), \
 			taille=(300, 50), ancrage=(0, 0), taille_police=20, arguments_action=(self,))
+
+		logo_menu = Image(self,os.path.join("data","images","titre.png"), position = (milieu_ecran_x,milieu_du_milieu_ecran_y) , taille = (640,360),ancrage=(0,0))
+		self.widgets.append(logo_menu)
 
 		self.widgets.append(bouton_jouer_menu)
 
