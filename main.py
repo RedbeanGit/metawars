@@ -29,6 +29,9 @@ def lancer_jeu():
     # le niveau et les entités recupères les images dont elles ont besoin
     niveau_menu.charge_image()
 
+    # on fait avancer le joueur pour éviter qu'il soit immobile
+    niveau_menu.joueur.droite()
+
     # cette variable retient le temps (en seconde) du dernier tick de jeu
     temps_precedent = time.time()
 
