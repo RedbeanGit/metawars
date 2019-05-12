@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import constantes
-import utile
 
 from affichage import Affichage
 from niveau import Niveau
@@ -12,7 +11,7 @@ __version__ = "0.1.0"
 __repo__ = "https://github.com/Ptijuju22/metawars.git"
 
 import time
-import pygame
+
 
 def lancer_jeu():
     """ Fonction principale du jeu (à ne lancer qu'une seule fois) """
