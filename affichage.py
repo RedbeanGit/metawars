@@ -22,6 +22,8 @@ class Affichage(object):
 
 		# on defini un titre a notre fenetre (ici: MetaWars)
 		pygame.display.set_caption(constantes.NOM)
+		icone = pygame.image.load(os.path.join("data", "images", "icone.png"))
+		pygame.display.set_icon(icone)
 
 	def charge_images(self):
 		print("Chargement des images...")
