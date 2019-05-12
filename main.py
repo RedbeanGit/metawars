@@ -44,6 +44,8 @@ def lancer_jeu():
         affichage.actualise_evenements(niveau_menu, False)
         # on actualise le niveau et les entités qu'il contient
         niveau_menu.actualise(temps_ecoule)
+        # pour éviter que le joueur ne meurt, on reinitialise sa vie en permanence
+        niveau_menu.joueur.vie = constantes.VIE_JOUEUR
         # on redessine la fenetre pour afficher de nouveau le niveau
         affichage.actualise(niveau_menu, False)
 

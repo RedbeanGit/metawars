@@ -69,10 +69,20 @@ class Affichage(object):
 		bouton_jouer_menu = Bouton(self, fct_partie, "Jouer", position=(milieu_ecran_x, milieu_ecran_y), \
 			taille=(300, 50), ancrage=(0, 0), taille_police=20, arguments_action=(self,))
 
-		logo_menu = Image(self,os.path.join("data","images","titre.png"), position = (milieu_ecran_x,milieu_du_milieu_ecran_y) , taille = (307,60),ancrage=(0,0))
-		self.widgets.append(logo_menu)
+		logo_menu = Image(self, os.path.join("data", "images", "titre.png"), \
+			position=(milieu_ecran_x, milieu_du_milieu_ecran_y), taille=(400, 80),ancrage=(0, 0))
+
+		texte_version = Texte(self, "v" + __version__, position=(10, constantes.TAILLE_ECRAN[1] - 10), \
+			ancrage=(-1, 1), taille_police=16)
+
+		texte_dev = Texte(self, __author__, \
+			position=(constantes.TAILLE_ECRAN[0] - 10, constantes.TAILLE_ECRAN[1] - 10), ancrage=(1, 1), \
+			taille_police=16)
 
 		self.widgets.append(bouton_jouer_menu)
+		self.widgets.append(logo_menu)
+		self.widgets.append(texte_version)
+		self.widgets.append(texte_dev)
 
 	def actualise(self, niveau, en_partie):
 		# On rend tous les pixels de la fenetre blanc
