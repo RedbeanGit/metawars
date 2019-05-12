@@ -69,7 +69,7 @@ class Affichage(object):
 		bouton_jouer_menu = Bouton(self, fct_partie, "Jouer", position=(milieu_ecran_x, milieu_ecran_y), \
 			taille=(300, 50), ancrage=(0, 0), taille_police=20, arguments_action=(self,))
 
-		logo_menu = Image(self,os.path.join("data","images","titre.png"), position = (milieu_ecran_x,milieu_du_milieu_ecran_y) , taille = (640,360),ancrage=(0,0))
+		logo_menu = Image(self,os.path.join("data","images","titre.png"), position = (milieu_ecran_x,milieu_du_milieu_ecran_y) , taille = (307,60),ancrage=(0,0))
 		self.widgets.append(logo_menu)
 
 		self.widgets.append(bouton_jouer_menu)
@@ -87,7 +87,7 @@ class Affichage(object):
 		for entite in niveau.entites:
 			self.affiche_entite(entite)
 
-		# si on est en partie, on actualise le score
+		# si on est en partie, on acalise le score
 		if en_partie:
 			# on actualise le score en fonction de celui du niveau
 			self.actualise_scores(niveau)
