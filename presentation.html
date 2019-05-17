@@ -1,13 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr" dir="ltr">
 <head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="style.css">
 	<title>Metawars</title>
 </head>
 <body>
-	<h1>Metawars</h1>
-	<h1>ISN</h1>
-		<img src="screenshot.jpg">
-	<h2>Présentation du projet</h2>
-		<p>Metawars est un jeu de tir vu du dessus.</p>
+	<header>
+		<div id="haut-page">
+			<img src="data/images/titre.png" alt="Logo">
+			<img src="data/images/image_demarrage.png" alt="Logo_studio">
+		</div>
+	</header>
+
+	<section>
+		<h1>Metawars</h1>
+		<ul class="presentation-nav">
+			<li><a href="#gameplay">Gameplay</a></li>
+			<li><a href="#workflow">WorkFlow de Travail</a></li>
+			<li><a href="#telechargement">Téléchargement</a></li>
+		</ul>
+
+		<div class="gameplay-desc">
+			<article id="gameplay">
+				<h2>Gameplay</h2>
+				<p>Un simple jeu vu du dessus dans lequel le joueur doit tenir le plus longtemps possible face à des ordes d'ennemis. Il pourra s'aider de bonus très avantageux qui apparaiteront de manière aléatoire</p>
+			</article>
+			<aside>
+				<iframe class="gameplay-video"
+				 src="https://www.youtube.com/embed/qt1JEOdsMGA?controls=0" allow="accelerometer; encrypted-media; autoplay; gyroscope; picture-in-picture" allowfullscreen>Une erreur s'est produite pendant le chargement de la vidéo !
+				</iframe>
+			</aside>
+		</div>
+
+		<div class="workflow-desc">
+			<article id="workflow">
+				<h2>Workflow de Travail</h2>
+				<p>Tout au long du projet nous avons décidé de travailler de manière organisé et efficace. C'est donc pour cela que nous nous sommes dirigés vers l'utilisation d'un service web d'hébergement et <br/> de gestion de développement de logiciels nommé <a href="https://github.com/">Github</a>
+				Ce service nous a permi de partager nos modifications sur le cloud d'une manière simple et efficace de façon à ce que chacun puisse avoir la dernière sauvegarde pour pouvoir travailler. 
+
+				D'autre part pour pouvoir exporter nos modifications de manière simple sans passer par le site directement. Nous avons utilisé une extension de sublime text : Sublime merge.</p>
+			</article>
+			<aside><img src="data/images/html/sublime_merge.png" class="merge"></aside>
+		</div>
+		<div class="telechargement-desc">
+			<article id="telechargement">
+				<h2>Téléchargement</h2>
+				<p>Lien de téléchargement <a href="A COMPLETER">Metawars</a>
+				</p>
+			</article>
+		</div>
+	</section>
 		
 </html>
