@@ -1,0 +1,138 @@
+@font-face {
+	font-family: "Ubuntu Mono";
+	src: url('images/police.ttf');
+}
+
+html {
+	height: 100%;
+	--couleur-secondaire: rgba(252, 175, 62);
+}
+
+body {
+	margin: 0;
+	/* On défini le fond du site */
+	/*background: url("images/fonds.jpg") no-repeat center fixed;
+	background-size: cover;*/
+
+	/* Par défaut on utilise Ubuntu Mono */
+	font-family: "Ubuntu Mono", Joystick, Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, p, a, li, i, img, tr {
+	/* Tous les textes sont blancs */
+	color: grey;
+}
+
+p a {
+	/* "p a" fait référence aux liens qui se trouve dans un paragraphe */
+	/* Il faut éviter d'augmenter leur taille */
+	font-size: 0.95em;
+}
+
+h1 {
+	font-size: 3em;
+}
+
+h2 {
+	font-size: 2.2em;
+}
+
+ul {
+	/* On ne veut pas de points dégueulasses devant
+	les éléments des listes */
+	list-style: none;
+}
+
+header {
+	/* On change la couleur de l'entête, on applique une petite bordure en bas
+	et une ombre légère en dessous */
+	background-color: var(--color1);
+	border-bottom: 3px solid var(--contour-color);
+	box-shadow: 0px 0px 3px 0px;
+	display: flex;
+	align-items: center;
+}
+
+header img {
+	height: 100px;
+	margin-left: 20px;
+}
+
+header h1 {
+	margin: 0;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+section {
+	margin-right: 5%;
+	margin-left: 5%;
+	margin-bottom: 5%;
+
+	padding: 2%;
+	padding-bottom: 0;
+
+	border-right: 2px solid var(--color1);
+	border-left: 2px solid var(--color1);
+	border-bottom: 2px solid var(--color1);
+	border-radius: 0px 0px 20px 20px;
+	background-color: var(--color3);
+
+
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+
+	min-height: 700px;
+}
+
+section img, section iframe {
+	border-radius: 10px;
+	margin-left: 50px;
+	height: 240px;
+	width: 480px;
+}
+
+section > div {
+	display: flex;
+	align-items: flex-start;
+	margin: 50px 0 50px 0;
+}
+
+section h2 {
+	margin-top: 0;
+}
+
+article {
+	width: 100%;
+}
+
+section p {
+	text-align: justify;
+}
+
+section > h1 {
+	text-align: center;
+}
+
+section > h2 {
+	margin-bottom: 0;
+}
+
+h1 {
+	margin-bottom: 5px;
+}
+
+.presentation-nav {
+	display: flex;
+}
+
+.presentation-nav li {
+	margin: 0 10px 0 10px;
+}
+
+a:hover {
+	color: var(--couleur-secondaire);
+	transition-duration: 0.2s;
+}
