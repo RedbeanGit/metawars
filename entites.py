@@ -69,9 +69,9 @@ class Joueur(Entite):
 		super().__init__(niveau)
 		self.vie = constantes.VIE_JOUEUR
 
-		self.degat_tir = constantes.DEGAT_JOUEUR
+		self.degats_bonus = 0
 		self.bouclier = False
-		self.velocite = [0,0]
+		self.velocite = [0, 0]
 		self.vitesse = 1
 
 		# cette variable permet de savoir si l'entité est en animation de dégat
@@ -106,13 +106,13 @@ class Joueur(Entite):
 	def actualise(self, temps):
 		super().actualise(temps)
 
-		self.temps_animation_degat += temps
+		if self.est_touche:
+			self.temps_animation_degat += temps
 
-		# si l'animation a assez duré, on l'arrête et on recharge l'image par défaut du joueur
-		if self.temps_animation_degat >= constantes.DUREE_ANIMATION_DEGAT:
-			self.est_touche = False
-			self.temps_animation_degat = 0
-			self.charge_image()
+			# si l'animation a assez duré, on l'arrête et on recharge l'image par défaut du joueur
+			if self.temps_animation_degat >= constantes.DUREE_ANIMATION_DEGAT:
+				self.est_touche = False
+				self.charge_image()
 
 		if self.vie <= 0:
 			self.meurt()
@@ -131,16 +131,11 @@ class Joueur(Entite):
 		self.position[0] += self.velocite[0] * temps * self.vitesse
 		self.position[1] += self.velocite[1] * temps * self.vitesse
 
-	def touche(self):
+	def attaque(self, degat):
 		self.est_touche = True
-
-		# on change l'image du joueur pour qu'il ai l'image du joueur touché
-		affichage = self.niveau.affichage
-		taille_pixel_x = int(self.taille[0] * constantes.ZOOM)
-		taille_pixel_y = int(self.taille[1] * constantes.ZOOM)
-
-		self.image = affichage.obtenir_image(os.path.join("data", "images", "joueur", "joueur_touche.png"))
-		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
+		self.vie -= degat
+		self.temps_animation_degat = 0
+		self.charge_image_touche()
 
 	def haut(self):
 		self.velocite[1] -= constantes.VITESSE_JOUEUR
@@ -158,9 +153,6 @@ class Joueur(Entite):
 		self.velocite[0] = 0
 		self.velocite[1] = 0
 
-	def attaque(degat):
-		pass
-
 	def meurt(self):
 		print("Le joueur est mort !")
 		self.niveau.termine()
@@ -174,7 +166,6 @@ class Ennemi(Entite):
 	def __init__(self, niveau):
 		super().__init__(niveau)
 		self.vitesse = constantes.VITESSE_ENNEMI
-		self.degat_tir = constantes.DEGAT_ENNEMI
 		self.vie = constantes.VIE_ENNEMI
 
 		# cette variable permet de savoir si l'entité est en animation de dégat
@@ -203,11 +194,10 @@ class Ennemi(Entite):
 		if self.est_touche:
 			self.temps_animation_degat += temps
 
-		# si l'animation a assez duré, on l'arrête et on recharge l'image par défaut de l'ennemi
-		if self.temps_animation_degat >= constantes.DUREE_ANIMATION_DEGAT:
-			self.est_touche = False
-			self.temps_animation_degat = 0
-			self.charge_image()
+			# si l'animation a assez duré, on l'arrête et on recharge l'image par défaut de l'ennemi
+			if self.temps_animation_degat >= constantes.DUREE_ANIMATION_DEGAT:
+				self.est_touche = False
+				self.charge_image()
 
 		# si l'ennemi est trop près du joueur, on l'arrête
 		if self.est_trop_pret():
@@ -245,16 +235,11 @@ class Ennemi(Entite):
 			# donc l'angle est entre -pi et 0 (donc opposé)
 			self.angle = angle + math.pi
 
-	def touche(self):
+	def attaque(self, degat):
 		self.est_touche = True
-
-		# on change l'image de l'ennemi pour qu'il est l'image d'un ennemi touché
-		affichage = self.niveau.affichage
-		taille_pixel_x = int(self.taille[0] * constantes.ZOOM)
-		taille_pixel_y = int(self.taille[1] * constantes.ZOOM)
-
-		self.image = affichage.obtenir_image(os.path.join("data", "images", "ennemi", "ennemi_touche.png"))
-		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
+		self.vie -= degat
+		self.temps_animation_degat = 0
+		self.charge_image_touche()
 
 	def tir(self):
 		# on crée un tir
@@ -328,7 +313,7 @@ class Bonus(Entite):
 				joueur.vitesse = 4 * constantes.BONUS_VITESSE + 1
 
 		elif self.type == "arme_amelioree":
-			joueur.degat_tir += constantes.BONUS_DEGAT
+			joueur.degats_bonus += constantes.BONUS_DEGAT
 
 		self.meurt()
 
@@ -379,6 +364,9 @@ class Tir(Entite):
 
 	def touche(self, entite):
 		"""Cette methode reduit la vie de entite"""
-		entite.vie -= self.tireur.degat_tir
-		entite.touche()
+
+		if type(entite) == Joueur:
+			entite.attaque(constantes.DEGAT_ENNEMI)
+		else:
+			entite.attaque(constantes.DEGAT_JOUEUR + self.niveau.joueur.degats_bonus)
 		self.meurt()

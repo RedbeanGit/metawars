@@ -57,10 +57,14 @@ class Affichage(object):
 		texte_temps = Texte(self, "Temps: 0s", (10, 10))
 		texte_pieces = Texte(self, "Pièces: 0", (10, 40))
 		texte_vie = Texte(self, "Vie: 0", (10, 70))
+		texte_arme = Texte(self, "Bonus dégats: 0", (constantes.TAILLE_ECRAN[0] - 10, 10), ancrage=(1, -1))
+		texte_vitesse = Texte(self, "Bonus vitesse: x1", (constantes.TAILLE_ECRAN[0] - 10, 40), ancrage=(1, -1))
 		
 		self.widgets.append(texte_temps)
 		self.widgets.append(texte_pieces)
 		self.widgets.append(texte_vie)
+		self.widgets.append(texte_arme)
+		self.widgets.append(texte_vitesse)
 
 	def creer_widgets_menu(self, fct_partie):
 		""" Doit créer un """
@@ -248,7 +252,12 @@ class Affichage(object):
 		texte_temps = self.widgets[0]
 		texte_pieces = self.widgets[1]
 		texte_vie = self.widgets[2]
+		texte_arme = self.widgets[3]
+		texte_vitesse = self.widgets[4]
 
 		texte_temps.texte = "Temps: {temps}s".format(temps=int(niveau.temps_total))
 		texte_pieces.texte = "Pièces: {pieces}".format(pieces=niveau.pieces)
 		texte_vie.texte = "Vie: {vie}".format(vie=int(niveau.joueur.vie))
+		
+		texte_arme.texte = "Bonus dégats: {degats}".format(degats=niveau.joueur.degats_bonus)
+		texte_vitesse.texte = "Bonus vitesse: x{vitesse}".format(vitesse=round(niveau.joueur.vitesse, 2))
