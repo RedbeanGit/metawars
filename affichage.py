@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+"""
+	Contient une classe permettant de créer une fenêtre et de gérer les images.
+"""
+
+
 import constantes
 import utile
 import niveau
@@ -14,7 +19,11 @@ import pygame
 
 
 class Affichage(object):
+	""" Permet de créer une fenêtre, charger des images et gérer des Widgets. """
+
 	def __init__(self):
+		""" Initialise un nouvel affichage. """
+
 		# on cree une fenetre
 		self.fenetre = pygame.display.set_mode(constantes.TAILLE_ECRAN)
 		self.images = {}
@@ -26,6 +35,9 @@ class Affichage(object):
 		pygame.display.set_icon(icone)
 
 	def charge_images(self):
+		""" Charge les images du disque dur en mémoire vive. Il est préférable 
+			de n'appeler cette méthode qu'une seule fois pour éviter de ralentir le jeu. """
+
 		print("Chargement des images...")
 
 		# Pour chaque image dans constantes.IMAGES
@@ -40,6 +52,11 @@ class Affichage(object):
 		print("Fin du chargement des images !")
 
 	def obtenir_image(self, chemin_image):
+		""" Renvoie une surface pygame à un emplacement défini. Si l'image n'a pas été 
+			chargée, crée une nouvelle surface noire. 
+
+			<chemin_image> (str): L'emplacement de l'image. """
+
 		if chemin_image in self.images:
 			# si l'image existe, on la renvoie
 			return self.images[chemin_image].convert_alpha()
@@ -48,26 +65,31 @@ class Affichage(object):
 			return pygame.Surface((50, 50))
 
 	def supprimer_widgets(self):
+		""" Supprime tous les widgets de cet affichage en vidant la liste des widgets. """
+
 		self.widgets.clear() # vide la liste des widgets de cet affichage
 
 	def creer_widgets_niveau(self):
-		""" Doit créer un Text pour le temps passé sur le niveau, un pour les pièces
-			et un pour indiquer la vie du joueur """
+		""" Crée les textes à afficher pendant la partie renseignant sur le temps écoulé,
+			les pièces amassées, la vie restante, les dégats et vitesse bonus. """
 
 		texte_temps = Texte(self, "Temps: 0s", (10, 10))
 		texte_pieces = Texte(self, "Pièces: 0", (10, 40))
 		texte_vie = Texte(self, "Vie: 0", (10, 70))
+
 		texte_arme = Texte(self, "Bonus dégats: 0", (constantes.TAILLE_ECRAN[0] - 10, 10), ancrage=(1, -1))
 		texte_vitesse = Texte(self, "Bonus vitesse: x1", (constantes.TAILLE_ECRAN[0] - 10, 40), ancrage=(1, -1))
 		
 		self.widgets.append(texte_temps)
 		self.widgets.append(texte_pieces)
 		self.widgets.append(texte_vie)
+
 		self.widgets.append(texte_arme)
 		self.widgets.append(texte_vitesse)
 
 	def creer_widgets_menu(self, fct_partie):
-		""" Doit créer un """
+		""" Crée un bouton 'Jouer', un bouton 'Quitter', une image de titre et des textes informatifs. """
+
 		milieu_ecran_x = constantes.TAILLE_ECRAN[0] // 2
 		milieu_ecran_y = constantes.TAILLE_ECRAN[1] // 2
 		milieu_du_milieu_ecran_y = milieu_ecran_y // 2
@@ -95,6 +117,11 @@ class Affichage(object):
 		self.widgets.append(texte_dev)
 
 	def actualise(self, niveau, en_partie):
+		""" Efface la fenêtre, redessine le terrain, les entités, puis les widgets en les actualisant. 
+
+			<niveau> (niveau.Niveau): Le niveau à afficher
+			<en_partie> (bool): Si True, actualise les textes affichant les stats du joueur """
+
 		# On rend tous les pixels de la fenetre blanc
 		self.fenetre.fill((255, 255, 255))
 
@@ -119,6 +146,12 @@ class Affichage(object):
 		pygame.display.update()
 
 	def actualise_evenements(self, niveau, en_partie):
+		""" Lit les évenements du clavier et de la souris et exécute les fonctions associées
+			à certaines touches (ex: Appui sur la touche Z -> le joueur monte).
+
+			<niveau> (niveau.Niveau): Le niveau à actualiser en fonction des actions utilisateur.
+			<en_partie> (bool): si True, fait bouger et tirer le joueur, sinon le joueur ne réagit pas. """
+
 		# on parcourt l'ensemble des evenements utilisateurs (clic, appui sur une touche, etc)
 		for evenement in pygame.event.get():
 
@@ -190,6 +223,10 @@ class Affichage(object):
 				widget.actualise_evenement(evenement)
 
 	def affiche_entite(self, entite):
+		""" Affiche une entité en fonction de ses attributs de position, taille et rotation.
+
+			<entite> (entites.Entite): L'entité à afficher. """
+
 		# on recuper le milieu de l'ecran
 		milieu_ecran_x = constantes.TAILLE_ECRAN[0] // 2
 		milieu_ecran_y = constantes.TAILLE_ECRAN[1] // 2
@@ -221,6 +258,12 @@ class Affichage(object):
 		self.fenetre.blit(image_tournee, (x, y))
 
 	def affiche_carte(self, niveau):
+		""" Dessine le fond du niveau en fonction de la position du joueur pour donner
+			l'impression que celui-ci bouge alors qu'il reste constament centré en plein
+			milieu de l'écran. 
+
+			<niveau> (niveau.Niveau): Le niveau à afficher. """
+
 		largeur, hauteur = niveau.image.get_size()
 		joueur_x, joueur_y = niveau.joueur.position
 
@@ -245,10 +288,16 @@ class Affichage(object):
 				self.fenetre.blit(niveau.image, (x * largeur - distance_joueur_x, y * hauteur - distance_joueur_y))
 
 	def affiche_widgets(self):
+		""" Redessine tous les widgets de cet affichage. """
+
 		for widget in self.widgets:
 			widget.actualise()
 
 	def actualise_scores(self, niveau):
+		""" Change le texte des Widgets affichant les stats du joueur. 
+
+			<niveau> (niveau.Niveau): Le niveau dont il faut afficher les stats. """
+
 		texte_temps = self.widgets[0]
 		texte_pieces = self.widgets[1]
 		texte_vie = self.widgets[2]

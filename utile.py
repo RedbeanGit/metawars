@@ -11,12 +11,15 @@ import sys
 
 
 def arreter():
+	""" Arrête le jeu en tuant le programme. """
 	print("Arrêt de {nom}...".format(nom=constantes.NOM))
 	sys.exit()
 
 
 def lire_fichier(chemin_fichier):
-	"""Permet de lire un fichier à l'emplacement 'chemin_fichier'"""
+	""" Permet de lire un fichier à un emplacement donné. 
+
+		<chemin_fichier> (str): Le chemin du fichier. """
 
 	# On teste si le fichier existe bel et bien
 	if os.path.exists(chemin_fichier):
@@ -31,8 +34,11 @@ def lire_fichier(chemin_fichier):
 
 
 def ecrire_fichier(chemin_fichier, contenu):
-	"""Permet d'écrire 'contenu' dans un fichier à l'emplacement 'chemin_fichier'.
-	Si le fichier n'existe pas, il sera créé automatiquement par python."""
+	""" Permet d'écrire du texte dans un fichier à un emplacement spécifique.
+		Le fichier sera créé si il n'existe pas, sinon il sera effacé puis recréé.
+
+		<chemin_fichier> (str): Le chemin du fichier.
+		<contenu> (str): Le texte à écrire dans le fichier. """
 
 	# On ouvre le fichier en mode écriture ("w")
 	# et on le stocke dans la variable 'fichier'
@@ -41,8 +47,14 @@ def ecrire_fichier(chemin_fichier, contenu):
 
 
 def radian_en_degres(angle):
+	""" Convertit un angle en radian, en degré.
+
+		<angle> (float): L'angle en radian à convertir. """
 	return angle * 180 / math.pi
 
 
 def degres_en_radian(angle):
+	""" Convertit un angle en degré, en radian.
+
+		<angle> (float): L'angle en degré à convertir. """
 	return angle * math.pi / 180

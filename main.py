@@ -51,6 +51,10 @@ def lancer_jeu():
 
     
 def lancer_partie(affichage):
+    """ Cette fonction permet de créer un terrain jouable sur l'affichage donné. 
+
+        <affichage> (affichage.Affichage): L'affichage sur lequel dessiner le niveau. """
+
     # on supprime tous les widgets de la fenêtre
     affichage.supprimer_widgets()
     # on crée les widgets du niveau

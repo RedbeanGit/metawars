@@ -1,7 +1,5 @@
 # MetaWars, TO DO LIST
 
-- Ajouter des docstring (pour plus d'info, me contacter)
-
 ## data
 - "data/images/joueur/joueur_bouclier.png" doit être ajouté
 - "data/images/fond.png" doit être modifié car mauvais pour les yeux
@@ -18,19 +16,10 @@
 
 ## entities.py
 - Joueur(Entite): En cours
-	* attaque(degat): En cours [Doit remplacer touche()]
-		[Doit prendre en compte le bouclier]
-		[Doit utiliser charge_image_touche() au lieu de changer l'image elle-même]
-
-- Ennemi(Entite): En cours
-	* attaque(degat): A créer [Doit remplacer touche()]
-		[Doit utiliser charge_image_touche() au lieu de changer l'image elle-même]
+	* attaque(degat): En cours [Doit prendre en compte le bouclier]
 
 - Bonus(Entite): En cours
 	* attrape(): En cours [il faudrait rajouter des limites au bonus restant car il devienne trop pété après mdrrr]
-
-- Tir(Entite): En cours
-	* touche(entite): En cours [Ne doit plus faire perdre de la vie à l'entité touchée mais appeler entite.attaque(degat)]
 
 ## niveau.py
 - Niveau: En cours

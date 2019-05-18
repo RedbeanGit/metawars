@@ -12,9 +12,7 @@ import random
 
 
 class Niveau(object):
-	"""
-	Gere l'ensemble des entités du jeu.
-	"""
+	""" Gère l'ensemble des entités du jeu ainsi que certaines données de partie. """
 
 	def __init__(self, affichage):
 		self.image = None
@@ -26,6 +24,8 @@ class Niveau(object):
 		self.en_pause = False
 
 	def charge_image(self):
+		""" Charge l'image de fond et celle du joueur. """
+
 		# on charge le fond du niveau
 		self.image = self.affichage.obtenir_image(os.path.join("data", "images", "fond_carte.png"))
 
@@ -33,6 +33,10 @@ class Niveau(object):
 		self.joueur.charge_image()
 
 	def actualise(self, temps):
+		""" Actualise les entités et tente de faire apparaitre des bonus et des ennemis.
+
+			<temps> (float): Le temps écoulé depuis la dernière actualisation. """
+
 		if not self.en_pause:
 			self.temps_total += temps
 
@@ -44,6 +48,10 @@ class Niveau(object):
 			self.fait_apparaitre(temps)
 
 	def fait_apparaitre(self, temps):
+		""" Fait parfois apparaitre un bonus et/ou un ennemi.
+
+			<temps> (float): Le temps écoulé depuis la dernière actualisation. """
+
 		# on pioche un nombre aléatoire
 		nb = random.random()
 
@@ -60,8 +68,9 @@ class Niveau(object):
 			self.cree_bonus()
 
 	def enleve_entite(self, entite):
-		""" Enleve l'entite de self.entites seulement
-			si elle fait parti de ce niveau """
+		""" Enlève une entité donnée de la liste des entités. 
+
+			<entite> (entites.Entite): L'entité à enlever. """
 
 		# si l'entité fait bien parti de la liste des entités de ce niveau
 		if entite in self.entites:
@@ -69,6 +78,8 @@ class Niveau(object):
 			self.entites.remove(entite)
 
 	def cree_bonus(self):
+		""" Crée un nouveau bonus à une position aléatoire proche du joueur. """
+
 		# on crée un bonus
 		bonus = Bonus(self)
 
@@ -87,6 +98,8 @@ class Niveau(object):
 		self.entites.append(bonus)
 
 	def cree_ennemi(self):
+		""" Crée un nouvel ennemi à une position aléatoire proche du joueur. """
+
 		# on crée un ennemi
 		ennemi = Ennemi(self)
 		
@@ -103,6 +116,8 @@ class Niveau(object):
 		self.entites.append(ennemi)
 
 	def termine(self):
+		""" Met en pause le niveau. """
+
 		self.en_pause = True
 		print("La partie s'est terminée avec {pieces} pièces après {temps} seconde(s) de jeu" \
 			.format(pieces=self.pieces, temps=self.temps_total))

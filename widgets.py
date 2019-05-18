@@ -13,15 +13,16 @@ pygame.freetype.init()
 
 
 class Widget(object):
-	""" Classe de base pour tous les widgets (éléments graphiques indépendants)
-
-		affichage (affichage.Affichage): La fenêtre sur laquelle dessiner le widget
-		position (tuple): Optionnel, la position (x, y) du widget en pixels
-		taille (tuple): Optionnel, la taille (largeur, hauteur) du widget en pixels
-		ancrage (tuple): Optionnel, le point (x, y) d'ancrage du widget en pixels
-	"""
+	""" Classe de base pour tous les widgets (éléments graphiques indépendants). """
 
 	def __init__(self, affichage, position=(0, 0), taille=(1, 1), ancrage=(-1, -1)):
+		""" Initialise un widget. 
+
+			<affichage> (affichage.Affichage): La fenêtre sur laquelle dessiner le widget.
+			[position] (tuple): La position (x, y) du widget en pixels.
+			[taille] (tuple): La taille (largeur, hauteur) du widget en pixels.
+			[ancrage] (tuple): Le point (x, y) d'ancrage du widget en pixels. """
+
 		# la fenêtre sur lequel ce widget devra s'afficher
 		self.affichage = affichage
 		# la position du widget
@@ -48,6 +49,7 @@ class Widget(object):
 	def obtenir_position_reelle(self):
 		""" Renvoie la position du coin supérieur gauche du widget
 			en fonction de ses attributs 'position' et 'ancrage' """
+
 		x, y = self.position
 		w, h = self.taille
 		ax, ay = self.ancrage
@@ -58,7 +60,9 @@ class Widget(object):
 		return (vrai_x, vrai_y)
 
 	def est_dans_widget(self, position):
-		""" Renvoie True si la position est dans le widget sinon False """
+		""" Renvoie True si la position est dans le widget sinon False.
+
+			<position> (tuple): La position (x, y) à tester. """
 
 		x, y = self.obtenir_position_reelle()
 		largeur, hauteur = self.taille
@@ -70,13 +74,18 @@ class Widget(object):
 
 
 class Texte(Widget):
-	""" Permet d'afficher un texte à une position définie
-		
-		text (str): Le texte à afficher
-		taille_police (int): Optionnel, la hauteur de la police en pixels
-	"""
+	""" Permet d'afficher un texte à une position définie. """
 
 	def __init__(self, affichage, texte, position=(0, 0), ancrage=(-1, -1), taille_police=20, couleur=(255, 255, 255)):
+		""" Initialise un texte. 
+
+			<affichage> (affichage.Affichage): La fenêtre sur laquelle dessiner le texte.
+			<text> (str): Le texte à afficher.
+			[position] (tuple): La position (x, y) du texte en pixels.
+			[ancrage] (tuple): Le point (x, y) d'ancrage du texte en pixels.
+			[taille_police] (int): La hauteur de la police en pixels.
+			[couleur] (tuple): La couleur (R, V, B) du texte. """
+
 		super().__init__(affichage, position, (1, 1), ancrage)
 
 		self.texte = texte
@@ -94,6 +103,8 @@ class Texte(Widget):
 			self.police = pygame.freetype.SysFont(nom_police, self.taille_police)
 
 	def actualise(self):
+		""" Crée une surface à partir du texte défini puis la dessine sur l'affichage. """
+
 		# on créer une surface à partir du texte donné, en utilisant la police définie
 		surface, rect = self.police.render(self.texte, self.couleur, size=self.taille_police)
 		
@@ -109,16 +120,25 @@ class Texte(Widget):
 class Bouton(Widget):
 	""" Permet de créer un bouton qui change de texture en fonction
 		de la position et de l'état de la souris. Lance une fonction
-		donnée lors du clic
-		
-		action (function): Une méthode ou fonction à executer lors du clic de la souris
-	"""
+		donnée lors du clic.	"""
 
 	def __init__(self, affichage, action, texte="", arguments_action=(), position=(0, 0), taille=(1, 1), ancrage=(-1, -1), \
-			taille_police=20):
+			taille_police=20, couleur_texte=(255, 255, 255)):
+		""" Initialise un bouton. 
+
+			<affichage> (affichage.Affichage): La fenêtre sur laquelle dessiner le bouton.
+			<action> (function ou method): La fonction ou méthode à exécuter lors du clic sur ce bouton.
+			[text] (str): Le texte à afficher.
+			[position] (tuple): La position (x, y) du bouton en pixels.
+			[taille] (tuple): La taille (largeur, hauteur) du bouton en pixels.
+			[ancrage] (tuple): Le point (x, y) d'ancrage du bouton en pixels.
+			[taille_police] (int): La hauteur de la police en pixels.
+			[couleur_texte] (tuple): La couleur (R, V, B) du texte. """
+
 		super().__init__(affichage, position, taille, ancrage)
 		# on crée un widget Texte qui sera affiché sur le bouton (centré sur le bouton)
-		self.texte = Texte(affichage, texte, position=self.obtenir_position_texte(), ancrage=(0, 0), taille_police=taille_police)
+		self.texte = Texte(affichage, texte, position=self.obtenir_position_texte(), ancrage=(0, 0), \
+			taille_police=taille_police, couleur=couleur_texte)
 		# tuple contenant tous les arguments à passer à la fonction 'action'
 		self.arguments_action = arguments_action
 		# action est une fonction que l'on lancera lors du clic sur le bouton
@@ -131,6 +151,8 @@ class Bouton(Widget):
 		self.charge_images()
 
 	def charge_images(self):
+		""" Charge les images de fond du bouton. """
+
 		etats = ("clic_central", "clic_droit", "clic_gauche", "desactive", "normal", "survol")
 
 		# pour chaque état que peut avoir le bouton, on charge une image
@@ -143,6 +165,8 @@ class Bouton(Widget):
 			self.images[etat] = pygame.transform.scale(image, self.taille)
 
 	def actualise(self):
+		""" Redessine l'image de fond et le texte du bouton sur l'affichage. """
+
 		# on dessine la texture correspondante à l'état actuelle du bouton sur la fenêtre
 		# à la position du coin supérieur gauche
 		self.affichage.fenetre.blit(self.images[self.etat], self.obtenir_position_reelle())
@@ -150,6 +174,11 @@ class Bouton(Widget):
 		self.texte.actualise()
 
 	def actualise_evenement(self, evenement):
+		""" Détecte le survol et le clic de la souris pour changer l'état du bouton et
+			exécuter l'action définie.
+
+			<evenement> (pygame.event.Event): L'évènement à tester. """
+
 		x, y = self.obtenir_position_reelle()
 		w, h = self.taille
 
@@ -188,6 +217,8 @@ class Bouton(Widget):
 				self.etat = "normal"
 
 	def obtenir_position_texte(self):
+		""" Renvoie la position du texte en fonction de celle du bouton. """
+
 		x, y = self.obtenir_position_reelle()
 		w, h = self.taille
 
@@ -196,18 +227,25 @@ class Bouton(Widget):
 
 class Image(Widget):
 	""" Permet de créer une image qui se redéssine seule à une position définie lors de sa création.
-		L'image est chargée automatiquement par le widget lors de sa création.
-
-		chemin_image (str): Le chemin de l'image (absolue ou relatif)	
-	"""
+		L'image est chargée automatiquement par le widget lors de sa création. """
 
 	def __init__(self, affichage, chemin_image, position=(0, 0), taille=(0, 0), ancrage=(-1, -1)):
+		""" Initialise une image. 
+
+			<affichage> (affichage.Affichage): La fenêtre sur laquelle dessiner l'image.
+			<chemin_image> (str): Le chemin de l'image à afficher.
+			[position] (tuple): La position (x, y) de l'image en pixels.
+			[taille] (tuple): La taille (largeur, hauteur) de l'image en pixels.
+			[ancrage] (tuple): Le point (x, y) d'ancrage de l'image en pixels. """
+
 		super().__init__(affichage, position, taille, ancrage)
 
 		self.chemin_image = chemin_image
 		self.charge_image()
 
 	def charge_image(self):
+		""" Charge l'image à afficher. """
+
 		# on charge l'image demandée
 		self.image = self.affichage.obtenir_image(self.chemin_image)
 
@@ -220,5 +258,7 @@ class Image(Widget):
 			self.taille = self.image.get_size()
 
 	def actualise(self):
+		""" Redessine l'image sur l'affichage. """
+
 		# on colle l'image sur la fenêtre à la position du coin supérieur gauche
 		self.affichage.fenetre.blit(self.image, self.obtenir_position_reelle())

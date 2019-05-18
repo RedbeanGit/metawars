@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+	Ce fichier contient toutes les constantes nécessaires au bon fonctionnement du jeu.
+"""
+
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __version__ = "0.1.0"
 
