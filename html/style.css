@@ -56,7 +56,7 @@ header {
 header img {
 	height: 100px;
 	margin-left: 20px;
-	margin-right: 200px;
+	margin-right: 20px;
 }
 
 header h1 {
@@ -95,10 +95,9 @@ section img, section iframe {
 	width: 480px;
 }
 
-section > div {
-	display: flex;
-	align-items: flex-start;
-	margin: 50px 0 50px 0;
+section img:hover, section iframe:hover {
+	box-shadow: 5px 5px 10px grey;
+	transition-duration: 0.2s;
 }
 
 section h2 {
@@ -125,6 +124,20 @@ h1 {
 	margin-bottom: 5px;
 }
 
+.desc {
+	display: flex;
+	align-items: flex-start;
+	width: 100%;
+	margin: 50px 0 50px 0;
+}
+
+.sous-desc {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	width: 100%;
+}
+
 .presentation-nav {
 	display: flex;
 }
@@ -136,4 +149,9 @@ h1 {
 a:hover {
 	color: var(--couleur-secondaire);
 	transition-duration: 0.2s;
+}
+
+#image-titre {
+	margin-right: auto;
+	margin-left: auto; 
 }
