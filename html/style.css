@@ -91,13 +91,28 @@ section {
 section img, section iframe {
 	border-radius: 10px;
 	margin-left: 50px;
-	height: 240px;
-	width: 480px;
+	height: 300px;
+	width: 520px;
+	transition-duration: 0.3s;
+}
+
+aside:hover img, aside:hover iframe {
+	box-shadow: 3px 3px 10px grey;
+	transition-duration: 0.3s;
+	/*height: 350px;
+	width: 600px;*/
 }
 
 section img:hover, section iframe:hover {
-	box-shadow: 5px 5px 10px grey;
-	transition-duration: 0.2s;
+	box-shadow: 6px 6px 5px grey;
+	transition-duration: 0.3s;
+}
+
+aside:hover .fleche {
+	transition-duration: 0.3s;
+	border-top: 20px solid transparent;
+	border-bottom: 20px solid transparent;
+	border-left: 40px solid var(--couleur-secondaire);
 }
 
 section h2 {
@@ -122,6 +137,13 @@ section > h2 {
 
 h1 {
 	margin-bottom: 5px;
+}
+
+aside {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-left: 50px;
 }
 
 .desc {
@@ -154,4 +176,30 @@ a:hover {
 #image-titre {
 	margin-right: auto;
 	margin-left: auto; 
+}
+
+.fleche {
+	margin: 50px;
+	width: 0px;
+	height: 0px;
+	border-top: 20px solid transparent;
+	border-bottom: 20px solid transparent;
+	border-left: 40px solid grey;
+	margin: 10px auto;
+	border-radius: 4px;
+	transition-duration: 0.3s;
+}
+
+.liste-fichier {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.liste-fichier ul {
+	padding: 0;
+}
+
+.liste-fichier li {
+	margin: 4px 0 4px 0;
 }
