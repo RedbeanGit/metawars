@@ -2,5 +2,5 @@
 echo Installation de Pygame
 pip install pygame
 echo Lancement de Metawars
-python main.py
+python code\main.py
 pause

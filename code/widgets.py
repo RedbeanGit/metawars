@@ -92,7 +92,7 @@ class Texte(Widget):
 		self.taille_police = taille_police
 		self.couleur = couleur
 
-		chemin_fichier_police = os.path.join("data", constantes.POLICE)
+		chemin_fichier_police = os.path.join(constantes.Chemin.RESSOURCES, constantes.General.POLICE)
 
 		if os.path.exists(chemin_fichier_police):
 			# si la police est présente dans le data du jeu, on l'utilise
@@ -158,7 +158,7 @@ class Bouton(Widget):
 		# pour chaque état que peut avoir le bouton, on charge une image
 		# que l'on 'stocke' dans 'self.images'
 		for etat in etats:
-			chemin_image = os.path.join("data", "images", "bouton", "{etat}.png".format(etat=etat))
+			chemin_image = os.path.join(constantes.Chemin.IMAGES, "bouton", "{etat}.png".format(etat=etat))
 			image = self.affichage.obtenir_image(chemin_image)
 
 			# il faut redimensionner l'image pour qu'elle fasse la taille du bouton

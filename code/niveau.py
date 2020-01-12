@@ -27,7 +27,7 @@ class Niveau(object):
 		""" Charge l'image de fond et celle du joueur. """
 
 		# on charge le fond du niveau
-		self.image = self.affichage.obtenir_image(os.path.join("data", "images", "fond_carte.png"))
+		self.image = self.affichage.obtenir_image(constantes.General.IMAGE_FOND)
 
 		# on fait en sorte que le joueur charge son image
 		self.joueur.charge_image()
@@ -57,14 +57,14 @@ class Niveau(object):
 
 		# si le nombre pioché est inférieur au temps écoulé divisé 
 		# par la fréquence moyenne d'apparition...
-		if nb <= temps / constantes.FREQUENCE_APPARITION_ENNEMI:
+		if nb <= temps / constantes.Ennemi.FREQUENCE_APPARITION:
 			# on crée un ennemi
 			self.cree_ennemi()
 
 		# pareil pour les bonus
 		nb = random.random()
 
-		if nb <= temps / constantes.FREQUENCE_APPARITION_BONUS:
+		if nb <= temps / constantes.Bonus.FREQUENCE_APPARITION:
 			self.cree_bonus()
 
 	def enleve_entite(self, entite):
@@ -84,8 +84,8 @@ class Niveau(object):
 		bonus = Bonus(self)
 
 		# on choisi aléatoirement la distance entre le joueur et le bonus
-		dx = (random.random() - 0.5) * 2 * constantes.DIS_MAX_BONUS
-		dy = (random.random() - 0.5) * 2 * constantes.DIS_MAX_BONUS
+		dx = (random.random() - 0.5) * 2 * constantes.Bonus.DIS_MAX
+		dy = (random.random() - 0.5) * 2 * constantes.Bonus.DIS_MAX
 
 		# on redéfinit la position du Bonus autour le joueur
 		bonus.position[0] = self.joueur.position[0] + dx
@@ -104,8 +104,8 @@ class Niveau(object):
 		ennemi = Ennemi(self)
 		
 		# on choisi aléatoirement la distance entre l'ennemi et le joueur
-		dx = (random.random() - 0.5) * 2 * constantes.DIS_MAX_ENNEMI
-		dy = (random.random() - 0.5) * 2 * constantes.DIS_MAX_ENNEMI
+		dx = (random.random() - 0.5) * 2 * constantes.Ennemi.DIS_MAX
+		dy = (random.random() - 0.5) * 2 * constantes.Ennemi.DIS_MAX
 		# on redéfinit la position de l'ennemi autour du joueur
 		ennemi.position[0] = self.joueur.position[0] + dx
 		ennemi.position[1] = self.joueur.position[1] + dy

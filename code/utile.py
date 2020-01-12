@@ -12,7 +12,7 @@ import sys
 
 def arreter():
 	""" Arrête le jeu en tuant le programme. """
-	print("Arrêt de {nom}...".format(nom=constantes.NOM))
+	print("Arrêt de {nom}...".format(nom=constantes.General.NOM))
 	sys.exit()
 
 

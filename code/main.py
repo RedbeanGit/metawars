@@ -44,7 +44,7 @@ def lancer_jeu():
         # on actualise le niveau et les entités qu'il contient
         niveau_menu.actualise(temps_ecoule)
         # pour éviter que le joueur ne meurt, on reinitialise sa vie en permanence
-        niveau_menu.joueur.vie = constantes.VIE_JOUEUR
+        niveau_menu.joueur.vie = constantes.Joueur.VIE
         # on redessine la fenetre pour afficher de nouveau le niveau
         affichage.actualise(niveau_menu, False)
 
@@ -89,5 +89,5 @@ def lancer_partie(affichage):
 if __name__ == "__main__":
     # Si notre fichier est lancé directement par python et pas
     # importé par un autre script alors on lance le jeu
-    print("Démarrage de {nom}...".format(nom=constantes.NOM))
+    print("Démarrage de {nom}...".format(nom=constantes.General.NOM))
     lancer_jeu()

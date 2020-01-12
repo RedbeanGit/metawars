@@ -25,13 +25,13 @@ class Affichage(object):
 		""" Initialise un nouvel affichage. """
 
 		# on cree une fenetre
-		self.fenetre = pygame.display.set_mode(constantes.TAILLE_ECRAN)
+		self.fenetre = pygame.display.set_mode(constantes.General.TAILLE_ECRAN)
 		self.images = {}
 		self.widgets = []
 
 		# on defini un titre a notre fenetre (ici: MetaWars)
-		pygame.display.set_caption(constantes.NOM)
-		icone = pygame.image.load(os.path.join("data", "images", "icone.png"))
+		pygame.display.set_caption(constantes.General.NOM)
+		icone = pygame.image.load(constantes.General.IMAGE_ICONE)
 		pygame.display.set_icon(icone)
 
 	def charge_images(self):
@@ -41,8 +41,8 @@ class Affichage(object):
 		print("Chargement des images...")
 
 		# Pour chaque image dans constantes.IMAGES
-		for chemin_image in constantes.IMAGES:
-			chemin_image = os.path.join("data", "images", *chemin_image)
+		for chemin_image in constantes.Ressources.IMAGES:
+			chemin_image = os.path.join(constantes.Chemin.IMAGES, *chemin_image)
 
 			try:
 				self.images[chemin_image] = pygame.image.load(chemin_image)
@@ -77,8 +77,8 @@ class Affichage(object):
 		texte_pieces = Texte(self, "Pièces: 0", (10, 40))
 		texte_vie = Texte(self, "Vie: 0", (10, 70))
 
-		texte_arme = Texte(self, "Bonus dégats: 0", (constantes.TAILLE_ECRAN[0] - 10, 10), ancrage=(1, -1))
-		texte_vitesse = Texte(self, "Bonus vitesse: x1", (constantes.TAILLE_ECRAN[0] - 10, 40), ancrage=(1, -1))
+		texte_arme = Texte(self, "Bonus dégats: 0", (constantes.General.TAILLE_ECRAN[0] - 10, 10), ancrage=(1, -1))
+		texte_vitesse = Texte(self, "Bonus vitesse: x1", (constantes.General.TAILLE_ECRAN[0] - 10, 40), ancrage=(1, -1))
 		
 		self.widgets.append(texte_temps)
 		self.widgets.append(texte_pieces)
@@ -90,8 +90,8 @@ class Affichage(object):
 	def creer_widgets_menu(self, fct_partie):
 		""" Crée un bouton 'Jouer', un bouton 'Quitter', une image de titre et des textes informatifs. """
 
-		milieu_ecran_x = constantes.TAILLE_ECRAN[0] // 2
-		milieu_ecran_y = constantes.TAILLE_ECRAN[1] // 2
+		milieu_ecran_x = constantes.General.TAILLE_ECRAN[0] // 2
+		milieu_ecran_y = constantes.General.TAILLE_ECRAN[1] // 2
 		milieu_du_milieu_ecran_y = milieu_ecran_y // 2
 
 		bouton_jouer_menu = Bouton(self, fct_partie, "Jouer", position=(milieu_ecran_x, milieu_ecran_y), \
@@ -100,14 +100,14 @@ class Affichage(object):
 		bouton_quitter_menu = Bouton(self, utile.arreter, "Quitter", position=(milieu_ecran_x, milieu_ecran_y+80), \
 			taille=(300, 50), ancrage=(0, 0), taille_police=20)
 
-		logo_menu = Image(self, os.path.join("data", "images", "titre.png"), \
-			position=(milieu_ecran_x, milieu_du_milieu_ecran_y), taille=(400, 80),ancrage=(0, 0))
+		logo_menu = Image(self, constantes.General.IMAGE_TITRE, position=(milieu_ecran_x, milieu_du_milieu_ecran_y), \
+			taille=(400, 80),ancrage=(0, 0))
 
-		texte_version = Texte(self, "v" + __version__, position=(10, constantes.TAILLE_ECRAN[1] - 10), \
+		texte_version = Texte(self, "v" + __version__, position=(10, constantes.General.TAILLE_ECRAN[1] - 10), \
 			ancrage=(-1, 1), taille_police=16)
 
 		texte_dev = Texte(self, __author__, \
-			position=(constantes.TAILLE_ECRAN[0] - 10, constantes.TAILLE_ECRAN[1] - 10), ancrage=(1, 1), \
+			position=(constantes.General.TAILLE_ECRAN[0] - 10, constantes.General.TAILLE_ECRAN[1] - 10), ancrage=(1, 1), \
 			taille_police=16)
 
 		self.widgets.append(bouton_jouer_menu)
@@ -208,12 +208,12 @@ class Affichage(object):
 					x, y = evenement.pos
 
 					# on calcul l'écart entre la position de la souris et le milieu de la fenêtre
-					dx = x - constantes.TAILLE_ECRAN[0] / 2
-					dy = y - constantes.TAILLE_ECRAN[1] / 2
+					dx = x - constantes.General.TAILLE_ECRAN[0] / 2
+					dy = y - constantes.General.TAILLE_ECRAN[1] / 2
 
 					# on enlève le zoom pour convertir cet écart dans l'échelle du niveau
-					dx_niveau = dx / constantes.ZOOM
-					dy_niveau = dy / constantes.ZOOM
+					dx_niveau = dx / constantes.General.ZOOM
+					dy_niveau = dy / constantes.General.ZOOM
 
 					# on fait en sorte que le joueur regarde la position de la souris
 					niveau.joueur.regarde_position(dx_niveau, dy_niveau)
@@ -228,17 +228,17 @@ class Affichage(object):
 			<entite> (entites.Entite): L'entité à afficher. """
 
 		# on recuper le milieu de l'ecran
-		milieu_ecran_x = constantes.TAILLE_ECRAN[0] // 2
-		milieu_ecran_y = constantes.TAILLE_ECRAN[1] // 2
+		milieu_ecran_x = constantes.General.TAILLE_ECRAN[0] // 2
+		milieu_ecran_y = constantes.General.TAILLE_ECRAN[1] // 2
 
 		# on recupere le milieu de l'entite
-		milieu_entite_x = entite.taille[0] * constantes.ZOOM / 2
-		milieu_entite_y = entite.taille[1] * constantes.ZOOM / 2
+		milieu_entite_x = entite.taille[0] * constantes.General.ZOOM / 2
+		milieu_entite_y = entite.taille[1] * constantes.General.ZOOM / 2
 
 		# on calcul la position de l'entité par rapport au joueur
 		# car celui-ci doit être centré en plein milieu de l'écran
-		entite_x = (entite.position[0] - entite.niveau.joueur.position[0]) * constantes.ZOOM + milieu_ecran_x
-		entite_y = (entite.position[1] - entite.niveau.joueur.position[1]) * constantes.ZOOM + milieu_ecran_y
+		entite_x = (entite.position[0] - entite.niveau.joueur.position[0]) * constantes.General.ZOOM + milieu_ecran_x
+		entite_y = (entite.position[1] - entite.niveau.joueur.position[1]) * constantes.General.ZOOM + milieu_ecran_y
 
 		# on applique une rotation sur l'image en fonction de l'angle de l'entite
 		# mais il faut d'abord convertir l'angle de l'entite en degrés (pygame travaille avec des degrés)
@@ -267,16 +267,16 @@ class Affichage(object):
 		largeur, hauteur = niveau.image.get_size()
 		joueur_x, joueur_y = niveau.joueur.position
 
-		distance_joueur_x = (joueur_x * constantes.ZOOM) % largeur
-		distance_joueur_y = (joueur_y * constantes.ZOOM) % hauteur
+		distance_joueur_x = (joueur_x * constantes.General.ZOOM) % largeur
+		distance_joueur_y = (joueur_y * constantes.General.ZOOM) % hauteur
 
 		# on calcule le nombre de texture qu'il va falloir afficher à l'écran
 		# en largeur (x) et en hauteur (y)
 		# math.ceil renvoie la valeur arrondi supérieure ou égale
 		# car il vaut mieux afficher des textures en trop que pas assez
 		# sinon il va rester du vide
-		nb_texture_x = math.ceil(constantes.TAILLE_ECRAN[0] / largeur)
-		nb_texture_y = math.ceil(constantes.TAILLE_ECRAN[1] / hauteur)
+		nb_texture_x = math.ceil(constantes.General.TAILLE_ECRAN[0] / largeur)
+		nb_texture_y = math.ceil(constantes.General.TAILLE_ECRAN[1] / hauteur)
 
 		if distance_joueur_x != 0:
 			nb_texture_x += 1
