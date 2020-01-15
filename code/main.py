@@ -25,11 +25,14 @@ def lancer_jeu():
 
     # on creer un niveau de jeu
     niveau_menu = Niveau(affichage)
+    # on crée un joueur
+    niveau_menu.cree_joueur()
     # le niveau et les entités recupères les images dont elles ont besoin
     niveau_menu.charge_image()
 
+    joueur = niveau_menu.obtenir_joueur_local()
     # on fait avancer le joueur pour éviter qu'il soit immobile
-    niveau_menu.joueur.droite()
+    joueur.droite()
 
     # cette variable retient le temps (en seconde) du dernier tick de jeu
     temps_precedent = time.time()
@@ -44,7 +47,7 @@ def lancer_jeu():
         # on actualise le niveau et les entités qu'il contient
         niveau_menu.actualise(temps_ecoule)
         # pour éviter que le joueur ne meurt, on reinitialise sa vie en permanence
-        niveau_menu.joueur.vie = constantes.Joueur.VIE
+        joueur.vie = constantes.Joueur.VIE
         # on redessine la fenetre pour afficher de nouveau le niveau
         affichage.actualise(niveau_menu, False)
 
@@ -62,6 +65,9 @@ def lancer_partie(affichage):
 
     # on creer un niveau de jeu
     niveau_jeu = Niveau(affichage)
+    # on crée un joueur
+    niveau_jeu.cree_joueur()
+    niveau_jeu.cree_joueur()
     # le niveau et les entités recupères les images dont elles ont besoin
     niveau_jeu.charge_image()
 

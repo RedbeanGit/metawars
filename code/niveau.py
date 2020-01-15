@@ -17,20 +17,27 @@ class Niveau(object):
 	def __init__(self, affichage):
 		self.image = None
 		self.affichage = affichage
-		self.joueur = Joueur(self)
 		self.entites = []
 		self.pieces = 0
 		self.temps_total = 0
 		self.en_pause = False
+
+	def cree_joueur(self):
+		joueur = Joueur(self)
+		joueur.charge_image()
+		self.entites.append(joueur)
+
+	def obtenir_joueur_local(self):
+		if self.entites:
+			if type(self.entites[0]) == Joueur:
+				return self.entites[0]
+		return Joueur(self)
 
 	def charge_image(self):
 		""" Charge l'image de fond et celle du joueur. """
 
 		# on charge le fond du niveau
 		self.image = self.affichage.obtenir_image(constantes.General.IMAGE_FOND)
-
-		# on fait en sorte que le joueur charge son image
-		self.joueur.charge_image()
 
 	def actualise(self, temps):
 		""" Actualise les entités et tente de faire apparaitre des bonus et des ennemis.
@@ -39,8 +46,6 @@ class Niveau(object):
 
 		if not self.en_pause:
 			self.temps_total += temps
-
-			self.joueur.actualise(temps)
 			
 			for entite in self.entites:
 				entite.actualise(temps)
@@ -82,14 +87,15 @@ class Niveau(object):
 
 		# on crée un bonus
 		bonus = Bonus(self)
+		joueur = self.obtenir_joueur_local()
 
 		# on choisi aléatoirement la distance entre le joueur et le bonus
 		dx = (random.random() - 0.5) * 2 * constantes.Bonus.DIS_MAX
 		dy = (random.random() - 0.5) * 2 * constantes.Bonus.DIS_MAX
 
 		# on redéfinit la position du Bonus autour le joueur
-		bonus.position[0] = self.joueur.position[0] + dx
-		bonus.position[1] = self.joueur.position[1] + dy
+		bonus.position[0] = joueur.position[0] + dx
+		bonus.position[1] = joueur.position[1] + dy
 
 		# on lui fait charger son image
 		bonus.charge_image()
@@ -102,13 +108,14 @@ class Niveau(object):
 
 		# on crée un ennemi
 		ennemi = Ennemi(self)
+		joueur = self.obtenir_joueur_local()
 		
 		# on choisi aléatoirement la distance entre l'ennemi et le joueur
 		dx = (random.random() - 0.5) * 2 * constantes.Ennemi.DIS_MAX
 		dy = (random.random() - 0.5) * 2 * constantes.Ennemi.DIS_MAX
 		# on redéfinit la position de l'ennemi autour du joueur
-		ennemi.position[0] = self.joueur.position[0] + dx
-		ennemi.position[1] = self.joueur.position[1] + dy
+		ennemi.position[0] = joueur.position[0] + dx
+		ennemi.position[1] = joueur.position[1] + dy
 
 		# on lui fait charger ses images
 		ennemi.charge_image()

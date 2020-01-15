@@ -128,9 +128,7 @@ class Affichage(object):
 		# on affiche le fond du niveau
 		self.affiche_carte(niveau)
 
-		# on affiche les entités (dont le joueur)
-		self.affiche_entite(niveau.joueur)
-
+		# on affiche les entités
 		for entite in niveau.entites:
 			self.affiche_entite(entite)
 
@@ -152,6 +150,8 @@ class Affichage(object):
 			<niveau> (niveau.Niveau): Le niveau à actualiser en fonction des actions utilisateur.
 			<en_partie> (bool): si True, fait bouger et tirer le joueur, sinon le joueur ne réagit pas. """
 
+		joueur = niveau.obtenir_joueur_local()
+
 		# on parcourt l'ensemble des evenements utilisateurs (clic, appui sur une touche, etc)
 		for evenement in pygame.event.get():
 
@@ -167,16 +167,16 @@ class Affichage(object):
 					# en fonction de la touche appuyée, on appelle la fonction
 					# commandant le déplacement correspondant
 					if evenement.key == pygame.K_w:
-						niveau.joueur.haut()
+						joueur.haut()
 
 					if evenement.key == pygame.K_s:
-						niveau.joueur.bas()
+						joueur.bas()
 
 					if evenement.key == pygame.K_a:
-						niveau.joueur.gauche()
+						joueur.gauche()
 
 					if evenement.key == pygame.K_d:
-						niveau.joueur.droite()
+						joueur.droite()
 
 					if evenement.key == pygame.K_ESCAPE:
 						utile.arreter()
@@ -186,22 +186,22 @@ class Affichage(object):
 					# en fonction de la touche appuyée, on appelle la fonction
 					# commandant le déplacement inverse
 					if evenement.key == pygame.K_w:
-						niveau.joueur.bas()
+						joueur.bas()
 
 					if evenement.key == pygame.K_s:
-						niveau.joueur.haut()
+						joueur.haut()
 
 					if evenement.key == pygame.K_a:
-						niveau.joueur.droite()
+						joueur.droite()
 
 					if evenement.key == pygame.K_d:
-						niveau.joueur.gauche()
+						joueur.gauche()
 
 				# si il clique avec la souris
 				elif evenement.type == pygame.MOUSEBUTTONDOWN:
 					# si le bouton cliqué est le bouton droit de la souris (3)
 					if evenement.button == 1:
-						niveau.joueur.tir()
+						joueur.tir()
 
 				# si la souris bouge
 				elif evenement.type == pygame.MOUSEMOTION:
@@ -216,7 +216,7 @@ class Affichage(object):
 					dy_niveau = dy / constantes.General.ZOOM
 
 					# on fait en sorte que le joueur regarde la position de la souris
-					niveau.joueur.regarde_position(dx_niveau, dy_niveau)
+					joueur.regarde_position(dx_niveau, dy_niveau)
 
 			# on actualise les évenements pour chaque widget
 			for widget in self.widgets:
@@ -227,6 +227,7 @@ class Affichage(object):
 
 			<entite> (entites.Entite): L'entité à afficher. """
 
+		joueur = entite.niveau.obtenir_joueur_local()
 		# on recuper le milieu de l'ecran
 		milieu_ecran_x = constantes.General.TAILLE_ECRAN[0] // 2
 		milieu_ecran_y = constantes.General.TAILLE_ECRAN[1] // 2
@@ -237,8 +238,8 @@ class Affichage(object):
 
 		# on calcul la position de l'entité par rapport au joueur
 		# car celui-ci doit être centré en plein milieu de l'écran
-		entite_x = (entite.position[0] - entite.niveau.joueur.position[0]) * constantes.General.ZOOM + milieu_ecran_x
-		entite_y = (entite.position[1] - entite.niveau.joueur.position[1]) * constantes.General.ZOOM + milieu_ecran_y
+		entite_x = (entite.position[0] - joueur.position[0]) * constantes.General.ZOOM + milieu_ecran_x
+		entite_y = (entite.position[1] - joueur.position[1]) * constantes.General.ZOOM + milieu_ecran_y
 
 		# on applique une rotation sur l'image en fonction de l'angle de l'entite
 		# mais il faut d'abord convertir l'angle de l'entite en degrés (pygame travaille avec des degrés)
@@ -265,7 +266,7 @@ class Affichage(object):
 			<niveau> (niveau.Niveau): Le niveau à afficher. """
 
 		largeur, hauteur = niveau.image.get_size()
-		joueur_x, joueur_y = niveau.joueur.position
+		joueur_x, joueur_y = niveau.obtenir_joueur_local().position
 
 		distance_joueur_x = (joueur_x * constantes.General.ZOOM) % largeur
 		distance_joueur_y = (joueur_y * constantes.General.ZOOM) % hauteur
@@ -304,9 +305,11 @@ class Affichage(object):
 		texte_arme = self.widgets[3]
 		texte_vitesse = self.widgets[4]
 
+		joueur = niveau.obtenir_joueur_local()
+
 		texte_temps.texte = "Temps: {temps}s".format(temps=int(niveau.temps_total))
 		texte_pieces.texte = "Pièces: {pieces}".format(pieces=niveau.pieces)
-		texte_vie.texte = "Vie: {vie}".format(vie=int(niveau.joueur.vie))
+		texte_vie.texte = "Vie: {vie}".format(vie=int(joueur.vie))
 		
-		texte_arme.texte = "Bonus dégats: {degats}".format(degats=niveau.joueur.degats_bonus)
-		texte_vitesse.texte = "Bonus vitesse: x{vitesse}".format(vitesse=round(niveau.joueur.vitesse, 2))
+		texte_arme.texte = "Bonus dégats: {degats}".format(degats=joueur.degats_bonus)
+		texte_vitesse.texte = "Bonus vitesse: x{vitesse}".format(vitesse=round(joueur.vitesse, 2))

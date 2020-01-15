@@ -77,13 +77,21 @@ class Entite(object):
 
 			<entite> (entites.Entite): L'entité à tester. """
 
-		# on renvoie True si une entité déborde sur une autre
-		if self.position[0] + self.taille[0] / 2 > entite.position[0] - entite.taille[0] / 2: 
-			if self.position[0] - self.taille[0] / 2 < entite.position[0] + entite.taille[0] / 2:
-				if self.position[1] + self.taille[1] / 2 > entite.position[1] - entite.taille[1] / 2: 
-					if self.position[1] - self.taille[1] / 2 < entite.position[1] + entite.taille[1] / 2:
-						return True
+		# on vérifie que l'entité qui collisionne n'est pas elle-même
+		if entite != self:
+			# on renvoie True si une entité déborde sur une autre
+			if self.position[0] + self.taille[0] / 2 > entite.position[0] - entite.taille[0] / 2: 
+				if self.position[0] - self.taille[0] / 2 < entite.position[0] + entite.taille[0] / 2:
+					if self.position[1] + self.taille[1] / 2 > entite.position[1] - entite.taille[1] / 2: 
+						if self.position[1] - self.taille[1] / 2 < entite.position[1] + entite.taille[1] / 2:
+							return True
 		return False
+
+	def calculer_distance(self, entite):
+		dx = abs(entite.position[0] - self.position[0])
+		dy = abs(entite.position[1] - self.position[1])
+
+		return math.sqrt(dx**2 + dy**2)
 
 	def meurt(self):
 		""" Supprime cette entité du niveau, elle n'est donc plus actualisée et affichée.
@@ -189,7 +197,7 @@ class Joueur(Entite):
 		self.position[0] += self.velocite[0] * temps * self.vitesse
 		self.position[1] += self.velocite[1] * temps * self.vitesse
 
-	def attaque(self, degat):
+	def blesse(self, degat):
 		""" Réduit la vie du joueur et lance l'animation de dégat (le joueur devient rouge).
 
 			<degat> (float): Les dégats reçus. """
@@ -198,6 +206,9 @@ class Joueur(Entite):
 		self.vie -= degat
 		self.temps_animation_degat = 0
 		self.charge_image_touche()
+
+	def attaque(self, entite):
+		entite.blesse(constantes.Joueur.DEGAT + self.degats_bonus)
 
 	def haut(self):
 		""" Défini le vecteur vélocité pour que le joueur aille vers le haut. """
@@ -266,7 +277,7 @@ class Ennemi(Entite):
 		super().actualise(temps)
 
 		# l'ennemi s'oriente en direction du joueur
-		self.oriente()
+		self.oriente(self.trouve_joueur_proche())
 		
 		# si l'ennemi doit tirer
 		if self.doit_tirer(temps):
@@ -293,12 +304,20 @@ class Ennemi(Entite):
 		if self.vie <= 0:
 			self.meurt()
 
-	def oriente(self):
+	def trouve_joueur_proche(self):
+		def classe_entite(entite):
+			if type(entite) == Joueur:
+				return self.calculer_distance(entite)
+			return float("inf")
+
+		return min(self.niveau.entites, key=classe_entite)
+
+	def oriente(self, joueur):
 		""" Change l'angle de rotation de l'ennemi de façon à ce qu'il regarde le joueur. """
 
 		# on calcule la distance entre le joueur et l'ennemi
-		dx = self.position[0] - self.niveau.joueur.position[0]
-		dy = self.position[1] - self.niveau.joueur.position[1]
+		dx = self.position[0] - joueur.position[0]
+		dy = self.position[1] - joueur.position[1]
 		d = math.sqrt(dx ** 2 + dy ** 2)
 
 		# on divise la distance x par la distance totale
@@ -321,7 +340,7 @@ class Ennemi(Entite):
 			# donc l'angle est entre -pi et 0 (donc opposé)
 			self.angle = angle + math.pi
 
-	def attaque(self, degat):
+	def blesse(self, degat):
 		""" Réduit la vie de l'ennemi et lance l'animation de dégat (l'ennemi devient rouge).
 
 			<degat> (float): Les dégats reçus. """
@@ -330,6 +349,9 @@ class Ennemi(Entite):
 		self.vie -= degat
 		self.temps_animation_degat = 0
 		self.charge_image_touche()
+
+	def attaque(self, entite):
+		entite.blesse(constantes.Ennemi.DEGAT)
 
 	def tir(self):
 		""" Crée un tir au niveau de l'ennemi qui a le même angle de rotation que lui. """
@@ -344,14 +366,11 @@ class Ennemi(Entite):
 	def est_trop_pres(self):
 		""" Renvoie True si l'ennemi est trop prêt du joueur, sinon False. """
 
-		dx = self.position[0] - self.niveau.joueur.position[0]
-		dy = self.position[1] - self.niveau.joueur.position[1]
-		d = math.sqrt(dx ** 2 + dy ** 2)
-
-		if d <= constantes.Joueur.ZONE:
-			return True
-		else:
-			return False
+		for entite in self.niveau.entites:
+			if type(entite) == Joueur:
+				if self.calculer_distance(entite) <= constantes.Joueur.ZONE:
+					return True
+		return False
 
 	def meurt(self):
 		""" Augmente le nombre de pièces et meurt. """
@@ -403,8 +422,10 @@ class Bonus(Entite):
 		if self.temps_vie >= constantes.Bonus.DUREE:
 			self.meurt()
 
-		if self.collisionne(self.niveau.joueur):
-			self.attrape(self.niveau.joueur)
+		for entite in self.niveau.entites:
+			if self.collisionne(entite) and type(entite) == Joueur:
+				self.attrape(entite)
+				break
 
 	def attrape(self, joueur):
 		""" Modifie certains attributs du joueur.
@@ -467,30 +488,23 @@ class Tir(Entite):
 		if self.temps_vie >= constantes.Tir.DUREE:
 			self.meurt()
 
-		# si le tireur est un joueur
-		if type(self.tireur) == Joueur:
-			# on teste pour toutes les entités du niveau
-			for entite in self.niveau.entites:
-				# si le tir touche une entité
-				if self.collisionne(entite):
-					# et si est un ennemi (et pas un bonus ou encore un autre tir)
-					if type(entite) == Ennemi:
-						# alors on appelle la méthode touche()
-						self.touche(entite)
-		else:
-			# sinon, c'est que le tir vient d'un ennemi
-			# si le tir touche le joueur
-			if self.collisionne(self.niveau.joueur):
-				# alors on appelle la méthode touche()
-				self.touche(self.niveau.joueur)
+		for entite in self.niveau.entites:
+			if self.collisionne(entite):
+				self.touche(entite)
+
+	def blesse(self, degat):
+		self.meurt()
 
 	def touche(self, entite):
 		""" Attaque une entité puis meurt. 
 
 			<entite> (entites.Ennemi ou entites.Joueur): Le joueur ou ennemi touché. """
 
-		if type(entite) == Joueur:
-			entite.attaque(constantes.Ennemi.DEGAT)
-		else:
-			entite.attaque(constantes.Joueur.DEGAT + self.niveau.joueur.degats_bonus)
-		self.meurt()
+		if type(entite) != Bonus and entite != self.tireur:
+			if type(self.tireur) == Ennemi:
+				if type(entite) == Joueur:
+					self.tireur.attaque(entite)
+
+			else:
+				self.tireur.attaque(entite)
+			self.meurt()
