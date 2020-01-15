@@ -38,7 +38,7 @@ class Affichage(object):
 		""" Charge les images du disque dur en mémoire vive. Il est préférable 
 			de n'appeler cette méthode qu'une seule fois pour éviter de ralentir le jeu. """
 
-		print("Chargement des images...")
+		utile.deboggue("Chargement des images...")
 
 		# Pour chaque image dans constantes.IMAGES
 		for chemin_image in constantes.Ressources.IMAGES:
@@ -46,10 +46,11 @@ class Affichage(object):
 
 			try:
 				self.images[chemin_image] = pygame.image.load(chemin_image)
-				print("L'image {image} a été chargé !".format(image=chemin_image))
+				utile.deboggue("L'image '" + chemin_image + "' a été chargé !")
 			except pygame.error:
-				print("[ERREUR] L'image {image} n'existe pas !".format(image=chemin_image))
-		print("Fin du chargement des images !")
+				utile.deboggue("L'image '" + chemin_image + "' n'existe pas !", 1)
+		
+		utile.deboggue("Fin du chargement des images !")
 
 	def obtenir_image(self, chemin_image):
 		""" Renvoie une surface pygame à un emplacement défini. Si l'image n'a pas été 

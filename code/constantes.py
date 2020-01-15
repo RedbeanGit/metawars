@@ -20,10 +20,12 @@ class General:
 	NOM = "MetaWars"
 	ZOOM = 110
 	POLICE = "police.ttf"
+	DEBUG = True
 	TAILLE_ECRAN = (800, 450)
 	IMAGE_ICONE = os.path.join(Chemin.IMAGES, "icone.png")
 	IMAGE_TITRE = os.path.join(Chemin.IMAGES, "titre.png")
 	IMAGE_FOND = os.path.join(Chemin.IMAGES, "fond_carte.png")
+	ERREURS = ("INFO", "ATTENTION", "ERREUR")
 
 
 class Joueur:
@@ -71,7 +73,7 @@ class Tir:
 	VITESSE = 8
 	TAILLE = (0.05, 0.05)
 	DUREE = 2.5
-	IMAGE = os.path.join(Chemin.RESSOURCES, "tir", "tir.png")
+	IMAGE = os.path.join(Chemin.IMAGES, "tir", "tir.png")
 
 
 class Ressources:

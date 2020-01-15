@@ -8,11 +8,12 @@ __version__ = "0.1.0"
 import math
 import os
 import sys
+import datetime
 
 
 def arreter():
 	""" Arrête le jeu en tuant le programme. """
-	print("Arrêt de {nom}...".format(nom=constantes.General.NOM))
+	deboggue("Arrêt de " + constantes.General.NOM + "...")
 	sys.exit()
 
 
@@ -29,7 +30,7 @@ def lire_fichier(chemin_fichier):
 			# on retourne son contenu avec la methode read()
 			return fichier.read()
 	else:
-		print("Le fichier '{chemin}' est introuvable !".format(chemin=chemin_fichier))
+		deboggue("Le fichier '" + chemin_fichier + "' est introuvable !", 1)
 		return False
 
 
@@ -58,3 +59,10 @@ def degres_en_radian(angle):
 
 		<angle> (float): L'angle en degré à convertir. """
 	return angle * math.pi / 180
+
+
+def deboggue(message, niveau_erreur=0):
+	if constantes.General.DEBUG:
+		s = "[{h}:{m}:{s}] [{e}] {t}"
+		d = datetime.datetime.now()
+		print(s.format(h=d.hour, m=d.minute, s=d.second, e=constantes.General.ERREURS[niveau_erreur], t=message))

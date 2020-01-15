@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import constantes
+import utile
 
 from affichage import Affichage
 from niveau import Niveau
@@ -95,5 +96,5 @@ def lancer_partie(affichage):
 if __name__ == "__main__":
     # Si notre fichier est lancé directement par python et pas
     # importé par un autre script alors on lance le jeu
-    print("Démarrage de {nom}...".format(nom=constantes.General.NOM))
+    utile.deboggue("Démarrage de " + constantes.General.NOM + "...")
     lancer_jeu()

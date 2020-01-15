@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import constantes
+import utile
+
 from entites import Joueur, Ennemi, Bonus
 
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
@@ -23,6 +25,7 @@ class Niveau(object):
 		self.en_pause = False
 
 	def cree_joueur(self):
+		utile.deboggue("Ajout d'un joueur")
 		joueur = Joueur(self)
 		joueur.charge_image()
 		self.entites.append(joueur)
@@ -31,6 +34,8 @@ class Niveau(object):
 		if self.entites:
 			if type(self.entites[0]) == Joueur:
 				return self.entites[0]
+
+		utile.deboggue("Aucun joueur sur ce niveau ! Création d'un joueur fictif", 1)
 		return Joueur(self)
 
 	def charge_image(self):
@@ -126,5 +131,5 @@ class Niveau(object):
 		""" Met en pause le niveau. """
 
 		self.en_pause = True
-		print("La partie s'est terminée avec {pieces} pièces après {temps} seconde(s) de jeu" \
-			.format(pieces=self.pieces, temps=self.temps_total))
+		utile.deboggue("La partie s'est terminée avec " + str(self.pieces) \
+			+ " pièces après " + str(round(self.temps_total)) + " seconde(s) de jeu")
