@@ -3,16 +3,10 @@
 ## data
 - "data/images/joueur/joueur_bouclier.png" doit être ajouté
 - "data/images/fond.png" doit être modifié car mauvais pour les yeux
-
-## main.py
-- lancer_partie(affichage): En cours
-	[La boucle doit s'arrêter lorsque l'on quitte la partie (pour revenir au menu principal)]
 	
 ## affichage.py
 - Affichage: En cours
-	* creer_widgets_splash(): A créer [Permet d'afficher la petite animation de démarrage]
-	* creer_widgets_fin_niveau(): A créer [Doit afficher un bouton pour revenir au menu principal, le temps et les pièces]
-	* actualise_evenements(niveau, en_partie): En cours [Ajouter un évènement pour mettre le jeu en pause]
+	* creer_widgets_splash(): A créer [Affiche une animation au démarrage]
 
 ## entities.py
 - Joueur(Entite): En cours
@@ -24,5 +18,23 @@
 ## niveau.py
 - Niveau: En cours
 	* fait_apparaite(temps): En cours [Doit faire apparaitre de plus en plus d'ennemis en fonction du temps total]
-	* termine(): En cours [Doit appeler Affichage.creer_widgets_fin_niveau()]
-	* sauvegarde(): A créer [Doit sauvegarder le temps et les pièces seulement si ces scores sont meilleurs que ceux déjà enregistrés]
+	* sauvegarde(): A créer [Sauvegarde le temps et les pièces seulement si ces scores sont meilleurs que ceux déjà enregistrés]
+
+## jeu.py
+- Jeu: En cours
+	* heberger(): A créer [Crée un serveur et un niveau maitre multijoueur]
+	* rejoindre(): A créer [Crée un client et un niveau esclave multijoueur]
+
+## reseau.py
+- Serveur: A creer
+	* lancer(): A créer [Lance une boucle dans un autre processus en attente de connexions]
+	* arreter(): A créer [Déconnecter tous les clients et arrete la boucle de connexion]
+	* envoyer(donnee, client): A créer [Envoie une trame binaire à un client]
+	* recevoir(client): A créer [Lit les trames en attentes envoyées par un client donné]
+	* deconnecter(client): A créer [Déconnecte un client et le supprime de la liste des clients]
+
+- Client: A creer
+	* envoyer(donnee): A créer [Envoie une trame binaire au serveur]
+	* recevoir(): A créer [Lit les trames en attentes envoyées par le serveur]
+	* connecter(): A créer [Connecte le client à un serveur donné]
+	* deconnecte(): A créer [Déconnecte le client du serveur]

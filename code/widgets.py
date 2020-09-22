@@ -6,6 +6,7 @@ __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __version__ = "0.1.0"
 
 import os
+import math
 import pygame
 import pygame.freetype
 
@@ -35,13 +36,13 @@ class Widget(object):
 		# (0, 0) signifie donc "centré"
 		self.ancrage = ancrage
 
-	def actualise(self):
+	def actualiser(self):
 		""" Cette méthode est appelée à chaque frame de jeu pour 
 			redessiner le widget sur 'self.affichage'
 			Ne fait rien par défaut """
 		pass
 
-	def actualise_evenement(self, evenement):
+	def actualiser_evenement(self, evenement):
 		""" Cette méthode est appelée pour chaque nouvel évenement (clic, appui sur une touche, ...).
 			Ne fait rien par défaut """
 		pass
@@ -102,7 +103,7 @@ class Texte(Widget):
 			nom_police = pygame.freetype.get_default_font()
 			self.police = pygame.freetype.SysFont(nom_police, self.taille_police)
 
-	def actualise(self):
+	def actualiser(self):
 		""" Crée une surface à partir du texte défini puis la dessine sur l'affichage. """
 
 		# on créer une surface à partir du texte donné, en utilisant la police définie
@@ -148,9 +149,9 @@ class Bouton(Widget):
 		# l'état du bouton (entre 'normal', 'survol', 'clic_droit', 'clic_gauche', 'clic_central' et 'desactive')
 		self.etat = "normal"
 		# on charge toutes les images du bouton (normal, cliqué, désactivé, ...)
-		self.charge_images()
+		self.charger_images()
 
-	def charge_images(self):
+	def charger_images(self):
 		""" Charge les images de fond du bouton. """
 
 		etats = ("clic_central", "clic_droit", "clic_gauche", "desactive", "normal", "survol")
@@ -164,16 +165,16 @@ class Bouton(Widget):
 			# il faut redimensionner l'image pour qu'elle fasse la taille du bouton
 			self.images[etat] = pygame.transform.scale(image, self.taille)
 
-	def actualise(self):
+	def actualiser(self):
 		""" Redessine l'image de fond et le texte du bouton sur l'affichage. """
 
 		# on dessine la texture correspondante à l'état actuelle du bouton sur la fenêtre
 		# à la position du coin supérieur gauche
 		self.affichage.fenetre.blit(self.images[self.etat], self.obtenir_position_reelle())
 		# on actualise le texte sur le bouton
-		self.texte.actualise()
+		self.texte.actualiser()
 
-	def actualise_evenement(self, evenement):
+	def actualiser_evenement(self, evenement):
 		""" Détecte le survol et le clic de la souris pour changer l'état du bouton et
 			exécuter l'action définie.
 
@@ -241,9 +242,9 @@ class Image(Widget):
 		super().__init__(affichage, position, taille, ancrage)
 
 		self.chemin_image = chemin_image
-		self.charge_image()
+		self.charger_image()
 
-	def charge_image(self):
+	def charger_image(self):
 		""" Charge l'image à afficher. """
 
 		# on charge l'image demandée
@@ -257,7 +258,7 @@ class Image(Widget):
 			# sinon on change l'attribut taille pour qu'il corresponde à la taille de l'image chargée
 			self.taille = self.image.get_size()
 
-	def actualise(self):
+	def actualiser(self):
 		""" Redessine l'image sur l'affichage. """
 
 		# on colle l'image sur la fenêtre à la position du coin supérieur gauche

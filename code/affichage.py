@@ -15,6 +15,7 @@ __version__ = "0.1.0"
 
 import math
 import os
+import sys
 import pygame
 
 
@@ -34,11 +35,11 @@ class Affichage(object):
 		icone = pygame.image.load(constantes.General.IMAGE_ICONE)
 		pygame.display.set_icon(icone)
 
-	def charge_images(self):
+	def charger_images(self):
 		""" Charge les images du disque dur en mémoire vive. Il est préférable 
 			de n'appeler cette méthode qu'une seule fois pour éviter de ralentir le jeu. """
 
-		utile.deboggue("Chargement des images...")
+		utile.debogguer("Chargement des images...")
 
 		# Pour chaque image dans constantes.IMAGES
 		for chemin_image in constantes.Ressources.IMAGES:
@@ -46,11 +47,11 @@ class Affichage(object):
 
 			try:
 				self.images[chemin_image] = pygame.image.load(chemin_image)
-				utile.deboggue("L'image '" + chemin_image + "' a été chargé !")
+				utile.debogguer("L'image '" + chemin_image + "' a été chargé !")
 			except pygame.error:
-				utile.deboggue("L'image '" + chemin_image + "' n'existe pas !", 1)
+				utile.debogguer("L'image '" + chemin_image + "' n'existe pas !", 1)
 		
-		utile.deboggue("Fin du chargement des images !")
+		utile.debogguer("Fin du chargement des images !")
 
 	def obtenir_image(self, chemin_image):
 		""" Renvoie une surface pygame à un emplacement défini. Si l'image n'a pas été 
@@ -70,7 +71,7 @@ class Affichage(object):
 
 		self.widgets.clear() # vide la liste des widgets de cet affichage
 
-	def creer_widgets_niveau(self):
+	def creer_widgets_partie(self):
 		""" Crée les textes à afficher pendant la partie renseignant sur le temps écoulé,
 			les pièces amassées, la vie restante, les dégats et vitesse bonus. """
 
@@ -88,36 +89,128 @@ class Affichage(object):
 		self.widgets.append(texte_arme)
 		self.widgets.append(texte_vitesse)
 
-	def creer_widgets_menu(self, fct_partie):
+	def creer_widgets_menu(self, jeu):
 		""" Crée un bouton 'Jouer', un bouton 'Quitter', une image de titre et des textes informatifs. """
+
+		def jouer():
+			jeu.initialiser_partie()
+			jeu.lancer_boucle()
+
+		def multijoueur():
+			jeu.initialiser_menu_multijoueur()
+			jeu.lancer_boucle()
+
+		def quitter():
+			jeu.arreter()
 
 		milieu_ecran_x = constantes.General.TAILLE_ECRAN[0] // 2
 		milieu_ecran_y = constantes.General.TAILLE_ECRAN[1] // 2
 		milieu_du_milieu_ecran_y = milieu_ecran_y // 2
 
-		bouton_jouer_menu = Bouton(self, fct_partie, "Jouer", position=(milieu_ecran_x, milieu_ecran_y), \
-			taille=(300, 50), ancrage=(0, 0), taille_police=20, arguments_action=(self,))
-
-		bouton_quitter_menu = Bouton(self, utile.arreter, "Quitter", position=(milieu_ecran_x, milieu_ecran_y+80), \
+		bouton_jouer = Bouton(self, jouer, "Jouer en solo", position=(milieu_ecran_x, milieu_ecran_y), \
 			taille=(300, 50), ancrage=(0, 0), taille_police=20)
-
-		logo_menu = Image(self, constantes.General.IMAGE_TITRE, position=(milieu_ecran_x, milieu_du_milieu_ecran_y), \
-			taille=(400, 80),ancrage=(0, 0))
-
+		bouton_multi = Bouton(self, multijoueur, "Multijoueur", position=(milieu_ecran_x, milieu_ecran_y+80), \
+			taille=(300, 50), ancrage=(0, 0), taille_police=20)
+		bouton_quitter = Bouton(self, quitter, "Quitter", position=(milieu_ecran_x, milieu_ecran_y+160), \
+			taille=(300, 50), ancrage=(0, 0), taille_police=20)
+		logo = Image(self, constantes.General.IMAGE_TITRE, position=(milieu_ecran_x, milieu_du_milieu_ecran_y), \
+			taille=(400, 80), ancrage=(0, 0))
 		texte_version = Texte(self, "v" + __version__, position=(10, constantes.General.TAILLE_ECRAN[1] - 10), \
 			ancrage=(-1, 1), taille_police=16)
-
 		texte_dev = Texte(self, __author__, \
-			position=(constantes.General.TAILLE_ECRAN[0] - 10, constantes.General.TAILLE_ECRAN[1] - 10), ancrage=(1, 1), \
-			taille_police=16)
+			position=(constantes.General.TAILLE_ECRAN[0] - 10, constantes.General.TAILLE_ECRAN[1] - 10), \
+			ancrage=(1, 1), taille_police=16)
 
-		self.widgets.append(bouton_jouer_menu)
-		self.widgets.append(bouton_quitter_menu)
-		self.widgets.append(logo_menu)
+		self.widgets.append(bouton_jouer)
+		self.widgets.append(bouton_multi)
+		self.widgets.append(bouton_quitter)
+		self.widgets.append(logo)
 		self.widgets.append(texte_version)
 		self.widgets.append(texte_dev)
 
-	def actualise(self, niveau, en_partie):
+	def creer_widgets_multijoueur(self, jeu):
+		def heberger():
+			jeu.heberger_partie()
+
+		def rejoindre():
+			jeu.rejoindre_partie()
+
+		def retour():
+			jeu.arreter_boucle()
+			jeu.initialiser_menu_principal()
+
+		milieu_ecran_x = constantes.General.TAILLE_ECRAN[0] // 2
+		milieu_ecran_y = constantes.General.TAILLE_ECRAN[1] // 2
+		milieu_du_milieu_ecran_y = milieu_ecran_y // 2
+
+		bouton_heberger = Bouton(self, heberger, "Héberger", position=(milieu_ecran_x, milieu_ecran_y), \
+			taille=(300, 50), ancrage=(0, 0), taille_police=20)
+		bouton_rejoindre = Bouton(self, rejoindre, "Rejoindre", position=(milieu_ecran_x, milieu_ecran_y+80), \
+			taille=(300, 50), ancrage=(0, 0), taille_police=20)
+		bouton_retour = Bouton(self, retour, "Retour", position=(milieu_ecran_x, milieu_ecran_y+160), \
+			taille=(300, 50), ancrage=(0, 0), taille_police=20)
+		logo = Image(self, constantes.General.IMAGE_TITRE, position=(milieu_ecran_x, milieu_du_milieu_ecran_y), \
+			taille=(400, 80), ancrage=(0, 0))
+
+		self.widgets.append(bouton_heberger)
+		self.widgets.append(bouton_rejoindre)
+		self.widgets.append(bouton_retour)
+		self.widgets.append(logo)
+
+	def creer_widgets_pause(self, jeu):
+		def continuer():
+			jeu.geler_partie(False)
+
+		def retour():
+			jeu.arreter_boucle()
+			jeu.initialiser_menu_principal()
+
+		milieu_ecran_x = constantes.General.TAILLE_ECRAN[0] // 2
+		milieu_ecran_y = constantes.General.TAILLE_ECRAN[1] // 2
+		milieu_du_milieu_ecran_y = milieu_ecran_y // 2
+
+		bouton_continuer = Bouton(self, continuer, "Continuer", position=(milieu_ecran_x, milieu_ecran_y), \
+			taille=(300, 50), ancrage=(0, 0), taille_police=20)
+		bouton_menu = Bouton(self, retour, "Retour au menu principal", position=(milieu_ecran_x, milieu_ecran_y+80), \
+			taille=(300, 50), ancrage=(0, 0), taille_police=20)
+		logo_pause = Image(self, constantes.General.IMAGE_TITRE, position=(milieu_ecran_x, milieu_du_milieu_ecran_y), \
+			taille=(400, 80), ancrage=(0, 0))
+		texte_pause = Texte(self, "Pause", position=(milieu_ecran_x, milieu_ecran_y - 40), \
+			ancrage=(0, 0), taille_police=18)
+
+		self.widgets.append(bouton_continuer)
+		self.widgets.append(bouton_menu)
+		self.widgets.append(logo_pause)
+		self.widgets.append(texte_pause)
+
+	def creer_widgets_fin(self, jeu):
+		def retour():
+			jeu.arreter_boucle()
+			jeu.initialiser_menu_principal()
+
+		milieu_ecran_x = constantes.General.TAILLE_ECRAN[0] // 2
+		milieu_ecran_y = constantes.General.TAILLE_ECRAN[1] // 2
+		milieu_du_milieu_ecran_y = milieu_ecran_y // 2
+
+		texte_fin = Texte(self, "Pièces: {} | Temps: {}s".format(jeu.niveau.pieces, round(jeu.niveau.temps_total)), \
+			position=(milieu_ecran_x, milieu_ecran_y), ancrage=(0, 0), taille_police=18)
+		bouton_menu = Bouton(self, retour, "Retour au menu principal", position=(milieu_ecran_x, milieu_ecran_y + 80), \
+			taille=(300, 50), ancrage=(0, 0), taille_police=20)
+		logo_fin = Image(self, constantes.General.IMAGE_TITRE, position=(milieu_ecran_x, milieu_du_milieu_ecran_y), \
+			taille=(400, 80), ancrage=(0, 0))
+		titre_fin = Texte(self, "Game Over", position=(milieu_ecran_x, milieu_ecran_y - 40), \
+			ancrage=(0, 0), taille_police=18)
+
+		self.widgets.append(texte_fin)
+		self.widgets.append(bouton_menu)
+		self.widgets.append(logo_fin)
+		self.widgets.append(titre_fin)
+
+	def supprimer_widgets_pause(self):
+		for _ in range(4):
+			self.widgets.pop()
+
+	def actualiser(self, niveau, jeu):
 		""" Efface la fenêtre, redessine le terrain, les entités, puis les widgets en les actualisant. 
 
 			<niveau> (niveau.Niveau): Le niveau à afficher
@@ -125,105 +218,41 @@ class Affichage(object):
 
 		# On rend tous les pixels de la fenetre blanc
 		self.fenetre.fill((255, 255, 255))
-
 		# on affiche le fond du niveau
-		self.affiche_carte(niveau)
-
+		self.afficher_carte(niveau)
 		# on affiche les entités
 		for entite in niveau.entites:
-			self.affiche_entite(entite)
-
+			self.afficher_entite(entite)
 		# si on est en partie, on acalise le score
-		if en_partie:
+		if jeu.en_partie:
 			# on actualise le score en fonction de celui du niveau
-			self.actualise_scores(niveau)
-
+			self.actualiser_scores(niveau)
 		# on redessine les widgets
-		self.affiche_widgets()
-
+		self.afficher_widgets()
 		# On actualise l'écran
 		pygame.display.update()
 
-	def actualise_evenements(self, niveau, en_partie):
+	def actualiser_evenements(self, jeu):
 		""" Lit les évenements du clavier et de la souris et exécute les fonctions associées
 			à certaines touches (ex: Appui sur la touche Z -> le joueur monte).
 
 			<niveau> (niveau.Niveau): Le niveau à actualiser en fonction des actions utilisateur.
 			<en_partie> (bool): si True, fait bouger et tirer le joueur, sinon le joueur ne réagit pas. """
 
-		joueur = niveau.obtenir_joueur_local()
-
 		# on parcourt l'ensemble des evenements utilisateurs (clic, appui sur une touche, etc)
 		for evenement in pygame.event.get():
-
 			# si l'utilisateur a cliqué sur la croix rouge de la fenêtre
 			# on arrete le jeu
 			if evenement.type == pygame.QUIT:
-				utile.arreter()
-
+				jeu.arreter()
 			# sinon si on est en partie (et pas dans le menu principal)
-			elif en_partie:
-				# si l'utilisateur appui sur une touche du clavier...
-				if evenement.type == pygame.KEYDOWN:
-					# en fonction de la touche appuyée, on appelle la fonction
-					# commandant le déplacement correspondant
-					if evenement.key == pygame.K_w:
-						joueur.haut()
-
-					if evenement.key == pygame.K_s:
-						joueur.bas()
-
-					if evenement.key == pygame.K_a:
-						joueur.gauche()
-
-					if evenement.key == pygame.K_d:
-						joueur.droite()
-
-					if evenement.key == pygame.K_ESCAPE:
-						utile.arreter()
-
-				# si l'utilisateur relache une touche du clavier...
-				elif evenement.type == pygame.KEYUP:
-					# en fonction de la touche appuyée, on appelle la fonction
-					# commandant le déplacement inverse
-					if evenement.key == pygame.K_w:
-						joueur.bas()
-
-					if evenement.key == pygame.K_s:
-						joueur.haut()
-
-					if evenement.key == pygame.K_a:
-						joueur.droite()
-
-					if evenement.key == pygame.K_d:
-						joueur.gauche()
-
-				# si il clique avec la souris
-				elif evenement.type == pygame.MOUSEBUTTONDOWN:
-					# si le bouton cliqué est le bouton droit de la souris (3)
-					if evenement.button == 1:
-						joueur.tir()
-
-				# si la souris bouge
-				elif evenement.type == pygame.MOUSEMOTION:
-					x, y = evenement.pos
-
-					# on calcul l'écart entre la position de la souris et le milieu de la fenêtre
-					dx = x - constantes.General.TAILLE_ECRAN[0] / 2
-					dy = y - constantes.General.TAILLE_ECRAN[1] / 2
-
-					# on enlève le zoom pour convertir cet écart dans l'échelle du niveau
-					dx_niveau = dx / constantes.General.ZOOM
-					dy_niveau = dy / constantes.General.ZOOM
-
-					# on fait en sorte que le joueur regarde la position de la souris
-					joueur.regarde_position(dx_niveau, dy_niveau)
-
+			elif jeu.en_partie:
+				jeu.niveau.actualiser_evenement(evenement)
 			# on actualise les évenements pour chaque widget
 			for widget in self.widgets:
-				widget.actualise_evenement(evenement)
+				widget.actualiser_evenement(evenement)
 
-	def affiche_entite(self, entite):
+	def afficher_entite(self, entite):
 		""" Affiche une entité en fonction de ses attributs de position, taille et rotation.
 
 			<entite> (entites.Entite): L'entité à afficher. """
@@ -259,7 +288,7 @@ class Affichage(object):
 		# on colle l'image de l'entité
 		self.fenetre.blit(image_tournee, (x, y))
 
-	def affiche_carte(self, niveau):
+	def afficher_carte(self, niveau):
 		""" Dessine le fond du niveau en fonction de la position du joueur pour donner
 			l'impression que celui-ci bouge alors qu'il reste constament centré en plein
 			milieu de l'écran. 
@@ -289,13 +318,13 @@ class Affichage(object):
 			for y in range(nb_texture_y):
 				self.fenetre.blit(niveau.image, (x * largeur - distance_joueur_x, y * hauteur - distance_joueur_y))
 
-	def affiche_widgets(self):
+	def afficher_widgets(self):
 		""" Redessine tous les widgets de cet affichage. """
 
 		for widget in self.widgets:
-			widget.actualise()
+			widget.actualiser()
 
-	def actualise_scores(self, niveau):
+	def actualiser_scores(self, niveau):
 		""" Change le texte des Widgets affichant les stats du joueur. 
 
 			<niveau> (niveau.Niveau): Le niveau dont il faut afficher les stats. """

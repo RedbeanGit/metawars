@@ -1,11 +1,20 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import os
+import sys
+
+sys.stdout = open(os.devnull, "w")
+
 import constantes
 import utile
 
 from affichage import Affichage
+from jeu import Jeu
 from niveau import Niveau
+
+sys.stdout.close()
+sys.stdout = sys.__stdout__
 
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __version__ = "0.1.0"
@@ -14,87 +23,15 @@ __repo__ = "https://github.com/Ptijuju22/metawars.git"
 import time
 
 
-def lancer_jeu():
-    """ Fonction principale du jeu (à ne lancer qu'une seule fois) """
-    
-    # on creer un nouvel "affichage" (fenetre)
-    affichage = Affichage()
-    # on charge l'ensemble des images du jeu
-    affichage.charge_images()
-    # on crée les widgets du niveau
-    affichage.creer_widgets_menu(lancer_partie)
-
-    # on creer un niveau de jeu
-    niveau_menu = Niveau(affichage)
-    # on crée un joueur
-    niveau_menu.cree_joueur()
-    # le niveau et les entités recupères les images dont elles ont besoin
-    niveau_menu.charge_image()
-
-    joueur = niveau_menu.obtenir_joueur_local()
-    # on fait avancer le joueur pour éviter qu'il soit immobile
-    joueur.droite()
-
-    # cette variable retient le temps (en seconde) du dernier tick de jeu
-    temps_precedent = time.time()
-
-    while True:
-        # cette variable stocke le temps écoulé depuis le dernier tick de jeu
-        temps_ecoule = time.time() - temps_precedent
-        temps_precedent = time.time()
-
-        # on gère les evenements utilisateurs (clic, appui sur une touche, etc)
-        affichage.actualise_evenements(niveau_menu, False)
-        # on actualise le niveau et les entités qu'il contient
-        niveau_menu.actualise(temps_ecoule)
-        # pour éviter que le joueur ne meurt, on reinitialise sa vie en permanence
-        joueur.vie = constantes.Joueur.VIE
-        # on redessine la fenetre pour afficher de nouveau le niveau
-        affichage.actualise(niveau_menu, False)
-
-
-    
-def lancer_partie(affichage):
-    """ Cette fonction permet de créer un terrain jouable sur l'affichage donné. 
-
-        <affichage> (affichage.Affichage): L'affichage sur lequel dessiner le niveau. """
-
-    # on supprime tous les widgets de la fenêtre
-    affichage.supprimer_widgets()
-    # on crée les widgets du niveau
-    affichage.creer_widgets_niveau()
-
-    # on creer un niveau de jeu
-    niveau_jeu = Niveau(affichage)
-    # on crée un joueur
-    niveau_jeu.cree_joueur()
-    niveau_jeu.cree_joueur()
-    # le niveau et les entités recupères les images dont elles ont besoin
-    niveau_jeu.charge_image()
-
-    # cette variable retient le temps (en seconde) du dernier tick de jeu
-    temps_precedent = time.time()
-
-    while True:
-        # cette variable stocke le temps écoulé depuis le dernier tick de jeu
-        temps_ecoule = time.time() - temps_precedent
-        temps_precedent = time.time()
-
-        # on gère les evenements utilisateurs (clic, appui sur une touche, etc)
-        affichage.actualise_evenements(niveau_jeu, True)
-        # on actualise le niveau et les entités qu'il contient
-        niveau_jeu.actualise(temps_ecoule)
-        # on redessine la fenetre pour afficher de nouveau le niveau
-        affichage.actualise(niveau_jeu, True)
-
-    # une fois sortie de la boucle, on re-supprime tous les widgets
-    affichage.supprimer_widgets()
-    # puis on recrée les widgets du menu
-    affichage.creer_widgets_menu(lancer_partie)
+def demarrer():
+    jeu = Jeu()
+    jeu.charger()
+    jeu.initialiser_menu_principal()
+    jeu.lancer_boucle()
 
 
 if __name__ == "__main__":
     # Si notre fichier est lancé directement par python et pas
     # importé par un autre script alors on lance le jeu
-    utile.deboggue("Démarrage de " + constantes.General.NOM + "...")
-    lancer_jeu()
+    utile.debogguer("Démarrage de " + constantes.General.NOM)
+    demarrer()

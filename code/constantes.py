@@ -7,13 +7,13 @@
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __version__ = "0.1.0"
 
-import os
+from os import path as op
 
 
 class Chemin:
-	RESSOURCES = os.path.join("..", "data")
-	IMAGES = os.path.join(RESSOURCES, "images")
-	SONS = os.path.join(RESSOURCES, "sons")
+	RESSOURCES = op.join("..", "data")
+	IMAGES = op.join(RESSOURCES, "images")
+	SONS = op.join(RESSOURCES, "sons")
 
 
 class General:
@@ -22,9 +22,9 @@ class General:
 	POLICE = "police.ttf"
 	DEBUG = True
 	TAILLE_ECRAN = (800, 450)
-	IMAGE_ICONE = os.path.join(Chemin.IMAGES, "icone.png")
-	IMAGE_TITRE = os.path.join(Chemin.IMAGES, "titre.png")
-	IMAGE_FOND = os.path.join(Chemin.IMAGES, "fond_carte.png")
+	IMAGE_ICONE = op.join(Chemin.IMAGES, "icone.png")
+	IMAGE_TITRE = op.join(Chemin.IMAGES, "titre.png")
+	IMAGE_FOND = op.join(Chemin.IMAGES, "fond_carte.png")
 	ERREURS = ("INFO", "ATTENTION", "ERREUR")
 
 
@@ -35,9 +35,9 @@ class Joueur:
 	DEGAT = 1
 	ZONE = 1.5
 	DUREE_ANIMATION_DEGAT = 0.1
-	IMAGE = os.path.join(Chemin.IMAGES, "joueur", "joueur.png")
-	IMAGE_TOUCHE = os.path.join(Chemin.IMAGES, "joueur", "joueur_touche.png")
-	IMAGE_BOUCLIER = os.path.join(Chemin.IMAGES, "joueur", "joueur_bouclier.png")
+	IMAGE = op.join(Chemin.IMAGES, "joueur", "joueur.png")
+	IMAGE_TOUCHE = op.join(Chemin.IMAGES, "joueur", "joueur_touche.png")
+	IMAGE_BOUCLIER = op.join(Chemin.IMAGES, "joueur", "joueur_bouclier.png")
 
 class Ennemi:
 	FREQUENCE_APPARITION = 2.5
@@ -50,8 +50,8 @@ class Ennemi:
 	ZONE = 0.5
 	PIECE = 10
 	DUREE_ANIMATION_DEGAT = 0.1
-	IMAGE = os.path.join(Chemin.IMAGES, "ennemi", "ennemi.png")
-	IMAGE_TOUCHE = os.path.join(Chemin.IMAGES, "ennemi", "ennemi_touche.png")
+	IMAGE = op.join(Chemin.IMAGES, "ennemi", "ennemi.png")
+	IMAGE_TOUCHE = op.join(Chemin.IMAGES, "ennemi", "ennemi_touche.png")
 
 class Bonus:
 	FREQUENCE_APPARITION = 3
@@ -62,7 +62,7 @@ class Bonus:
 	VITESSE = 0.15
 	FREQUENCE_TIR = 2
 	DEGAT = 0.25
-	IMAGE = lambda t: os.path.join(Chemin.IMAGES, "bonus", t + ".png")
+	IMAGE = lambda t: op.join(Chemin.IMAGES, "bonus", t + ".png")
 	TYPES = (
 		"soin",
 		"vitesse_augmentee",
@@ -73,7 +73,7 @@ class Tir:
 	VITESSE = 8
 	TAILLE = (0.05, 0.05)
 	DUREE = 2.5
-	IMAGE = os.path.join(Chemin.IMAGES, "tir", "tir.png")
+	IMAGE = op.join(Chemin.IMAGES, "tir", "tir.png")
 
 
 class Ressources:

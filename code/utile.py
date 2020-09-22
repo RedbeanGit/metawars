@@ -13,7 +13,7 @@ import datetime
 
 def arreter():
 	""" Arrête le jeu en tuant le programme. """
-	deboggue("Arrêt de " + constantes.General.NOM + "...")
+	debogguer("Arrêt de " + constantes.General.NOM)
 	sys.exit()
 
 
@@ -30,7 +30,7 @@ def lire_fichier(chemin_fichier):
 			# on retourne son contenu avec la methode read()
 			return fichier.read()
 	else:
-		deboggue("Le fichier '" + chemin_fichier + "' est introuvable !", 1)
+		debogguer("Le fichier '" + chemin_fichier + "' est introuvable !", 1)
 		return False
 
 
@@ -61,7 +61,7 @@ def degres_en_radian(angle):
 	return angle * math.pi / 180
 
 
-def deboggue(message, niveau_erreur=0):
+def debogguer(message, niveau_erreur=0):
 	if constantes.General.DEBUG:
 		s = "[{h}:{m}:{s}] [{e}] {t}"
 		d = datetime.datetime.now()

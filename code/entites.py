@@ -35,33 +35,33 @@ class Entite(object):
 		self.position = [0, 0]
 		# on charge une image vide par défaut pour éviter les problèmes
 		# comme ça, toutes les entités on une image par défaut
-		self.image = niveau.affichage.obtenir_image("")
+		self.image = niveau.jeu.affichage.obtenir_image("")
 
-	def __charge_image__(self, chemin_image):
+	def __charger_image__(self, chemin_image):
 		""" Méthode interne utilisée pour simplifier le chargement et le
 			redimensionnement d'une image donnée. 
 
 			<chemin_image> (str): Le chemin de l'image. """
 
-		affichage = self.niveau.affichage
+		affichage = self.niveau.jeu.affichage
 		taille_pixel_x = int(self.taille[0] * constantes.General.ZOOM)
 		taille_pixel_y = int(self.taille[1] * constantes.General.ZOOM)
 
 		self.image = affichage.obtenir_image(chemin_image)
 		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
 
-	def charge_image(self):
+	def charger_image(self):
 		""" Appelé pour charger l'image de l'entité. Ne fait rien par défaut. """
 		pass
 
-	def actualise(self, temps):
+	def actualiser(self, temps):
 		""" Actualise l'entité. Par défaut, cette méthode ne fait que bouger l'entité. 
 
 			<temps> (float): Le temps écoulé en seconde depuis la dernière actualisation. """
 
-		self.bouge(temps)
+		self.bouger(temps)
 
-	def bouge(self, temps):
+	def bouger(self, temps):
 		""" Change la position de l'entité en fonction de sa vitesse et son angle de rotation.
 
 			<temps> (float): Le temps écoulé en seconde depuis la dernière actualisation. """
@@ -72,7 +72,7 @@ class Entite(object):
 		# elles vont de haut en bas au lieu d'aller de bas en haut 
 		self.position[1] -= self.vitesse * math.sin(self.angle) * temps
 
-	def collisionne(self, entite):
+	def en_collision(self, entite):
 		""" Renvoie True si l'entité collisionne avec celle donnée, sinon False. 
 
 			<entite> (entites.Entite): L'entité à tester. """
@@ -93,11 +93,11 @@ class Entite(object):
 
 		return math.sqrt(dx**2 + dy**2)
 
-	def meurt(self):
+	def mourir(self):
 		""" Supprime cette entité du niveau, elle n'est donc plus actualisée et affichée.
 			On peut donc considérer quelle est 'morte'. """
 
-		self.niveau.enleve_entite(self)
+		self.niveau.enlever_entite(self)
 
 
 class Joueur(Entite):
@@ -120,22 +120,22 @@ class Joueur(Entite):
 		self.est_touche = False
 		self.temps_animation_degat = 0
 
-	def charge_image(self):
+	def charger_image(self):
 		""" Charge une image de joueur. """
 
-		self.__charge_image__(constantes.Joueur.IMAGE)
+		self.__charger_image__(constantes.Joueur.IMAGE)
 
-	def charge_image_touche(self):
+	def charger_image_touche(self):
 		""" Charge une image de joueur qui prend des dégats. """
 
-		self.__charge_image__(constantes.Joueur.IMAGE_TOUCHE)
+		self.__charger_image__(constantes.Joueur.IMAGE_TOUCHE)
 
-	def charge_image_bouclier(self):
+	def charger_image_bouclier(self):
 		""" Charge une image de joueur avec un bouclier. (inutilisé) """
 
-		self.__charge_image__(constantes.Joueur.IMAGE_BOUCLIER)
+		self.__charger_image__(constantes.Joueur.IMAGE_BOUCLIER)
 
-	def regarde_position(self, dx, dy):
+	def regarder_position(self, dx, dy):
 		""" Tourne le joueur de façon à ce qu'il regarde en direction de (dx, dy). 
 
 			<dx> (float): La distance horizontale entre le point à regarder et le joueur (positif 
@@ -157,13 +157,13 @@ class Joueur(Entite):
 			else:
 				self.angle = angle
 
-	def actualise(self, temps):
+	def actualiser(self, temps):
 		""" Actualise le joueur en mettant à jour le temps d'animation de dégat et en vérifiant
 			que ses points de vie ne tombent pas en dessous de 0.
 
 			<temps> (float): Le temps écoulé en seconde depuis la dernière actualisation. """
 
-		super().actualise(temps)
+		super().actualiser(temps)
 
 		if self.est_touche:
 			self.temps_animation_degat += temps
@@ -171,22 +171,22 @@ class Joueur(Entite):
 			# si l'animation a assez duré, on l'arrête et on recharge l'image par défaut du joueur
 			if self.temps_animation_degat >= constantes.Joueur.DUREE_ANIMATION_DEGAT:
 				self.est_touche = False
-				self.charge_image()
+				self.charger_image()
 
 		if self.vie <= 0:
-			self.meurt()
+			self.mourir()
 
-	def tir(self):
+	def tirer(self):
 		""" Crée un tir au niveau du joueur qui a le même angle de rotation que lui. """
 
 		# on crée un tir
 		tir = Tir(self.niveau, self)
 		# on lui fait charge son image
-		tir.charge_image()
+		tir.charger_image()
 		# on l'ajoute a la liste des entités du niveau
 		self.niveau.entites.append(tir)
 
-	def bouge(self, temps):
+	def bouger(self, temps):
 		""" Change la position du joueur en fonction du vecteur vélocité, du temps écoulé et de sa
 			vitesse. 
 
@@ -197,7 +197,7 @@ class Joueur(Entite):
 		self.position[0] += self.velocite[0] * temps * self.vitesse
 		self.position[1] += self.velocite[1] * temps * self.vitesse
 
-	def blesse(self, degat):
+	def blesser(self, degat):
 		""" Réduit la vie du joueur et lance l'animation de dégat (le joueur devient rouge).
 
 			<degat> (float): Les dégats reçus. """
@@ -205,10 +205,10 @@ class Joueur(Entite):
 		self.est_touche = True
 		self.vie -= degat
 		self.temps_animation_degat = 0
-		self.charge_image_touche()
+		self.charger_image_touche()
 
-	def attaque(self, entite):
-		entite.blesse(constantes.Joueur.DEGAT + self.degats_bonus)
+	def attaquer(self, entite):
+		entite.blesser(constantes.Joueur.DEGAT + self.degats_bonus)
 
 	def haut(self):
 		""" Défini le vecteur vélocité pour que le joueur aille vers le haut. """
@@ -236,9 +236,9 @@ class Joueur(Entite):
 		self.velocite[0] = 0
 		self.velocite[1] = 0
 
-	def meurt(self):
+	def mourir(self):
 		""" Arrête la partie """
-		self.niveau.termine()
+		self.niveau.quand_joueur_meurt(self)
 
 
 class Ennemi(Entite):
@@ -257,32 +257,32 @@ class Ennemi(Entite):
 		self.est_touche = False
 		self.temps_animation_degat = 0
 
-	def charge_image(self):
+	def charger_image(self):
 		""" Charge une image d'ennemi. """
 
-		self.__charge_image__(constantes.Ennemi.IMAGE)
+		self.__charger_image__(constantes.Ennemi.IMAGE)
 
-	def charge_image_touche(self):
+	def charger_image_touche(self):
 		""" Charge une image d'ennemi qui prend des dégats. """
 
-		self.__charge_image__(constantes.Ennemi.IMAGE_TOUCHE)
+		self.__charger_image__(constantes.Ennemi.IMAGE_TOUCHE)
 
-	def actualise(self, temps):
+	def actualiser(self, temps):
 		""" Actualise l'ennemi en mettant à jour le temps d'animation de dégat, en vérifiant
 			que ses points de vie ne tombent pas en dessous de 0, en tirant de temps à autre
 			et en vérifiant qu'il n'est pas trop prêt du joueur.
 
 			<temps> (float): Le temps écoulé en seconde depuis la dernière actualisation. """
 
-		super().actualise(temps)
+		super().actualiser(temps)
 
 		# l'ennemi s'oriente en direction du joueur
-		self.oriente(self.trouve_joueur_proche())
+		self.orienter(self.trouver_joueur_proche())
 		
 		# si l'ennemi doit tirer
 		if self.doit_tirer(temps):
 			# il le fait !!!
-			self.tir()
+			self.tirer()
 
 		# si l'entité est touchée, on augmente le temps
 		# qu'elle passe pendant son animation de touche
@@ -292,7 +292,7 @@ class Ennemi(Entite):
 			# si l'animation a assez duré, on l'arrête et on recharge l'image par défaut de l'ennemi
 			if self.temps_animation_degat >= constantes.Ennemi.DUREE_ANIMATION_DEGAT:
 				self.est_touche = False
-				self.charge_image()
+				self.charger_image()
 
 		# si l'ennemi est trop près du joueur, on l'arrête
 		if self.est_trop_pres():
@@ -302,17 +302,17 @@ class Ennemi(Entite):
 			self.vitesse = constantes.Ennemi.VITESSE
 
 		if self.vie <= 0:
-			self.meurt()
+			self.mourir()
 
-	def trouve_joueur_proche(self):
-		def classe_entite(entite):
+	def trouver_joueur_proche(self):
+		def classer_entite(entite):
 			if type(entite) == Joueur:
 				return self.calculer_distance(entite)
 			return float("inf")
 
-		return min(self.niveau.entites, key=classe_entite)
+		return min(self.niveau.entites, key=classer_entite)
 
-	def oriente(self, joueur):
+	def orienter(self, joueur):
 		""" Change l'angle de rotation de l'ennemi de façon à ce qu'il regarde le joueur. """
 
 		# on calcule la distance entre le joueur et l'ennemi
@@ -340,7 +340,7 @@ class Ennemi(Entite):
 			# donc l'angle est entre -pi et 0 (donc opposé)
 			self.angle = angle + math.pi
 
-	def blesse(self, degat):
+	def blesser(self, degat):
 		""" Réduit la vie de l'ennemi et lance l'animation de dégat (l'ennemi devient rouge).
 
 			<degat> (float): Les dégats reçus. """
@@ -348,18 +348,18 @@ class Ennemi(Entite):
 		self.est_touche = True
 		self.vie -= degat
 		self.temps_animation_degat = 0
-		self.charge_image_touche()
+		self.charger_image_touche()
 
-	def attaque(self, entite):
-		entite.blesse(constantes.Ennemi.DEGAT)
+	def attaquer(self, entite):
+		entite.blesser(constantes.Ennemi.DEGAT)
 
-	def tir(self):
+	def tirer(self):
 		""" Crée un tir au niveau de l'ennemi qui a le même angle de rotation que lui. """
 
 		# on crée un tir
 		tir = Tir(self.niveau, self)
 		# on lui fait charge son image
-		tir.charge_image()
+		tir.charger_image()
 		# on l'ajoute a la liste des entités du niveau
 		self.niveau.entites.append(tir)
 
@@ -372,9 +372,9 @@ class Ennemi(Entite):
 					return True
 		return False
 
-	def meurt(self):
+	def mourir(self):
 		""" Augmente le nombre de pièces et meurt. """
-		super().meurt()
+		super().mourir()
 		self.niveau.pieces += constantes.Ennemi.PIECE
 
 	def doit_tirer(self, temps):
@@ -404,30 +404,30 @@ class Bonus(Entite):
 		self.type = random.choice(constantes.Bonus.TYPES)
 		self.temps_vie = 0
 
-	def charge_image(self):
+	def charger_image(self):
 		""" Charge une image de bonus en fonction du type de celui-ci. """
 
-		self.__charge_image__(constantes.Bonus.IMAGE(self.type))
+		self.__charger_image__(constantes.Bonus.IMAGE(self.type))
 
-	def actualise(self, temps):
+	def actualiser(self, temps):
 		""" Actualise le bonus en mettant à jour sa durée de vie et en cherchant si il entre
 			en collision avec le joueur.
 
 			<temps> (float): Le temps écoulé en seconde depuis la dernière actualisation. """
 
-		super().actualise(temps)
+		super().actualiser(temps)
 
 		self.temps_vie += temps
 
 		if self.temps_vie >= constantes.Bonus.DUREE:
-			self.meurt()
+			self.mourir()
 
 		for entite in self.niveau.entites:
-			if self.collisionne(entite) and type(entite) == Joueur:
-				self.attrape(entite)
+			if self.en_collision(entite) and type(entite) == Joueur:
+				self.attraper(entite)
 				break
 
-	def attrape(self, joueur):
+	def attraper(self, joueur):
 		""" Modifie certains attributs du joueur.
 
 			<joueur> (entites.Joueur): Le joueur sur lequel s'applique le bonus. """
@@ -447,7 +447,7 @@ class Bonus(Entite):
 		elif self.type == "arme_amelioree":
 			joueur.degats_bonus += constantes.Bonus.DEGAT
 
-		self.meurt()
+		self.mourir()
 
 
 class Tir(Entite):
@@ -470,32 +470,32 @@ class Tir(Entite):
 
 		self.temps_vie = 0
 
-	def charge_image(self):
+	def charger_image(self):
 		""" Charge une image de tir. """
 
-		self.__charge_image__(constantes.Tir.IMAGE)
+		self.__charger_image__(constantes.Tir.IMAGE)
 	
-	def actualise(self, temps):
+	def actualiser(self, temps):
 		""" Actualise le tir en mettant à jour sa durée de vie et en cherchant si il entre
 			en collision avec une entité.
 
 			<temps> (float): Le temps écoulé en seconde depuis la dernière actualisation. """
 
-		super().actualise(temps)
+		super().actualiser(temps)
 
 		self.temps_vie += temps
 
 		if self.temps_vie >= constantes.Tir.DUREE:
-			self.meurt()
+			self.mourir()
 
 		for entite in self.niveau.entites:
-			if self.collisionne(entite):
-				self.touche(entite)
+			if self.en_collision(entite):
+				self.toucher(entite)
 
-	def blesse(self, degat):
-		self.meurt()
+	def blesser(self, degat):
+		self.mourir()
 
-	def touche(self, entite):
+	def toucher(self, entite):
 		""" Attaque une entité puis meurt. 
 
 			<entite> (entites.Ennemi ou entites.Joueur): Le joueur ou ennemi touché. """
@@ -503,8 +503,8 @@ class Tir(Entite):
 		if type(entite) != Bonus and entite != self.tireur:
 			if type(self.tireur) == Ennemi:
 				if type(entite) == Joueur:
-					self.tireur.attaque(entite)
+					self.tireur.attaquer(entite)
 
 			else:
-				self.tireur.attaque(entite)
-			self.meurt()
+				self.tireur.attaquer(entite)
+			self.mourir()
