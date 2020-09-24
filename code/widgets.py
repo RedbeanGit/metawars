@@ -9,6 +9,7 @@ import os
 import math
 import pygame
 import pygame.freetype
+import time
 
 pygame.freetype.init()
 
@@ -35,6 +36,8 @@ class Widget(object):
 		# (-1, -1) signifie "en haut à gauche" et (1, 1) "en bas à droite"
 		# (0, 0) signifie donc "centré"
 		self.ancrage = ancrage
+		# si expire vaut True, alors le widget sera supprimé de l'affichage
+		self.expire = False
 
 	def actualiser(self):
 		""" Cette méthode est appelée à chaque frame de jeu pour 
@@ -77,17 +80,17 @@ class Widget(object):
 class Texte(Widget):
 	""" Permet d'afficher un texte à une position définie. """
 
-	def __init__(self, affichage, texte, position=(0, 0), ancrage=(-1, -1), taille_police=20, couleur=(255, 255, 255)):
+	def __init__(self, affichage, texte, taille_police=20, couleur=(255, 255, 255), **kwargs):
 		""" Initialise un texte. 
 
 			<affichage> (affichage.Affichage): La fenêtre sur laquelle dessiner le texte.
 			<text> (str): Le texte à afficher.
-			[position] (tuple): La position (x, y) du texte en pixels.
-			[ancrage] (tuple): Le point (x, y) d'ancrage du texte en pixels.
 			[taille_police] (int): La hauteur de la police en pixels.
-			[couleur] (tuple): La couleur (R, V, B) du texte. """
+			[couleur] (tuple): La couleur (R, V, B) du texte.
+			[**kwargs] (object): Les attributs hérités de Widget. """
 
-		super().__init__(affichage, position, (1, 1), ancrage)
+		kwargs["taille"] = (1, 1)
+		super().__init__(affichage, **kwargs)
 
 		self.texte = texte
 		self.taille_police = taille_police
@@ -102,12 +105,20 @@ class Texte(Widget):
 			# sinon on utilise la police par défaut du système
 			nom_police = pygame.freetype.get_default_font()
 			self.police = pygame.freetype.SysFont(nom_police, self.taille_police)
+		
+		rect = self.obtenir_surface()[1]
+		self.taille = (rect.width, rect.height)
+
+	def obtenir_surface(self):
+		""" Crée une surface à partir du texte défini puis la retourne avec un pygame.Rect associé. """
+
+		return self.police.render(self.texte, self.couleur, size=self.taille_police)
 
 	def actualiser(self):
-		""" Crée une surface à partir du texte défini puis la dessine sur l'affichage. """
+		""" Redessine sur l'affichage une surface à partir du texte défini. """
 
 		# on créer une surface à partir du texte donné, en utilisant la police définie
-		surface, rect = self.police.render(self.texte, self.couleur, size=self.taille_police)
+		surface, rect = self.obtenir_surface()
 		
 		# on redéfini la taille du widget, car sa taille dépend du texte donné
 		# elle a donc peut être changé
@@ -121,22 +132,19 @@ class Texte(Widget):
 class Bouton(Widget):
 	""" Permet de créer un bouton qui change de texture en fonction
 		de la position et de l'état de la souris. Lance une fonction
-		donnée lors du clic.	"""
+		donnée lors du clic. """
 
-	def __init__(self, affichage, action, texte="", arguments_action=(), position=(0, 0), taille=(1, 1), ancrage=(-1, -1), \
-			taille_police=20, couleur_texte=(255, 255, 255)):
+	def __init__(self, affichage, action, texte="", arguments_action=(), taille_police=20, couleur_texte=(255, 255, 255), **kwargs):
 		""" Initialise un bouton. 
 
 			<affichage> (affichage.Affichage): La fenêtre sur laquelle dessiner le bouton.
 			<action> (function ou method): La fonction ou méthode à exécuter lors du clic sur ce bouton.
 			[text] (str): Le texte à afficher.
-			[position] (tuple): La position (x, y) du bouton en pixels.
-			[taille] (tuple): La taille (largeur, hauteur) du bouton en pixels.
-			[ancrage] (tuple): Le point (x, y) d'ancrage du bouton en pixels.
 			[taille_police] (int): La hauteur de la police en pixels.
-			[couleur_texte] (tuple): La couleur (R, V, B) du texte. """
+			[couleur_texte] (tuple): La couleur (R, V, B) du texte.
+			[**kwargs] (object): Les attributs hérités de Widget. """
 
-		super().__init__(affichage, position, taille, ancrage)
+		super().__init__(affichage, **kwargs)
 		# on crée un widget Texte qui sera affiché sur le bouton (centré sur le bouton)
 		self.texte = Texte(affichage, texte, position=self.obtenir_position_texte(), ancrage=(0, 0), \
 			taille_police=taille_police, couleur=couleur_texte)
@@ -179,9 +187,6 @@ class Bouton(Widget):
 			exécuter l'action définie.
 
 			<evenement> (pygame.event.Event): L'évènement à tester. """
-
-		x, y = self.obtenir_position_reelle()
-		w, h = self.taille
 
 		# si on repère le clic de la souris
 		if evenement.type == pygame.MOUSEBUTTONDOWN:
@@ -230,16 +235,14 @@ class Image(Widget):
 	""" Permet de créer une image qui se redéssine seule à une position définie lors de sa création.
 		L'image est chargée automatiquement par le widget lors de sa création. """
 
-	def __init__(self, affichage, chemin_image, position=(0, 0), taille=(0, 0), ancrage=(-1, -1)):
+	def __init__(self, affichage, chemin_image, **kwargs):
 		""" Initialise une image. 
 
 			<affichage> (affichage.Affichage): La fenêtre sur laquelle dessiner l'image.
 			<chemin_image> (str): Le chemin de l'image à afficher.
-			[position] (tuple): La position (x, y) de l'image en pixels.
-			[taille] (tuple): La taille (largeur, hauteur) de l'image en pixels.
-			[ancrage] (tuple): Le point (x, y) d'ancrage de l'image en pixels. """
+			[**kwargs] (object): Les attributs hérités de Widget. """
 
-		super().__init__(affichage, position, taille, ancrage)
+		super().__init__(affichage, **kwargs)
 
 		self.chemin_image = chemin_image
 		self.charger_image()
@@ -263,3 +266,160 @@ class Image(Widget):
 
 		# on colle l'image sur la fenêtre à la position du coin supérieur gauche
 		self.affichage.fenetre.blit(self.image, self.obtenir_position_reelle())
+
+
+class TexteEditable(Texte):
+	""" Cette classe définit un texte éditable avec le clavier et la souris. """
+
+	def __init__(self, affichage, texte, couleur_curseur=(0, 0, 0), **kwargs):
+		""" Initialise un texte éditable.
+		
+			<affichage> (affichage.Affichage): La fenêtre sur laquelle dessiner l'image.
+			<text> (str): Le texte à afficher.
+			[**kwargs] (object): Les attributs hérités de Texte. """
+
+		super().__init__(affichage, texte, **kwargs)
+
+		self.couleur_curseur = couleur_curseur
+		self.en_edition = False
+		self.couleurs = {}
+		self.etat = "normal"
+		self.position_curseur = len(self.texte)
+
+		self.charger_couleurs()
+
+	def charger_couleurs(self):
+		""" Charge les différentes couleurs du texte. """
+
+		if isinstance(self.couleur, str):
+			r, v, b = pygame.color.THECOLORS.get(self.color, (0, 0, 0))
+		elif len(self.couleur) == 3:
+			r, v, b = self.couleur
+		elif len(self.couleur) == 4:
+			r, v, b, a = self.couleur
+
+		self.couleurs = {
+			"clic_central": (max(r-5, 0), max(v-5, 0), max(b-5, 0)),
+			"clic_droit": (min(r+5, 255), min(v+5, 255), min(b+5, 255)),
+			"clic_gauche": (max(r-10, 0), max(v-10, 0), max(b-10, 0)),
+			"desactive": (max(r-20, 0), max(v-20, 0), max(b-20, 0)),
+			"normal": (r, v, b),
+			"survol": (min(r+10, 255), min(v+10, 255), min(b+10, 255))
+		}
+
+	def obtenir_surface(self):
+		""" Crée une surface à partir du texte défini puis la retourne avec un pygame.Rect associé. """
+
+		return self.police.render(self.texte, self.couleurs[self.etat], size=self.taille_police)
+
+	def actualiser(self):
+		""" Redessine le texte sur l'affichage et un curseur en mode édition. """
+
+		super().actualiser()
+
+		if self.en_edition:
+			x, y = self.obtenir_position_reelle()
+			w, h = self.taille
+
+			cx = int(x + self.position_curseur * w / len(self.texte))
+			cy = y
+			pygame.draw.line(self.affichage.fenetre, self.couleur_curseur, (cx, cy), (cx, cy + h), width=2)
+
+	def actualiser_evenement(self, evenement):
+		""" Détecte le survol et le clic de la souris pour changer l'état du texte et
+			active ou désactive le mode édition lors du clic.
+
+			<evenement> (pygame.event.Event): L'évènement à tester. """
+
+		x, y = self.obtenir_position_reelle()
+		w, h = self.taille
+
+		# si on repère le clic de la souris
+		if evenement.type == pygame.MOUSEBUTTONDOWN:
+			# si le clic de la souris est faite sur le widget (et pas en dehors)
+			if self.est_dans_widget(evenement.pos):
+				# en fonction du bouton cliqué, on change l'état du texte
+				if evenement.button == 1:
+					self.etat = "clic_gauche"
+					self.en_edition = True
+					self.position_curseur = int((evenement.pos[0] - x) / w * len(self.texte))
+				elif evenement.button == 2:
+					self.etat = "clic_central"
+				elif evenement.button == 3:
+					self.etat = "clic_droit"
+			# si on clique en dehors du texte, on arrête le mode édition
+			elif evenement.button == 1:
+				self.en_edition = False
+
+		# si la souris se déplace, on regarde si elle survole le texte
+		elif evenement.type == pygame.MOUSEMOTION:
+			# si la souris se trouve sur le texte, on le met en état de 'survol'
+			if self.est_dans_widget(evenement.pos):
+				self.etat = "survol"
+			else:
+				# sinon, on le remet dans l'état 'normal'
+				self.etat = "normal"
+
+		elif evenement.type == pygame.KEYDOWN:
+			if self.en_edition:
+				if evenement.key == pygame.K_RETURN:
+					self.en_edition = False
+				elif evenement.key == pygame.K_BACKSPACE:
+					self.texte = self.texte[:self.position_curseur] + self.texte[self.position_curseur:]
+				elif evenement.key == pygame.K_DELETE:
+					self.texte = self.texte[:self.position_curseur+1] + self.texte[self.position_curseur+1:]
+				else:
+					self.texte += evenement.unicode
+
+
+class TexteTemporaire(Texte):
+	""" Cette classe définit un texte qui disparait progressivement. Au bout d'une certaine durée, il expire
+		et est alors supprimé de l'affichage. """
+
+	def __init__(self, affichage, texte, duree, **kwargs):
+		""" Initialise un TexteTemporaire avec une durée de vie donnée.
+
+			<affichage> (affichage.Affichage): La fenêtre sur laquelle dessiner l'image.
+			<text> (str): Le texte à afficher.
+			<duree> (float): La durée de vie du texte.
+			[**kwargs] (object): Les attributs hérités de Texte. """
+
+		self.duree = duree
+		self.depart = time.time()
+
+		super().__init__(affichage, texte, **kwargs)
+
+	def redemarrer(self):
+		""" Remet à zéro le widget. """
+
+		self.expire = False
+		self.depart = time.time()
+
+	def obtenir_surface(self):
+		""" Crée une surface à partir du texte défini puis la retourne avec un pygame.Rect associé. """
+
+		if isinstance(self.couleur, str):
+			r, g, b = pygame.color.THECOLORS
+		elif len(self.couleur) == 3:
+			r, g, b = self.couleur
+		elif len(self.couleur) == 4:
+			r, g, b, a = self.couleur
+
+		a = 255 - int((time.time() - self.depart) / self.duree * 255)
+
+		if a > 255:
+			a = 255
+		elif a < 0:
+			a = 0
+
+		return self.police.render(self.texte, (r, g, b, a), size=self.taille_police)
+	
+	def actualiser(self):
+		""" Redessine le texte sur l'affichage et met à jour son état en fonction du temps écoulé. """
+		
+		temps_actuel = time.time()
+
+		if temps_actuel - self.depart >= self.duree:
+			self.expire = True
+
+		super().actualiser()

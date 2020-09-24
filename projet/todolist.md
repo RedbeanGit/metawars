@@ -6,7 +6,9 @@
 	
 ## affichage.py
 - Affichage: En cours
-	* creer_widgets_splash(): A créer [Affiche une animation au démarrage]
+	* creer_widgets_splash(jeu): A créer [Affiche une animation au démarrage]
+	* creer_widgets_heberger(jeu): A créer [Affiche des textes éditables et boutons pour paramètrer un serveur]
+	* creer_widgets_rejoindre(jeu): A créer [Affiche des textes éditables et boutons pour rejoindre un serveur]
 
 ## entities.py
 - Joueur(Entite): En cours
@@ -22,19 +24,20 @@
 
 ## jeu.py
 - Jeu: En cours
+	* lancer_mode_heberger(): En cours [Doit demander au joueur les infos du serveur à créer]
+	* lancer_mode_rejoindre(): En cours [Doit demander au joueur les infos du serveur à rejoindre]
 	* heberger(): A créer [Crée un serveur et un niveau maitre multijoueur]
 	* rejoindre(): A créer [Crée un client et un niveau esclave multijoueur]
+	* ajouter_joueur(pseudo): En cours [Doit gérer la connexion d'un nouveau joueur]
+	* enlever_joueur(pseudo): En cours [Doit gérer la déconnexion d'un joueur]
 
 ## reseau.py
-- Serveur: A creer
-	* lancer(): A créer [Lance une boucle dans un autre processus en attente de connexions]
-	* arreter(): A créer [Déconnecter tous les clients et arrete la boucle de connexion]
-	* envoyer(donnee, client): A créer [Envoie une trame binaire à un client]
-	* recevoir(client): A créer [Lit les trames en attentes envoyées par un client donné]
-	* deconnecter(client): A créer [Déconnecte un client et le supprime de la liste des clients]
+- Serveur: En cours
+	* lancer(): En cours [Doit vérifier si le serveur est déjà lancé]
+	* arreter(): En cours [Doit vérifier si le serveur n'est pas lancé]
+	* envoyer(donnee, addresse): En cours [Doit gérer les erreurs d'envoi]
+	* recevoir(addresse): En cours [Doit gérer les erreurs de réception]
 
-- Client: A creer
-	* envoyer(donnee): A créer [Envoie une trame binaire au serveur]
-	* recevoir(): A créer [Lit les trames en attentes envoyées par le serveur]
-	* connecter(): A créer [Connecte le client à un serveur donné]
-	* deconnecte(): A créer [Déconnecte le client du serveur]
+- Client: En cours
+	* envoyer(donnee): En cours [Doit gérer les erreurs d'envoi]
+	* recevoir(): En cours [Doit gérer les erreurs de réception]

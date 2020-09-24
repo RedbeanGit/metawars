@@ -20,20 +20,22 @@ class Niveau(object):
 		self.image = None
 		self.jeu = jeu
 		self.entites = []
+		self.joueurs = {}
 		self.pieces = 0
 		self.temps_total = 0
 		self.en_pause = False
 
-	def creer_joueur(self):
-		joueur = Joueur(self)
-		joueur.charger_image()
-		self.entites.append(joueur)
+	def creer_joueur(self, pseudo="localhost"):
+		self.joueurs[pseudo] = Joueur(self)
+		self.joueurs[pseudo].charger_image()
+		self.entites.append(self.joueurs[pseudo])
+
+	def supprimer_joueur(self, pseudo="localhost"):
+		self.joueurs.pop(pseudo)
 
 	def obtenir_joueur_local(self):
-		for entite in self.entites:
-			if isinstance(entite, Joueur):
-				return entite
-
+		if "localhost" in self.joueurs:
+			return self.joueurs["localhost"]
 		return Joueur(self)
 
 	def initialiser_image(self):

@@ -8,7 +8,7 @@
 import constantes
 import utile
 import niveau
-from widgets import Texte, Bouton, Image
+from widgets import Texte, Bouton, Image, TexteTemporaire, TexteEditable
 
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __version__ = "0.1.0"
@@ -66,6 +66,16 @@ class Affichage(object):
 			# sinon, on renvoie une surface noire de 50x50 pixels
 			return pygame.Surface((50, 50))
 
+	def afficher_message(self, message, couleur=(255, 255, 255)):
+		""" Affiche un message temporaire en bas de l'écran.
+
+			<message> (str): Le message à afficher.
+			[couleur] (tuple): La couleur du texte sour la forme (R, V, B). (0, 0, 0) par défaut. """
+
+		w, h = constantes.General.TAILLE_ECRAN
+
+		self.widgets.append(TexteTemporaire(self, message, 2, position=(w // 2, int(h * 0.77)), ancrage=(0, 0), couleur=couleur))
+
 	def supprimer_widgets(self):
 		""" Supprime tous les widgets de cet affichage en vidant la liste des widgets. """
 
@@ -75,12 +85,14 @@ class Affichage(object):
 		""" Crée les textes à afficher pendant la partie renseignant sur le temps écoulé,
 			les pièces amassées, la vie restante, les dégats et vitesse bonus. """
 
-		texte_temps = Texte(self, "Temps: 0s", (10, 10))
-		texte_pieces = Texte(self, "Pièces: 0", (10, 40))
-		texte_vie = Texte(self, "Vie: 0", (10, 70))
+		coord_droite = constantes.General.TAILLE_ECRAN[0] - 10
 
-		texte_arme = Texte(self, "Bonus dégats: 0", (constantes.General.TAILLE_ECRAN[0] - 10, 10), ancrage=(1, -1))
-		texte_vitesse = Texte(self, "Bonus vitesse: x1", (constantes.General.TAILLE_ECRAN[0] - 10, 40), ancrage=(1, -1))
+		texte_temps = Texte(self, "Temps: 0s", position=(10, 10))
+		texte_pieces = Texte(self, "Pièces: 0", position=(10, 40))
+		texte_vie = Texte(self, "Vie: 0", position=(10, 70))
+
+		texte_arme = Texte(self, "Bonus dégats: 0", position=(coord_droite, 10), ancrage=(1, -1))
+		texte_vitesse = Texte(self, "Bonus vitesse: x1", position=(coord_droite, 40), ancrage=(1, -1))
 		
 		self.widgets.append(texte_temps)
 		self.widgets.append(texte_pieces)
@@ -107,11 +119,11 @@ class Affichage(object):
 		milieu_ecran_y = constantes.General.TAILLE_ECRAN[1] // 2
 		milieu_du_milieu_ecran_y = milieu_ecran_y // 2
 
-		bouton_jouer = Bouton(self, jouer, "Jouer en solo", position=(milieu_ecran_x, milieu_ecran_y), \
+		bouton_jouer = Bouton(self, jouer, texte="Jouer en solo", position=(milieu_ecran_x, milieu_ecran_y), \
 			taille=(300, 50), ancrage=(0, 0), taille_police=20)
-		bouton_multi = Bouton(self, multijoueur, "Multijoueur", position=(milieu_ecran_x, milieu_ecran_y+80), \
+		bouton_multi = Bouton(self, multijoueur, texte="Multijoueur", position=(milieu_ecran_x, milieu_ecran_y+80), \
 			taille=(300, 50), ancrage=(0, 0), taille_police=20)
-		bouton_quitter = Bouton(self, quitter, "Quitter", position=(milieu_ecran_x, milieu_ecran_y+160), \
+		bouton_quitter = Bouton(self, quitter, texte="Quitter", position=(milieu_ecran_x, milieu_ecran_y+160), \
 			taille=(300, 50), ancrage=(0, 0), taille_police=20)
 		logo = Image(self, constantes.General.IMAGE_TITRE, position=(milieu_ecran_x, milieu_du_milieu_ecran_y), \
 			taille=(400, 80), ancrage=(0, 0))
@@ -130,10 +142,12 @@ class Affichage(object):
 
 	def creer_widgets_multijoueur(self, jeu):
 		def heberger():
-			jeu.heberger_partie()
+			jeu.lancer_mode_heberger()
+			jeu.lancer_boucle()
 
 		def rejoindre():
-			jeu.rejoindre_partie()
+			jeu.lancer_mode_rejoindre()
+			jeu.lancer_boucle()
 
 		def retour():
 			jeu.arreter_boucle()
@@ -143,11 +157,11 @@ class Affichage(object):
 		milieu_ecran_y = constantes.General.TAILLE_ECRAN[1] // 2
 		milieu_du_milieu_ecran_y = milieu_ecran_y // 2
 
-		bouton_heberger = Bouton(self, heberger, "Héberger", position=(milieu_ecran_x, milieu_ecran_y), \
+		bouton_heberger = Bouton(self, heberger, texte="Héberger", position=(milieu_ecran_x, milieu_ecran_y), \
 			taille=(300, 50), ancrage=(0, 0), taille_police=20)
-		bouton_rejoindre = Bouton(self, rejoindre, "Rejoindre", position=(milieu_ecran_x, milieu_ecran_y+80), \
+		bouton_rejoindre = Bouton(self, rejoindre, texte="Rejoindre", position=(milieu_ecran_x, milieu_ecran_y+80), \
 			taille=(300, 50), ancrage=(0, 0), taille_police=20)
-		bouton_retour = Bouton(self, retour, "Retour", position=(milieu_ecran_x, milieu_ecran_y+160), \
+		bouton_retour = Bouton(self, retour, texte="Retour", position=(milieu_ecran_x, milieu_ecran_y+160), \
 			taille=(300, 50), ancrage=(0, 0), taille_police=20)
 		logo = Image(self, constantes.General.IMAGE_TITRE, position=(milieu_ecran_x, milieu_du_milieu_ecran_y), \
 			taille=(400, 80), ancrage=(0, 0))
@@ -169,9 +183,9 @@ class Affichage(object):
 		milieu_ecran_y = constantes.General.TAILLE_ECRAN[1] // 2
 		milieu_du_milieu_ecran_y = milieu_ecran_y // 2
 
-		bouton_continuer = Bouton(self, continuer, "Continuer", position=(milieu_ecran_x, milieu_ecran_y), \
+		bouton_continuer = Bouton(self, continuer, texte="Continuer", position=(milieu_ecran_x, milieu_ecran_y), \
 			taille=(300, 50), ancrage=(0, 0), taille_police=20)
-		bouton_menu = Bouton(self, retour, "Retour au menu principal", position=(milieu_ecran_x, milieu_ecran_y+80), \
+		bouton_menu = Bouton(self, retour, texte="Retour au menu principal", position=(milieu_ecran_x, milieu_ecran_y+80), \
 			taille=(300, 50), ancrage=(0, 0), taille_police=20)
 		logo_pause = Image(self, constantes.General.IMAGE_TITRE, position=(milieu_ecran_x, milieu_du_milieu_ecran_y), \
 			taille=(400, 80), ancrage=(0, 0))
@@ -194,7 +208,7 @@ class Affichage(object):
 
 		texte_fin = Texte(self, "Pièces: {} | Temps: {}s".format(jeu.niveau.pieces, round(jeu.niveau.temps_total)), \
 			position=(milieu_ecran_x, milieu_ecran_y), ancrage=(0, 0), taille_police=18)
-		bouton_menu = Bouton(self, retour, "Retour au menu principal", position=(milieu_ecran_x, milieu_ecran_y + 80), \
+		bouton_menu = Bouton(self, retour, texte="Retour au menu principal", position=(milieu_ecran_x, milieu_ecran_y + 80), \
 			taille=(300, 50), ancrage=(0, 0), taille_police=20)
 		logo_fin = Image(self, constantes.General.IMAGE_TITRE, position=(milieu_ecran_x, milieu_du_milieu_ecran_y), \
 			taille=(400, 80), ancrage=(0, 0))
@@ -228,7 +242,7 @@ class Affichage(object):
 			# on actualise le score en fonction de celui du niveau
 			self.actualiser_scores(niveau)
 		# on redessine les widgets
-		self.afficher_widgets()
+		self.actualiser_widgets()
 		# On actualise l'écran
 		pygame.display.update()
 
@@ -318,11 +332,14 @@ class Affichage(object):
 			for y in range(nb_texture_y):
 				self.fenetre.blit(niveau.image, (x * largeur - distance_joueur_x, y * hauteur - distance_joueur_y))
 
-	def afficher_widgets(self):
+	def actualiser_widgets(self):
 		""" Redessine tous les widgets de cet affichage. """
 
 		for widget in self.widgets:
-			widget.actualiser()
+			if widget.expire:
+				self.widgets.remove(widget)
+			else:
+				widget.actualiser()
 
 	def actualiser_scores(self, niveau):
 		""" Change le texte des Widgets affichant les stats du joueur. 

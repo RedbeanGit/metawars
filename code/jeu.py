@@ -9,6 +9,7 @@ import utile
 
 from affichage import Affichage
 from niveau import Niveau
+from reseau import Serveur, Client
 
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __version__ = "0.1.0"
@@ -20,6 +21,8 @@ class Jeu:
 	def __init__(self):
 		self.affichage = Affichage()
 		self.niveau = None
+		self.serveur = None
+		self.client = None
 		self.en_boucle = False
 		self.en_partie = False
 
@@ -27,6 +30,8 @@ class Jeu:
 		self.affichage.charger_images()
 
 	def arreter(self):
+		if self.serveur:
+			self.serveur.arreter()
 		utile.arreter()
 
 	def initialiser_menu_principal(self):
@@ -92,8 +97,14 @@ class Jeu:
 			utile.debogguer("Dégèle de la partie")
 			self.affichage.supprimer_widgets_pause()
 
-	def heberger_partie(self):
+	def lancer_mode_heberger(self):
+		self.affichage.afficher_message("Ce mode n'est pas encore pris en charge")
+
+	def lancer_mode_rejoindre(self):
+		self.affichage.afficher_message("Ce mode n'est pas encore pris en charge")
+
+	def ajouter_joueur(self, pseudo):
 		pass
 
-	def rejoindre_partie(self):
+	def enlever_joueur(self, pseudo):
 		pass
