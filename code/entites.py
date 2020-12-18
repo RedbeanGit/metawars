@@ -1,45 +1,61 @@
 # -*- coding: utf-8 -*-
 
+#	This file is part of Metawars.
+#
+#	Metawars is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	Metawars is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with Metawars. If not, see <https://www.gnu.org/licenses/>
+
 """
-	Contient les classes des différentes entités du jeu.
-	Une entité est objet qui se détache du niveau, défini
-	notamment par sa position et sa taille. Ces paramètres
-	peuvent varier, ce qui permet de créer une impression de
+	Contient les classes des différentes entités du jeu. Une entité est objet
+	qui se détache du niveau, défini notamment par sa position et sa taille.
+	Ces paramètres peuvent varier, ce qui permet de créer une impression de
 	mouvement.
 """
-
-import constantes
-
-__author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
-__version__ = "0.1.0"
 
 import math
 import os
 import pygame
 import random
 
+__author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
+
+import constantes
+import utile
+
 
 class Entite(object):
 	""" Classe de base pour l'ensemble des entités. """
+	
+	nb_entites = 0
 
 	def __init__(self, niveau):
 		""" Initialise l'entité.
 
 			<niveau> (niveau.Niveau): Le niveau auquel appartient l'entité. """
 
+		self.identifiant = Entite.nb_entites
 		self.niveau = niveau
 		self.taille = [1, 1]
 		self.vitesse = 0
 		self.angle = 0
-		# la position est un point centré sur l'entité
 		self.position = [0, 0]
-		# on charge une image vide par défaut pour éviter les problèmes
-		# comme ça, toutes les entités on une image par défaut
 		self.image = niveau.jeu.affichage.obtenir_image("")
+
+		Entite.nb_entites += 1
 
 	def __charger_image__(self, chemin_image):
 		""" Méthode interne utilisée pour simplifier le chargement et le
-			redimensionnement d'une image donnée. 
+			redimensionnement d'une image donnée.
 
 			<chemin_image> (str): Le chemin de l'image. """
 
@@ -55,49 +71,99 @@ class Entite(object):
 		pass
 
 	def actualiser(self, temps):
-		""" Actualise l'entité. Par défaut, cette méthode ne fait que bouger l'entité. 
+		""" Actualise l'entité. Par défaut, cette méthode ne fait que bouger
+			l'entité. 
 
-			<temps> (float): Le temps écoulé en seconde depuis la dernière actualisation. """
+			<temps> (float): Le temps écoulé en seconde depuis la dernière
+				actualisation. """
 
 		self.bouger(temps)
 
 	def bouger(self, temps):
-		""" Change la position de l'entité en fonction de sa vitesse et son angle de rotation.
+		""" Change la position de l'entité en fonction de sa vitesse et son
+			angle de rotation.
 
-			<temps> (float): Le temps écoulé en seconde depuis la dernière actualisation. """
+			<temps> (float): Le temps écoulé en seconde depuis la dernière
+				actualisation. """
 
-		# Un peu de trigonométrie...
 		self.position[0] += self.vitesse * math.cos(self.angle) * temps
-		# on soustrait la position car les coordonées de l'écran en pixels sont inversées
-		# elles vont de haut en bas au lieu d'aller de bas en haut 
 		self.position[1] -= self.vitesse * math.sin(self.angle) * temps
 
 	def en_collision(self, entite):
-		""" Renvoie True si l'entité collisionne avec celle donnée, sinon False. 
+		""" Renvoie True si l'entité collisionne avec celle donnée, sinon
+			False.
 
 			<entite> (entites.Entite): L'entité à tester. """
 
-		# on vérifie que l'entité qui collisionne n'est pas elle-même
 		if entite != self:
-			# on renvoie True si une entité déborde sur une autre
-			if self.position[0] + self.taille[0] / 2 > entite.position[0] - entite.taille[0] / 2: 
-				if self.position[0] - self.taille[0] / 2 < entite.position[0] + entite.taille[0] / 2:
-					if self.position[1] + self.taille[1] / 2 > entite.position[1] - entite.taille[1] / 2: 
-						if self.position[1] - self.taille[1] / 2 < entite.position[1] + entite.taille[1] / 2:
+			x1, y1 = self.position
+			l1, h1 = self.taille
+
+			x2, y2 = entite.position
+			l2, h2 = entite.taille
+
+			if x1 + l1 / 2 > x2 - l2 / 2:
+				if x1 - l1 / 2 < x2 + l2 / 2:
+					if y1 + h1 / 2 > y2 - h2 / 2:
+						if y1 - h1 / 2 < y2 + h2 / 2:
 							return True
 		return False
 
 	def calculer_distance(self, entite):
+		""" Renvoie la distance directe entre cette entité et une autre.
+
+			<entite> (entites.Entite): L'entité à évaluer. """
+
 		dx = abs(entite.position[0] - self.position[0])
 		dy = abs(entite.position[1] - self.position[1])
 
 		return math.sqrt(dx**2 + dy**2)
 
 	def mourir(self):
-		""" Supprime cette entité du niveau, elle n'est donc plus actualisée et affichée.
-			On peut donc considérer quelle est 'morte'. """
+		""" Supprime cette entité du niveau, elle n'est donc plus actualisée
+			et affichée. On peut donc considérer quelle est 'morte'. """
 
 		self.niveau.enlever_entite(self)
+
+	def exporter(self):
+		""" Renvoie un dictionnaire des attributs de l'entité. Une surcharge
+			de cette méthode est attendue. """
+
+		return {
+			"TYPE": "Entite",
+			"identifiant": self.identifiant,
+			"taille": self.taille,
+			"vitesse": self.vitesse,
+			"angle": self.angle,
+			"position": self.position
+		}
+
+	def importer(self, attributs):
+		""" Met à jour les attributs de l'entité à partir d'un dictionnaire
+			d'attributs. Une surcharge de cette méthode est attendue.
+
+			<attributs> (dict): Dictionnaire au format {nom_attribut1: 
+				valeur1, nom_attribut2: valeur2, ...}. """
+
+		self.identifiant = attributs.get("identifiant", 0)
+		self.taille = attributs.get("taille", [1, 1])
+		self.vitesse = attributs.get("vitesse", 0)
+		self.angle = attributs.get("angle", 0)
+		self.position = attributs.get("position", [0, 0])
+
+	@classmethod
+	def obtenir_classe_entite(cls, nom_classe):
+		""" Retourne la classe d'entité correspondante à un nom donné. Si
+			aucune classe portant ce nom n'est trouvée, renvoie la classe
+			'entites.Entite'.
+
+			<nom_classe> (str): Nom de la classe d'entité. """
+
+		classe = utile.obtenir_classe(cls.__module__, nom_classe)
+
+		if classe:
+			return classe
+		return Entite
 
 
 class Joueur(Entite):
@@ -116,7 +182,6 @@ class Joueur(Entite):
 		self.velocite = [0, 0]
 		self.vitesse = 1
 
-		# cette variable permet de savoir si l'entité est en animation de dégat
 		self.est_touche = False
 		self.temps_animation_degat = 0
 
@@ -136,40 +201,41 @@ class Joueur(Entite):
 		self.__charger_image__(constantes.Joueur.IMAGE_BOUCLIER)
 
 	def regarder_position(self, dx, dy):
-		""" Tourne le joueur de façon à ce qu'il regarde en direction de (dx, dy). 
+		""" Tourne le joueur de façon à ce qu'il regarde en direction de
+			(dx, dy).
 
-			<dx> (float): La distance horizontale entre le point à regarder et le joueur (positif 
-				si le point se trouve à droite du joueur, sinon négatif).
-			<dy> (float): La distance verticale entre le point à regarder et le joueur (positif 
-				si le point se trouve en bas du joueur, sinon négatif). """
+			<dx> (float): La distance horizontale entre le point à regarder et
+				le joueur (positif si le point se trouve à droite du joueur,
+				sinon négatif).
+			<dy> (float): La distance verticale entre le point à regarder et
+				le joueur (positif si le point se trouve en bas du joueur,
+				sinon négatif). """
 
-		# on calcule la distance entre le joueur et cette position à l'aide de Pythagore
 		d = math.sqrt(dx ** 2 + dy ** 2)
 
-		# si la souris est à une distance de 0 du joueur, on ne peut pas définir d'angle
 		if d != 0:
-			# on détermine un angle possible à l'aide de Arc cosinus
 			angle = math.acos(dx / d)
 
-			# on détermine si on doit prendre la valeur négative ou positive de cette angle
 			if dy >= 0:
 				self.angle = -angle
 			else:
 				self.angle = angle
 
 	def actualiser(self, temps):
-		""" Actualise le joueur en mettant à jour le temps d'animation de dégat et en vérifiant
-			que ses points de vie ne tombent pas en dessous de 0.
+		""" Actualise le joueur en mettant à jour le temps d'animation de
+			dégat et en vérifiant que ses points de vie ne tombent pas en
+			dessous de 0.
 
-			<temps> (float): Le temps écoulé en seconde depuis la dernière actualisation. """
+			<temps> (float): Le temps écoulé en seconde depuis la dernière
+				actualisation. """
 
 		super().actualiser(temps)
 
 		if self.est_touche:
 			self.temps_animation_degat += temps
 
-			# si l'animation a assez duré, on l'arrête et on recharge l'image par défaut du joueur
-			if self.temps_animation_degat >= constantes.Joueur.DUREE_ANIMATION_DEGAT:
+			duree_max = constantes.Joueur.DUREE_ANIMATION_DEGAT
+			if self.temps_animation_degat >= duree_max:
 				self.est_touche = False
 				self.charger_image()
 
@@ -177,28 +243,26 @@ class Joueur(Entite):
 			self.mourir()
 
 	def tirer(self):
-		""" Crée un tir au niveau du joueur qui a le même angle de rotation que lui. """
+		""" Crée un tir au niveau du joueur qui a le même angle de rotation
+			que lui. """
 
-		# on crée un tir
 		tir = Tir(self.niveau, self)
-		# on lui fait charge son image
 		tir.charger_image()
-		# on l'ajoute a la liste des entités du niveau
-		self.niveau.entites.append(tir)
+		self.niveau.ajouter_entite(tir)
 
 	def bouger(self, temps):
-		""" Change la position du joueur en fonction du vecteur vélocité, du temps écoulé et de sa
-			vitesse. 
+		""" Change la position du joueur en fonction du vecteur vélocité, du
+			temps écoulé et de sa vitesse.
 
-			<temps> (float): Le temps écoulé en seconde depuis la dernière actualisation. """
+			<temps> (float): Le temps écoulé en seconde depuis la dernière
+				actualisation. """
 
-		# on redéfinit cette méthode pour changer les déplacements du joueur
-		# il ne dépend plus de son angle de rotation
 		self.position[0] += self.velocite[0] * temps * self.vitesse
 		self.position[1] += self.velocite[1] * temps * self.vitesse
 
 	def blesser(self, degat):
-		""" Réduit la vie du joueur et lance l'animation de dégat (le joueur devient rouge).
+		""" Réduit la vie du joueur et lance l'animation de dégat (le joueur
+			devient rouge).
 
 			<degat> (float): Les dégats reçus. """
 
@@ -208,6 +272,10 @@ class Joueur(Entite):
 		self.charger_image_touche()
 
 	def attaquer(self, entite):
+		""" Blesse une entité en prenant en compte les dégats bonus du joueur.
+
+			<entite> (entites.Entite): L'entité à attaquer. """
+			
 		entite.blesser(constantes.Joueur.DEGAT + self.degats_bonus)
 
 	def haut(self):
@@ -230,19 +298,46 @@ class Joueur(Entite):
 
 		self.velocite[0] -= constantes.Joueur.VITESSE
 
-	def stop(self):
-		""" Défini le vecteur vélocité pour que le joueur s'arrête. (obsolète) """
-
-		self.velocite[0] = 0
-		self.velocite[1] = 0
-
 	def mourir(self):
-		""" Arrête la partie """
+		""" Avertit le niveau que le joueur et est mort. """
+
 		self.niveau.quand_joueur_meurt(self)
+
+	def exporter(self):
+		""" Renvoie un dictionnaire des attributs de ce joueur. """
+
+		attributs = super().exporter()
+		attributs.update({
+			"TYPE": "Joueur",
+			"vie": self.vie,
+			"degats_bonus": self.degats_bonus,
+			"bouclier": self.bouclier,
+			"velocite": self.velocite,
+			"est_touche": self.est_touche,
+			"temps_animation_degat": self.temps_animation_degat
+		})
+		
+		return attributs
+
+	def importer(self, attributs):
+		""" Met à jour les attributs du joueur à partir d'un dictionnaire 
+			d'attributs.
+
+			<attributs> (dict): Dictionnaire au format {nom_attribut1: 
+				valeur1, nom_attribut2: valeur2, ...}. """
+
+		super().importer(attributs)
+
+		self.vie = attributs.get("vie", 0)
+		self.degats_bonus = attributs.get("degats_bonus", 0)
+		self.bouclier = attributs.get("bouclier", False)
+		self.velocite = attributs.get("velocite", False)
+		self.est_touche = attributs.get("est_touche", False)
+		self.temps_animation_degat = attributs.get("temps_animation_degat", 0)
 
 
 class Ennemi(Entite):
-	""" Classe définissant une entité ennemie. """
+	""" Classe définissant une entité ennemie des joueurs. """
 
 	def __init__(self, niveau):
 		""" Initialise un ennemi.
@@ -252,8 +347,6 @@ class Ennemi(Entite):
 		super().__init__(niveau)
 		self.vitesse = constantes.Ennemi.VITESSE
 		self.vie = constantes.Ennemi.VIE
-
-		# cette variable permet de savoir si l'entité est en animation de dégat
 		self.est_touche = False
 		self.temps_animation_degat = 0
 
@@ -268,80 +361,77 @@ class Ennemi(Entite):
 		self.__charger_image__(constantes.Ennemi.IMAGE_TOUCHE)
 
 	def actualiser(self, temps):
-		""" Actualise l'ennemi en mettant à jour le temps d'animation de dégat, en vérifiant
-			que ses points de vie ne tombent pas en dessous de 0, en tirant de temps à autre
-			et en vérifiant qu'il n'est pas trop prêt du joueur.
+		""" Actualise l'ennemi en mettant à jour le temps d'animation de
+			dégat, en vérifiant que ses points de vie ne tombent pas en
+			dessous de 0, en tirant de temps à autre et en vérifiant qu'il
+			n'est pas trop prêt du joueur.
 
-			<temps> (float): Le temps écoulé en seconde depuis la dernière actualisation. """
+			<temps> (float): Le temps écoulé en seconde depuis la dernière
+				actualisation. """
 
-		super().actualiser(temps)
-
-		# l'ennemi s'oriente en direction du joueur
-		self.orienter(self.trouver_joueur_proche())
+		joueur = self.trouver_joueur_proche()
 		
-		# si l'ennemi doit tirer
+		if joueur:
+			super().actualiser(temps)
+			self.orienter(joueur)
+		
 		if self.doit_tirer(temps):
-			# il le fait !!!
 			self.tirer()
 
-		# si l'entité est touchée, on augmente le temps
-		# qu'elle passe pendant son animation de touche
 		if self.est_touche:
 			self.temps_animation_degat += temps
 
-			# si l'animation a assez duré, on l'arrête et on recharge l'image par défaut de l'ennemi
 			if self.temps_animation_degat >= constantes.Ennemi.DUREE_ANIMATION_DEGAT:
 				self.est_touche = False
 				self.charger_image()
 
-		# si l'ennemi est trop près du joueur, on l'arrête
 		if self.est_trop_pres():
 			self.vitesse = 0
 		else:
-			# sinon... et ben il avance lol
 			self.vitesse = constantes.Ennemi.VITESSE
 
 		if self.vie <= 0:
 			self.mourir()
 
 	def trouver_joueur_proche(self):
+		""" Renvoie le joueur le plus proche ou None si aucun joueur n'est
+			trouvé. """
+
 		def classer_entite(entite):
-			if type(entite) == Joueur:
+			if isinstance(entite, Joueur):
 				return self.calculer_distance(entite)
 			return float("inf")
 
-		return min(self.niveau.entites, key=classer_entite)
+		proche = min(self.niveau.entites, key=classer_entite)
+
+		if isinstance(proche, Joueur):
+			return proche
+		return None
 
 	def orienter(self, joueur):
-		""" Change l'angle de rotation de l'ennemi de façon à ce qu'il regarde le joueur. """
+		""" Change l'angle de rotation de l'ennemi de façon à ce qu'il regarde
+			le joueur.
 
-		# on calcule la distance entre le joueur et l'ennemi
+			<joueur> (entites.Joueur): Le joueur vers lequel orienter
+				l'ennemi. """
+
 		dx = self.position[0] - joueur.position[0]
 		dy = self.position[1] - joueur.position[1]
 		d = math.sqrt(dx ** 2 + dy ** 2)
+		
+		if d:
+			c = dx / d
 
-		# on divise la distance x par la distance totale
-		# pour connaitre l'importance de la distance x
-		# dans la distance totale (on aurait aussi pu le faire pour y)
-		c = dx / d
+			angle = math.acos(c)
 
-		# on recupere l'un des deux angles associé à cette valeur de x
-		# math.cos ne retourne que des angles compris entre 0 et pi
-		angle = math.acos(c)
-
-		# seul un angle est bon donc
-		# on determine quelle valeur utiliser en fonction de y
-		if dy >= 0:
-			# si y > 0 alors on se trouve en haut du cercle trigonométrique
-			# donc l'angle est entre 0 et pi
-			self.angle = -angle + math.pi
-		else:
-			# si y < 0 alors on se trouve ne bas du cercle trigonométrique
-			# donc l'angle est entre -pi et 0 (donc opposé)
-			self.angle = angle + math.pi
+			if dy >= 0:
+				self.angle = -angle + math.pi
+			else:
+				self.angle = angle + math.pi
 
 	def blesser(self, degat):
-		""" Réduit la vie de l'ennemi et lance l'animation de dégat (l'ennemi devient rouge).
+		""" Réduit la vie de l'ennemi et lance l'animation de dégat (l'ennemi
+			devient rouge).
 
 			<degat> (float): Les dégats reçus. """
 
@@ -351,16 +441,18 @@ class Ennemi(Entite):
 		self.charger_image_touche()
 
 	def attaquer(self, entite):
+		""" Inflige des dégâts à une entité donnée.
+
+			<entite> (entites.Entite): L'entité à attaquer. """
+
 		entite.blesser(constantes.Ennemi.DEGAT)
 
 	def tirer(self):
-		""" Crée un tir au niveau de l'ennemi qui a le même angle de rotation que lui. """
+		""" Crée un tir au niveau de l'ennemi qui a le même angle de rotation
+			que lui. """
 
-		# on crée un tir
 		tir = Tir(self.niveau, self)
-		# on lui fait charge son image
 		tir.charger_image()
-		# on l'ajoute a la liste des entités du niveau
 		self.niveau.entites.append(tir)
 
 	def est_trop_pres(self):
@@ -374,13 +466,15 @@ class Ennemi(Entite):
 
 	def mourir(self):
 		""" Augmente le nombre de pièces et meurt. """
+
 		super().mourir()
 		self.niveau.pieces += constantes.Ennemi.PIECE
 
 	def doit_tirer(self, temps):
 		""" Retourne True si il est temps de tirer, sinon False.
 
-			<temps> (float): Le temps écoulé en seconde depuis la dernière actualisation. """
+			<temps> (float): Le temps écoulé en seconde depuis la dernière
+				actualisation. """
 
 		nb = random.random()
 
@@ -388,18 +482,43 @@ class Ennemi(Entite):
 			return True
 		return False
 
+	def exporter(self):
+		""" Renvoie un dictionnaire des attributs de cet Ennemi. """
+
+		attributs = super().exporter()
+		attributs.update({
+			"TYPE": "Ennemi",
+			"vie": self.vie,
+			"est_touche": self.est_touche,
+			"temps_animation_degat": self.temps_animation_degat
+		})
+		
+		return attributs
+
+	def importer(self, attributs):
+		""" Met à jour les attributs de l'Ennemi à partir d'un dictionnaire
+			d'attributs.
+
+			<attributs> (dict): Dictionnaire au format {nom_attribut1: 
+				valeur1, nom_attribut2: valeur2, ...}. """
+
+		super().importer(attributs)
+
+		self.vie = attributs.get("vie", 0)
+		self.est_touche = attributs.get("est_touche", False)
+		self.temps_animation_degat = attributs.get("temps_animation_degat", 0)
+
 
 class Bonus(Entite):
-	"""
-	Classe définissant un bonus attrapable par le joueur.
-	"""
+	""" Classe définissant un bonus attrapable par le joueur. """
+
 	def __init__(self, niveau):
 		""" Initialise un bonus.
 
 			<niveau> (niveau.Niveau): Le niveau auquel appartient le bonus. """
 
 		super().__init__(niveau)
-		# On choisi aléatoirement un bonus
+		
 		self.taille = constantes.Bonus.TAILLE
 		self.type = random.choice(constantes.Bonus.TYPES)
 		self.temps_vie = 0
@@ -410,10 +529,11 @@ class Bonus(Entite):
 		self.__charger_image__(constantes.Bonus.IMAGE(self.type))
 
 	def actualiser(self, temps):
-		""" Actualise le bonus en mettant à jour sa durée de vie et en cherchant si il entre
-			en collision avec le joueur.
+		""" Actualise le bonus en mettant à jour sa durée de vie et en
+			cherchant si il entre en collision avec le joueur.
 
-			<temps> (float): Le temps écoulé en seconde depuis la dernière actualisation. """
+			<temps> (float): Le temps écoulé en seconde depuis la dernière
+				actualisation. """
 
 		super().actualiser(temps)
 
@@ -430,7 +550,8 @@ class Bonus(Entite):
 	def attraper(self, joueur):
 		""" Modifie certains attributs du joueur.
 
-			<joueur> (entites.Joueur): Le joueur sur lequel s'applique le bonus. """
+			<joueur> (entites.Joueur): Le joueur sur lequel s'applique le
+				bonus. """
 
 		if self.type == "soin":
 			joueur.vie += constantes.Bonus.SOIN
@@ -449,22 +570,48 @@ class Bonus(Entite):
 
 		self.mourir()
 
+	def exporter(self):
+		""" Renvoie un dictionnaire des attributs de ce bonus. """
+
+		attributs = super().exporter()
+		attributs.update({
+			"TYPE": "Bonus",
+			"type": self.type,
+			"temps_vie": self.temps_vie
+		})
+		
+		return attributs
+
+	def importer(self, attributs):
+		""" Met à jour les attributs du bonus à partir d'un dictionnaire 
+			d'attributs.
+
+			<attributs> (dict): Dictionnaire au format {nom_attribut1: 
+				valeur1, nom_attribut2: valeur2, ...}. """
+
+		super().importer(attributs)
+
+		self.type = attributs.get("type", constantes.Bonus.TYPES[0])
+		self.temps_vie = attributs.get("temps_vie", 0)
+
 
 class Tir(Entite):
-	"""
-	Classe définissant un tir de missile.
-	"""
+	""" Classe définissant un tir de missile. """
 
-	def __init__(self, niveau, tireur):
+	def __init__(self, niveau, tireur=None):
 		""" Initialise un tir.
 
-			<niveau> (niveau.Niveau): Le niveau auquel appartient le tir. """
+			<niveau> (niveau.Niveau): Le niveau auquel appartient le Tir.
+			[tireur] (entite.Entite): L'entité à l'origine de ce Tir. None
+				par défaut. """
 
 		super().__init__(niveau)
 		self.tireur = tireur
-		# on fait une copie de la position du joueur pour éviter les effets de bord
-		self.position = self.tireur.position[:]
-		self.angle = self.tireur.angle
+		
+		if self.tireur:
+			self.position = self.tireur.position[:]
+			self.angle = self.tireur.angle
+		
 		self.vitesse = constantes.Tir.VITESSE
 		self.taille = constantes.Tir.TAILLE
 
@@ -476,10 +623,11 @@ class Tir(Entite):
 		self.__charger_image__(constantes.Tir.IMAGE)
 	
 	def actualiser(self, temps):
-		""" Actualise le tir en mettant à jour sa durée de vie et en cherchant si il entre
-			en collision avec une entité.
+		""" Actualise le tir en mettant à jour sa durée de vie et en cherchant
+			si il entre en collision avec une entité.
 
-			<temps> (float): Le temps écoulé en seconde depuis la dernière actualisation. """
+			<temps> (float): Le temps écoulé en seconde depuis la dernière
+				actualisation. """
 
 		super().actualiser(temps)
 
@@ -493,18 +641,45 @@ class Tir(Entite):
 				self.toucher(entite)
 
 	def blesser(self, degat):
+		""" Si une entité attaque ce Tir, il meurt instantanément. """
+
 		self.mourir()
 
 	def toucher(self, entite):
-		""" Attaque une entité puis meurt. 
+		""" Attaque une entité puis meurt.
 
-			<entite> (entites.Ennemi ou entites.Joueur): Le joueur ou ennemi touché. """
+			<entite> (entites.Ennemi ou entites.Joueur): Le joueur ou ennemi
+				touché. """
 
-		if type(entite) != Bonus and entite != self.tireur:
-			if type(self.tireur) == Ennemi:
-				if type(entite) == Joueur:
+		if not isinstance(entite, Bonus) and entite != self.tireur:
+			if isinstance(self.tireur, Ennemi):
+				if isinstance(entite, Joueur):
 					self.tireur.attaquer(entite)
 
-			else:
+			elif self.tireur:
 				self.tireur.attaquer(entite)
 			self.mourir()
+
+	def exporter(self):
+		""" Renvoie un dictionnaire des attributs de ce tir. """
+
+		attributs = super().exporter()
+		attributs.update({
+			"TYPE": "Tir",
+			"tireur": self.tireur.identifiant,
+			"temps_vie": self.temps_vie
+		})
+		
+		return attributs
+
+	def importer(self, attributs):
+		""" Met à jour les attributs du tir à partir d'un dictionnaire
+			d'attributs.
+
+			<attributs> (dict): Dictionnaire au format {nom_attribut1: 
+				valeur1, nom_attribut2: valeur2, ...}. """
+
+		super().importer(attributs)
+
+		self.tireur = self.niveau.obtenir_entite(attributs.get("tireur", 0))
+		self.temps_vie = attributs.get("temps_vie", 0)

@@ -1,8 +1,29 @@
-#!/usr/bin/python3
+#!/usr/bin/python3z
 # -*- coding: utf-8 -*-
+
+#	This file is part of Metawars.
+#
+#	Metawars is free software: you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation, either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	Metawars is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with Metawars. If not, see <https://www.gnu.org/licenses/>
+
+"""
+	Script principal du jeu. Ne contient qu'une seule fonction permettant de
+	créer et lancer le jeu.
+"""
 
 import os
 import sys
+import traceback
 
 sys.stdout = open(os.devnull, "w")
 
@@ -17,21 +38,31 @@ sys.stdout.close()
 sys.stdout = sys.__stdout__
 
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
-__version__ = "0.1.0"
 __repo__ = "https://github.com/Ptijuju22/metawars.git"
 
 import time
 
 
 def demarrer():
-    jeu = Jeu()
-    jeu.charger()
-    jeu.initialiser_menu_principal()
-    jeu.lancer_boucle()
+	""" Crée une instance de Jeu lance une première boucle de jeu. Si une
+		erreur se produit, affiche un rapport d'erreur et arrête le jeu
+		proprement. """
+
+	jeu = Jeu()
+	jeu.charger()
+	jeu.initialiser_menu_principal()
+
+	try:
+		jeu.lancer_boucle()
+	except Exception as e:
+		utile.debogguer("Une erreur non gérée est survenue pendant l'exécution", 2)
+		traceback.print_exc()
+	finally:
+		jeu.arreter()
+
 
 
 if __name__ == "__main__":
-    # Si notre fichier est lancé directement par python et pas
-    # importé par un autre script alors on lance le jeu
-    utile.debogguer("Démarrage de " + constantes.General.NOM)
-    demarrer()
+	# le programme démarre ici
+	utile.debogguer("Démarrage de " + constantes.General.NOM)
+	demarrer()
