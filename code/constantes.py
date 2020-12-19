@@ -40,7 +40,7 @@ class General:
 	ZOOM = 110
 	POLICE = "police.ttf"
 	DEBUG = True
-	VERSION = "3 (Réseau) (sous GNU GPL v3)"
+	VERSION = "0.5.1 (Réseau) (sous GNU GPL v3)"
 	TAILLE_ECRAN = (800, 450)
 	IMAGE_ICONE = op.join(Chemin.IMAGES, "icone.png")
 	IMAGE_TITRE = op.join(Chemin.IMAGES, "titre.png")
