@@ -22,12 +22,14 @@
 
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 
+import os
 from os import path as op
 
 
 class Chemin:
 	""" Regroupe tous les chemins de fichiers du jeu. """
 
+	os.chdir(op.dirname(op.abspath(__file__)))
 	RESSOURCES = op.join("..", "ressources")
 	IMAGES = op.join(RESSOURCES, "images")
 	SONS = op.join(RESSOURCES, "sons")
