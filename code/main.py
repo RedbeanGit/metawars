@@ -21,26 +21,15 @@
 	créer et lancer le jeu.
 """
 
-import os
-import sys
 import traceback
-
-sys.stdout = open(os.devnull, "w")
-
-import constantes
-import utile
-
-from affichage import Affichage
-from jeu import Jeu
-from niveau import Niveau
-
-sys.stdout.close()
-sys.stdout = sys.__stdout__
 
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 __repo__ = "https://github.com/Ptijuju22/metawars.git"
 
-import time
+import constantes
+import utile
+
+from jeu import Jeu
 
 
 def demarrer():

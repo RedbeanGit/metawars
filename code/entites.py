@@ -24,7 +24,6 @@
 
 import math
 import os
-import pygame
 import random
 
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
@@ -49,24 +48,25 @@ class Entite(object):
 		self.vitesse = 0
 		self.angle = 0
 		self.position = [0, 0]
-		self.image = niveau.jeu.affichage.obtenir_image("")
+		self.sprite = niveau.jeu.affichage.obtenir_sprite("")
 
 		Entite.nb_entites += 1
 
-	def __charger_image__(self, chemin_image):
+	def __charger_sprite__(self, chemin_image):
 		""" Méthode interne utilisée pour simplifier le chargement et le
 			redimensionnement d'une image donnée.
 
 			<chemin_image> (str): Le chemin de l'image. """
 
 		affichage = self.niveau.jeu.affichage
-		taille_pixel_x = int(self.taille[0] * constantes.General.ZOOM)
-		taille_pixel_y = int(self.taille[1] * constantes.General.ZOOM)
+		self.sprite = affichage.obtenir_sprite(chemin_image)
+		self.sprite.batch = affichage.batch_entites
 
-		self.image = affichage.obtenir_image(chemin_image)
-		self.image = pygame.transform.scale(self.image, (taille_pixel_x, taille_pixel_y))
-
-	def charger_image(self):
+		image = self.sprite.image
+		image.anchor_x = image.width / 2
+		image.anchor_y = image.height / 2
+		
+	def charger_sprite(self):
 		""" Appelé pour charger l'image de l'entité. Ne fait rien par défaut. """
 		pass
 
@@ -151,6 +151,9 @@ class Entite(object):
 		self.angle = attributs.get("angle", 0)
 		self.position = attributs.get("position", [0, 0])
 
+	def nettoyer(self):
+		self.sprite.delete()
+
 	@classmethod
 	def obtenir_classe_entite(cls, nom_classe):
 		""" Retourne la classe d'entité correspondante à un nom donné. Si
@@ -185,20 +188,20 @@ class Joueur(Entite):
 		self.est_touche = False
 		self.temps_animation_degat = 0
 
-	def charger_image(self):
+	def charger_sprite(self):
 		""" Charge une image de joueur. """
 
-		self.__charger_image__(constantes.Joueur.IMAGE)
+		self.__charger_sprite__(constantes.Joueur.IMAGE)
 
-	def charger_image_touche(self):
+	def charger_sprite_touche(self):
 		""" Charge une image de joueur qui prend des dégats. """
 
-		self.__charger_image__(constantes.Joueur.IMAGE_TOUCHE)
+		self.__charger_sprite__(constantes.Joueur.IMAGE_TOUCHE)
 
-	def charger_image_bouclier(self):
+	def charger_sprite_bouclier(self):
 		""" Charge une image de joueur avec un bouclier. (inutilisé) """
 
-		self.__charger_image__(constantes.Joueur.IMAGE_BOUCLIER)
+		self.__charger_sprite__(constantes.Joueur.IMAGE_BOUCLIER)
 
 	def regarder_position(self, dx, dy):
 		""" Tourne le joueur de façon à ce qu'il regarde en direction de
@@ -237,7 +240,7 @@ class Joueur(Entite):
 			duree_max = constantes.Joueur.DUREE_ANIMATION_DEGAT
 			if self.temps_animation_degat >= duree_max:
 				self.est_touche = False
-				self.charger_image()
+				self.charger_sprite()
 
 		if self.vie <= 0:
 			self.mourir()
@@ -247,7 +250,7 @@ class Joueur(Entite):
 			que lui. """
 
 		tir = Tir(self.niveau, self)
-		tir.charger_image()
+		tir.charger_sprite()
 		self.niveau.ajouter_entite(tir)
 
 	def bouger(self, temps):
@@ -269,7 +272,7 @@ class Joueur(Entite):
 		self.est_touche = True
 		self.vie -= degat
 		self.temps_animation_degat = 0
-		self.charger_image_touche()
+		self.charger_sprite_touche()
 
 	def attaquer(self, entite):
 		""" Blesse une entité en prenant en compte les dégats bonus du joueur.
@@ -281,12 +284,12 @@ class Joueur(Entite):
 	def haut(self):
 		""" Défini le vecteur vélocité pour que le joueur aille vers le haut. """
 
-		self.velocite[1] -= constantes.Joueur.VITESSE
+		self.velocite[1] += constantes.Joueur.VITESSE
 
 	def bas(self):
 		""" Défini le vecteur vélocité pour que le joueur aille vers le bas. """
 
-		self.velocite[1] += constantes.Joueur.VITESSE
+		self.velocite[1] -= constantes.Joueur.VITESSE
 
 	def droite(self):
 		""" Défini le vecteur vélocité pour que le joueur aille vers la droite. """
@@ -350,15 +353,15 @@ class Ennemi(Entite):
 		self.est_touche = False
 		self.temps_animation_degat = 0
 
-	def charger_image(self):
+	def charger_sprite(self):
 		""" Charge une image d'ennemi. """
 
-		self.__charger_image__(constantes.Ennemi.IMAGE)
+		self.__charger_sprite__(constantes.Ennemi.IMAGE)
 
-	def charger_image_touche(self):
+	def charger_sprite_touche(self):
 		""" Charge une image d'ennemi qui prend des dégats. """
 
-		self.__charger_image__(constantes.Ennemi.IMAGE_TOUCHE)
+		self.__charger_sprite__(constantes.Ennemi.IMAGE_TOUCHE)
 
 	def actualiser(self, temps):
 		""" Actualise l'ennemi en mettant à jour le temps d'animation de
@@ -383,7 +386,7 @@ class Ennemi(Entite):
 
 			if self.temps_animation_degat >= constantes.Ennemi.DUREE_ANIMATION_DEGAT:
 				self.est_touche = False
-				self.charger_image()
+				self.charger_sprite()
 
 		if self.est_trop_pres():
 			self.vitesse = 0
@@ -438,7 +441,7 @@ class Ennemi(Entite):
 		self.est_touche = True
 		self.vie -= degat
 		self.temps_animation_degat = 0
-		self.charger_image_touche()
+		self.charger_sprite_touche()
 
 	def attaquer(self, entite):
 		""" Inflige des dégâts à une entité donnée.
@@ -452,7 +455,7 @@ class Ennemi(Entite):
 			que lui. """
 
 		tir = Tir(self.niveau, self)
-		tir.charger_image()
+		tir.charger_sprite()
 		self.niveau.entites.append(tir)
 
 	def est_trop_pres(self):
@@ -523,10 +526,10 @@ class Bonus(Entite):
 		self.type = random.choice(constantes.Bonus.TYPES)
 		self.temps_vie = 0
 
-	def charger_image(self):
+	def charger_sprite(self):
 		""" Charge une image de bonus en fonction du type de celui-ci. """
 
-		self.__charger_image__(constantes.Bonus.IMAGE(self.type))
+		self.__charger_sprite__(constantes.Bonus.IMAGE(self.type))
 
 	def actualiser(self, temps):
 		""" Actualise le bonus en mettant à jour sa durée de vie et en
@@ -617,10 +620,10 @@ class Tir(Entite):
 
 		self.temps_vie = 0
 
-	def charger_image(self):
+	def charger_sprite(self):
 		""" Charge une image de tir. """
 
-		self.__charger_image__(constantes.Tir.IMAGE)
+		self.__charger_sprite__(constantes.Tir.IMAGE)
 	
 	def actualiser(self, temps):
 		""" Actualise le tir en mettant à jour sa durée de vie et en cherchant

@@ -20,7 +20,7 @@
 	d'une partie en réseau.
 """
 
-import pygame
+import pyglet
 import random
 
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
@@ -40,7 +40,7 @@ class Niveau(object):
 
 			<jeu> (jeu.Jeu): Le jeu auquel appartient ce niveau. """
 
-		self.image = None
+		self.lignes_fond = []
 		self.jeu = jeu
 		self.entites = []
 		self.pieces = 0
@@ -48,11 +48,15 @@ class Niveau(object):
 		self.en_pause = False
 		self.joueur_id = -1
 
+	def __iter__(self):
+		for entite in self.entites:
+			yield entite
+
 	def creer_joueur(self):
 		""" Renvoie un nouveau joueur dont les images ont été chargées. """
 
 		joueur = Joueur(self)
-		joueur.charger_image()
+		joueur.charger_sprite()
 
 		return joueur
 
@@ -69,7 +73,7 @@ class Niveau(object):
 		bonus.position[0] = joueur.position[0] + dx
 		bonus.position[1] = joueur.position[1] + dy
 
-		bonus.charger_image()
+		bonus.charger_sprite()
 
 		return bonus
 
@@ -86,7 +90,7 @@ class Niveau(object):
 		ennemi.position[0] = joueur.position[0] + dx
 		ennemi.position[1] = joueur.position[1] + dy
 
-		ennemi.charger_image()
+		ennemi.charger_sprite()
 		
 		return ennemi
 
@@ -106,6 +110,7 @@ class Niveau(object):
 			<entite> (entites.Entite): L'entité à enlever. """
 
 		if entite in self.entites:
+			entite.nettoyer()
 			self.entites.remove(entite)
 
 	def obtenir_entite(self, identifiant):
@@ -134,11 +139,11 @@ class Niveau(object):
 
 		return [e for e in self.entites if isinstance(e, Joueur)]
 
-	def initialiser_image(self):
+	def charger_fond(self):
 		""" Charge l'image de fond et celle du joueur. """
 
-		nom_image = constantes.General.IMAGE_FOND
-		self.image = self.jeu.affichage.obtenir_image(nom_image)
+		affichage = self.jeu.affichage
+		self.lignes_fond = affichage.creer_fond()
 
 	def actualiser(self, temps):
 		""" Actualise les entités et tente de faire apparaitre des bonus et
@@ -167,51 +172,77 @@ class Niveau(object):
 		joueur = self.obtenir_joueur_local()
 		self.commander_joueur(joueur, evenement)
 
-	def commander_joueur(self, joueur, evenement):
+	def lier_evenements(self):
+		fenetre = self.jeu.affichage.fenetre
+		fenetre.push_handlers(on_mouse_motion=self.quand_souris_bouge, \
+			on_mouse_press=self.quand_souris_appuie, \
+			on_key_press=self.quand_touche_appuie, \
+			on_key_release=self.quand_touche_relache)
+
+	def quand_souris_bouge(self, x, y, dx, dy):
+		joueur = self.obtenir_joueur_local()
+		self.commander_joueur(joueur, "souris_bouge", x, y, dx, dy)
+
+	def quand_souris_appuie(self, x, y, bouton, modificateurs):
+		joueur = self.obtenir_joueur_local()
+		self.commander_joueur(joueur, "souris_appuie", x, y, bouton, \
+			modificateurs)
+
+	def quand_touche_appuie(self, symbole, modificateurs):
+		if symbole == pyglet.window.key.ESCAPE:
+			self.jeu.geler_partie(not self.en_pause)
+
+		joueur = self.obtenir_joueur_local()
+		self.commander_joueur(joueur, "touche_appuie", symbole, modificateurs)
+
+	def quand_touche_relache(self, symbole, modificateurs):
+		joueur = self.obtenir_joueur_local()
+		self.commander_joueur(joueur, "touche_relache", symbole, \
+			modificateurs)
+
+	def commander_joueur(self, joueur, type_evenement, *arguments):
 		""" Fait bouger un joueur en fonction d'un évènement donné.
 
 			<joueur> (entites.Joueur): Le joueur sur lequel s'applique cet
 				évènement.
 			<evenement> (pygame.event.Event): L'évènement déclencheur. """
 		
-		if evenement.type == pygame.KEYDOWN:
+		if type_evenement == "touche_appuie":
 			if not self.en_pause:
-				if evenement.key == pygame.K_w:
+				if arguments[0] == pyglet.window.key.Z:
 					joueur.haut()
-				elif evenement.key == pygame.K_s:
+				elif arguments[0] == pyglet.window.key.S:
 					joueur.bas()
-				elif evenement.key == pygame.K_a:
+				elif arguments[0] == pyglet.window.key.Q:
 					joueur.gauche()
-				elif evenement.key == pygame.K_d:
+				elif arguments[0] == pyglet.window.key.D:
 					joueur.droite()
 
-		elif evenement.type == pygame.KEYUP:
+		elif type_evenement == "touche_relache":
 			if not self.en_pause:
-				if evenement.key == pygame.K_w:
+				if arguments[0] == pyglet.window.key.Z:
 					joueur.bas()
-				elif evenement.key == pygame.K_s:
+				elif arguments[0] == pyglet.window.key.S:
 					joueur.haut()
-				elif evenement.key == pygame.K_a:
+				elif arguments[0] == pyglet.window.key.Q:
 					joueur.droite()
-				elif evenement.key == pygame.K_d:
+				elif arguments[0] == pyglet.window.key.D:
 					joueur.gauche()
 
-		elif evenement.type == pygame.MOUSEBUTTONDOWN:
+		elif type_evenement == "souris_appuie":
 			if not self.en_pause:
-				if evenement.button == 1:
+				if arguments[2] == pyglet.window.mouse.LEFT:
 					joueur.tirer()
 
-		elif evenement.type == pygame.MOUSEMOTION:
+		elif type_evenement == "souris_bouge":
 			if not self.en_pause:
-				x, y = evenement.pos
+				x, y, dx, dy = arguments
+				l, h = self.jeu.affichage.obtenir_taille()
+				
+				distance_x = (x - l / 2) / constantes.General.ZOOM
+				distance_y = (y - h / 2) / constantes.General.ZOOM
 
-				dx = x - constantes.General.TAILLE_ECRAN[0] / 2
-				dy = y - constantes.General.TAILLE_ECRAN[1] / 2
-
-				dx_niveau = dx / constantes.General.ZOOM
-				dy_niveau = dy / constantes.General.ZOOM
-
-				joueur.regarder_position(dx_niveau, dy_niveau)
+				joueur.regarder_position(distance_x, distance_y)
 
 	def faire_apparaitre(self, temps):
 		""" Fait parfois apparaitre un bonus et/ou un ennemi.
@@ -238,6 +269,16 @@ class Niveau(object):
 			self.jeu.finir_partie()
 		else:
 			self.enlever_entite(joueur)
+
+	def nettoyer(self):
+		fenetre = self.jeu.affichage.fenetre
+		fenetre.remove_handlers(on_mouse_motion=self.quand_souris_bouge, \
+			on_mouse_press=self.quand_souris_appuie, \
+			on_key_press=self.quand_touche_appuie, \
+			on_key_release=self.quand_touche_relache)
+
+		while self.entites:
+			self.entites.pop().nettoyer()
 
 
 class NiveauReseau(Niveau):

@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 
-#	This file is part of Metawars.
+# This file is part of Metawars.
 #
-#	Metawars is free software: you can redistribute it and/or modify
-#	it under the terms of the GNU General Public License as published by
-#	the Free Software Foundation, either version 3 of the License, or
-#	(at your option) any later version.
+# Metawars is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-#	Metawars is distributed in the hope that it will be useful,
-#	but WITHOUT ANY WARRANTY; without even the implied warranty of
-#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-#	GNU General Public License for more details.
+# Metawars is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
 #
-#	You should have received a copy of the GNU General Public License
-#	along with Metawars. If not, see <https://www.gnu.org/licenses/>
+# You should have received a copy of the GNU General Public License
+# along with Metawars. If not, see <https://www.gnu.org/licenses/>
 
 """
 	Propose des classes permettant la création de widgets.
@@ -21,450 +21,372 @@
 	bouton, une zone de texte ou une image.
 """
 
-import constantes
+import os.path as op
+import time
+import pyglet
 
 __author__ = "Gabriel Neny; Colin Noiret; Julien Dubois"
 
-import math
-import pygame
-import pygame.freetype
-import time
-
-from os import path as op
-
-pygame.freetype.init()
+import constantes
 
 
 class Widget(object):
-	""" Classe de base pour tous les widgets (éléments graphiques
-		indépendants). """
+    def __init__(self, affichage, position=(0, 0), taille=(1, 1),
+                 ancrage=(-1, -1)):
+        """ Initialise un widget. 
 
-	def __init__(self, affichage, position=(0, 0), taille=(1, 1), \
-		ancrage=(-1, -1)):
-		""" Initialise un widget. 
+                <affichage> (affichage.Affichage): La fenêtre sur laquelle
+                        dessiner le widget.
+                [position] (tuple): La position (x, y) du widget en pixel.
+                [taille] (tuple): La taille (largeur, hauteur) du widget en 
+                        pixel.
+                [ancrage] (tuple): Le point (x, y) d'ancrage du widget en pixel. """
 
-			<affichage> (affichage.Affichage): La fenêtre sur laquelle
-				dessiner le widget.
-			[position] (tuple): La position (x, y) du widget en pixel.
-			[taille] (tuple): La taille (largeur, hauteur) du widget en 
-				pixel.
-			[ancrage] (tuple): Le point (x, y) d'ancrage du widget en pixel. """
+        self.affichage = affichage
+        self.position = position
+        self.taille = taille
+        self.ancrage = ancrage
+        self.expire = False
 
-		self.affichage = affichage
-		self.position = position
-		self.taille = taille
-		# son point d'ancrage, définit comment placer le widget par rapport à
-		# sa position:
-		# (-1, -1) signifie "en haut à gauche" et (1, 1) "en bas à droite"
-		# (0, 0) signifie donc "centré"
-		self.ancrage = ancrage
-		self.expire = False
+    def actualiser(self):
+        """ Cette méthode est appelée à chaque frame de jeu pour redessiner le
+                widget sur l'affichage. Ne fait rien par défaut. """
 
-	def actualiser(self):
-		""" Cette méthode est appelée à chaque frame de jeu pour redessiner le
-			widget sur l'affichage. Ne fait rien par défaut. """
+        pass
 
-		pass
+    def obtenir_position_reelle(self):
+        """ Renvoie la position du coin supérieur gauche du widget
+                en fonction de ses attributs 'position' et 'ancrage'. """
 
-	def actualiser_evenement(self, evenement):
-		""" Cette méthode est appelée pour chaque nouvel évenement (clic,
-			appui sur une touche, ...). Ne fait rien par défaut.
+        x, y = self.position
+        ax, ay = self.ancrage
+        l, h = self.taille
 
-			<evenement> (pygame.event.Event): L'évènement déclencheur. """
+        if ax == "centre":
+            x -= l / 2
+        elif ax == "droite":
+            x -= l
 
-		pass
+        if ay == "centre":
+            y -= h / 2
+        elif ay == "base":
+            y -= h / 2
+        elif ay == "haut":
+            y -= h
 
-	def obtenir_position_reelle(self):
-		""" Renvoie la position du coin supérieur gauche du widget
-			en fonction de ses attributs 'position' et 'ancrage'. """
+        return x, y
 
-		x, y = self.position
-		w, h = self.taille
-		ax, ay = self.ancrage
+    def est_dans_widget(self, position):
+        """ Renvoie True si la position est dans le widget sinon False.
 
-		vrai_x = int(x - w*(ax + 1)/2)
-		vrai_y = int(y - h*(ay + 1)/2)
+                <position> (tuple): La position (x, y) à tester. """
 
-		return (vrai_x, vrai_y)
+        x, y = self.obtenir_position_reelle()
+        largeur, hauteur = self.taille
 
-	def est_dans_widget(self, position):
-		""" Renvoie True si la position est dans le widget sinon False.
+        if position[0] >= x and position[0] <= x + largeur:
+            if position[1] >= y and position[1] <= y + hauteur:
+                return True
+        return False
 
-			<position> (tuple): La position (x, y) à tester. """
-
-		x, y = self.obtenir_position_reelle()
-		largeur, hauteur = self.taille
-
-		if position[0] >= x and position[0] <= x + largeur:
-			if position[1] >= y and position[1] <= y + hauteur:
-				return True
-		return False
+    def nettoyer(self):
+        pass
 
 
 class Texte(Widget):
-	""" Permet d'afficher un texte à une position définie. """
+    def __init__(self, affichage, texte, taille_police=18,
+                 couleur=(255, 255, 255, 255), **kwargs):
 
-	def __init__(self, affichage, texte, taille_police=20, \
-		couleur=(255, 255, 255), **kwargs):
-		""" Initialise un texte. 
+        kwargs["taille"] = (1, 1)
+        super().__init__(affichage, **kwargs)
 
-			<affichage> (affichage.Affichage): La fenêtre sur laquelle
-				dessiner le texte.
-			<text> (str): Le texte à afficher.
-			[taille_police] (int): La hauteur de la police en pixel.
-			[couleur] (tuple): La couleur (R, V, B) du texte.
-			[**kwargs] (object): Les attributs hérités de Widget. """
+        ax = {"gauche": "left",
+              "centre": "center",
+              "droite": "right"}.get(self.ancrage[0], "left")
+        ay = {"bas": "bottom",
+              "centre": "center",
+              "base": "baseline",
+              "haut": "top"}.get(self.ancrage[1], "bottom")
 
-		kwargs["taille"] = (1, 1)
-		super().__init__(affichage, **kwargs)
+        self.texte = texte
+        self.taille_police = taille_police
+        self.nom_police = op.splitext(constantes.Ressources.POLICES[0])[0]
+        self.couleur = couleur
 
-		self.texte = texte
-		self.taille_police = taille_police
-		self.couleur = couleur
+        self.etiquette = pyglet.text.Label(self.texte,
+                                           font_size=self.taille_police, font_name=self.nom_police,
+                                           color=self.couleur,
+                                           x=self.position[0], y=self.position[1],
+                                           anchor_x=ax, anchor_y=ay)
 
-		dossier_police = constantes.Chemin.RESSOURCES
-		nom_police = constantes.General.POLICE
-		chemin_fichier_police = op.join(dossier_police, nom_police)
+        self.taille = (self.etiquette.content_width,
+                       self.etiquette.content_height)
 
-		if op.exists(chemin_fichier_police):
-			self.police = pygame.freetype.Font(chemin_fichier_police)
-		else:
-			nom_police = pygame.freetype.get_default_font()
-			self.police = pygame.freetype.SysFont(nom_police, \
-				self.taille_police)
+    def changer_texte(self, texte):
+        self.texte = texte
+        self.etiquette.text = texte
 
-	def obtenir_surface(self):
-		""" Crée une surface à partir du texte défini puis la retourne avec un
-			pygame.Rect associé. """
+    def changer_police(self, nom_police):
+        self.nom_police = nom_police
+        self.etiquette.font_name = nom_police
 
-		return self.police.render(self.texte, self.couleur, \
-			size=self.taille_police)
+    def changer_taille_police(self, taille_police):
+        self.taille_police = taille_police
+        self.etiquette.font_size = taille_police
 
-	def actualiser(self):
-		""" Redessine sur l'affichage une surface à partir du texte défini. """
+    def changer_couleur(self, couleur):
+        self.couleur = couleur
+        self.etiquette.color = couleur
 
-		surface, rect = self.obtenir_surface()
-		self.taille = (rect.width, rect.height)
-		self.affichage.fenetre.blit(surface, self.obtenir_position_reelle())
+    def actualiser(self):
+        self.etiquette.draw()
+
+    def nettoyer(self):
+        super().nettoyer()
+        self.etiquette.delete()
 
 
 class Bouton(Widget):
-	""" Permet de créer un bouton qui change de texture en fonction
-		de la position et de l'état de la souris. Lance une fonction
-		donnée lors du clic. """
+    def __init__(self, affichage, action, texte="", arguments_action=(),
+                 taille_police=18, couleur_texte=(255, 255, 255, 255), **kwargs):
 
-	def __init__(self, affichage, action, texte="", arguments_action=(), \
-		taille_police=20, couleur_texte=(255, 255, 255), **kwargs):
-		""" Initialise un bouton. 
+        super().__init__(affichage, **kwargs)
 
-			<affichage> (affichage.Affichage): La fenêtre sur laquelle
-				dessiner le bouton.
-			<action> (function ou method): La fonction ou méthode à	exécuter
-				lors du clic sur ce bouton.
-			[text] (str): Le texte à afficher.
-			[taille_police] (int): La hauteur de la police en pixel.
-			[couleur_texte] (tuple): La couleur (R, V, B) du texte.
-			[**kwargs] (object): Les attributs hérités de Widget. """
+        tx, ty = self.obtenir_position_texte()
+        self.texte = Texte(affichage, texte, position=(tx, ty),
+                           ancrage=("centre", "centre"), taille_police=taille_police,
+                           couleur=couleur_texte)
 
-		super().__init__(affichage, **kwargs)
-		
-		position_text = self.obtenir_position_texte()
-		self.texte = Texte(affichage, texte, position=position_text, \
-			ancrage=(0, 0), taille_police=taille_police, \
-			couleur=couleur_texte)
+        self.arguments_action = arguments_action
+        self.action = action
+        self.sprites = {}
+        self.etat = "normal"
 
-		self.arguments_action = arguments_action
-		self.action = action
-		self.images = {}
-		self.etat = "normal"
+        self.charger_sprites()
+        self.lier_evenements()
 
-		self.charger_images()
+    def charger_sprites(self):
+        """ Charge les images de fond du bouton. """
 
-	def charger_images(self):
-		""" Charge les images de fond du bouton. """
+        etats = ("clic_central", "clic_droit", "clic_gauche", "desactive",
+                 "normal", "survol")
 
-		etats = ("clic_central", "clic_droit", "clic_gauche", "desactive", \
-			"normal", "survol")
+        for etat in etats:
+            chemin_image = op.join(constantes.Chemin.IMAGES, "bouton",
+                                   "{etat}.png".format(etat=etat))
+            sprite = self.affichage.obtenir_sprite(chemin_image)
 
-		for etat in etats:
-			chemin_image = op.join(constantes.Chemin.IMAGES, "bouton", \
-				"{etat}.png".format(etat=etat))
-			image = self.affichage.obtenir_image(chemin_image)
-			self.images[etat] = pygame.transform.scale(image, self.taille)
+            image = sprite.image
+            ex = self.taille[0] / image.width
+            ey = self.taille[1] / image.height
+            x, y = self.obtenir_position_reelle()
 
-	def actualiser(self):
-		""" Redessine l'image de fond et le texte du bouton sur l'affichage. """
+            sprite.update(x=x, y=y,
+                          scale_x=ex, scale_y=ey)
 
-		self.affichage.fenetre.blit(self.images[self.etat], \
-			self.obtenir_position_reelle())
-		self.texte.actualiser()
+            self.sprites[etat] = sprite
 
-	def actualiser_evenement(self, evenement):
-		""" Détecte le survol et le clic de la souris pour changer l'état du
-			bouton et exécuter l'action définie.
+    def lier_evenements(self):
+        fenetre = self.affichage.fenetre
+        fenetre.push_handlers(on_mouse_motion=self.quand_souris_bouge,
+                              on_mouse_press=self.quand_souris_appuie,
+                              on_mouse_release=self.quand_souris_relache)
 
-			<evenement> (pygame.event.Event): L'évènement à tester. """
+    def actualiser(self):
+        self.sprites[self.etat].draw()
+        self.texte.actualiser()
 
-		if evenement.type == pygame.MOUSEBUTTONDOWN:
-			if self.est_dans_widget(evenement.pos):
-				if evenement.button == 1:
-					self.etat = "clic_gauche"
-				elif evenement.button == 2:
-					self.etat = "clic_central"
-				elif evenement.button == 3:
-					self.etat = "clic_droit"
+    def quand_souris_bouge(self, x, y, dx, dy):
+        if self.est_dans_widget((x, y)):
+            self.etat = "survol"
+        else:
+            self.etat = "normal"
 
-		elif evenement.type == pygame.MOUSEBUTTONUP:
-			if self.est_dans_widget(evenement.pos):
-				if evenement.button == 1:
-					self.action(*self.arguments_action)
-				
-				self.etat = "survol"
-			else:
-				self.etat = "normal"
+    def quand_souris_appuie(self, x, y, bouton, modificateurs):
+        if self.est_dans_widget((x, y)):
+            if bouton == pyglet.window.mouse.LEFT:
+                self.etat = "clic_gauche"
+            elif bouton == pyglet.window.mouse.MIDDLE:
+                self.etat = "clic_central"
+            elif bouton == pyglet.window.mouse.RIGHT:
+                self.etat = "clic_droit"
 
-		elif evenement.type == pygame.MOUSEMOTION:
-			if self.est_dans_widget(evenement.pos):
-				self.etat = "survol"
-			else:
-				self.etat = "normal"
+    def quand_souris_relache(self, x, y, bouton, modificateurs):
+        if self.est_dans_widget((x, y)):
+            if bouton == pyglet.window.mouse.LEFT:
+                self.action(*self.arguments_action)
 
-	def obtenir_position_texte(self):
-		""" Renvoie la position du texte en fonction de celle du bouton. """
+            self.etat = "survol"
+        else:
+            self.etat = "normal"
 
-		x, y = self.obtenir_position_reelle()
-		w, h = self.taille
+    def obtenir_position_texte(self):
+        x, y = self.obtenir_position_reelle()
+        w, h = self.taille
 
-		return (x + w//2, y + h//2)
+        return x+w//2, y+h//2
+
+    def nettoyer(self):
+        super().nettoyer()
+
+        fenetre = self.affichage.fenetre
+        fenetre.remove_handlers(on_mouse_motion=self.quand_souris_bouge,
+                                on_mouse_press=self.quand_souris_appuie,
+                                on_mouse_release=self.quand_souris_relache)
+
+        self.texte.nettoyer()
+
+        for sprite in self.sprites.values():
+            sprite.delete()
 
 
 class Image(Widget):
-	""" Permet de créer une image qui se redéssine seule à une position
-		définie lors de sa création. L'image est chargée automatiquement par
-		le widget lors de sa création. """
+    def __init__(self, affichage, chemin_image, **kwargs):
+        super().__init__(affichage, **kwargs)
 
-	def __init__(self, affichage, chemin_image, **kwargs):
-		""" Initialise une image. 
+        self.chemin_image = chemin_image
+        self.sprite = None
+        self.charger_sprite()
 
-			<affichage> (affichage.Affichage): La fenêtre sur laquelle
-				dessiner l'image.
-			<chemin_image> (str): Le chemin de l'image à afficher.
-			[**kwargs] (object): Les attributs hérités de Widget. """
+    def charger_sprite(self):
+        self.sprite = self.affichage.obtenir_sprite(self.chemin_image)
+        image = self.sprite.image
+        x, y = self.obtenir_position_reelle()
 
-		super().__init__(affichage, **kwargs)
+        if self.taille != (0, 0):
+            ex = self.taille[0] / image.width
+            ey = self.taille[1] / image.height
 
-		self.chemin_image = chemin_image
-		self.charger_image()
+            self.sprite.update(x=x, y=y, scale_x=ex, scale_y=ey)
+        else:
+            self.taille = (image.width, image.height)
+            self.sprite.update(x=x, y=y)
 
-	def charger_image(self):
-		""" Charge l'image à afficher. """
+    def actualiser(self):
+        self.sprite.draw()
 
-		self.image = self.affichage.obtenir_image(self.chemin_image)
-
-		if self.taille != (0, 0):
-			self.image = pygame.transform.scale(self.image, self.taille)
-		else:
-			self.taille = self.image.get_size()
-
-	def actualiser(self):
-		""" Redessine l'image sur l'affichage. """
-
-		self.affichage.fenetre.blit(self.image, \
-			self.obtenir_position_reelle())
+    def nettoyer(self):
+        super().nettoyer()
+        self.sprite.delete()
 
 
 class TexteEditable(Texte):
-	""" Cette classe définit un texte éditable avec le clavier et la souris. """
+    def __init__(self, affichage, texte, couleur_curseur=(0, 0, 0, 0),
+                 largeur_min=0, **kwargs):
 
-	def __init__(self, affichage, texte, couleur_curseur=(0, 0, 0), \
-		largeur_min=0, **kwargs):
-		""" Initialise un texte éditable.
-		
-			<affichage> (affichage.Affichage): La fenêtre sur laquelle 
-				dessiner l'image.
-			<text> (str): Le texte à afficher
-			[couleur_curseur] (tuple): La couleur (R, V, B) du curseur en mode
-				édition. (0, 0, 0) par défaut.
-			[largeur_min] (int): La largeur minimale en pixel de la zone
-				cliquable du widget. 0 par défaut.
-			[**kwargs] (object): Les attributs hérités de Texte. """
+        super().__init__(affichage, texte, **kwargs)
 
-		super().__init__(affichage, texte, **kwargs)
+        self.en_edition = False
+        self.position_curseur = 0
+        self.lier_evenements()
 
-		self.couleur_curseur = couleur_curseur
-		self.largeur_min = largeur_min
-		self.en_edition = False
-		self.couleurs = {}
-		self.etat = "normal"
-		self.position_curseur = len(self.texte)
+    def lier_evenements(self):
+        fenetre = self.affichage.fenetre
+        fenetre.push_handlers(on_mouse_motion=self.quand_souris_bouge,
+                              on_mouse_press=self.quand_souris_appuie,
+                              on_mouse_release=self.quand_souris_relache,
+                              on_key_press=self.quand_touche_appuie)
 
-		self.charger_couleurs()
+    def deplacer_curseur(self, position):
+        if position < 0:
+            self.position_curseur = 0
+        elif position > len(self.texte):
+            self.position_curseur = len(self.texte)
+        else:
+            self.position_curseur = position
 
-	def charger_couleurs(self):
-		""" Charge les différentes couleurs du texte. """
+    def quand_souris_bouge(self, x, y, dx, dy):
+        if self.est_dans_widget((x, y)):
+            r, v, b, a = self.couleur
 
-		if isinstance(self.couleur, str):
-			r, v, b = pygame.color.THECOLORS.get(self.color, (0, 0, 0))
-		elif len(self.couleur) == 3:
-			r, v, b = self.couleur
-		elif len(self.couleur) == 4:
-			r, v, b, a = self.couleur
+            r -= 70 if r >= 70 else 0
+            v -= 70 if v >= 70 else 0
+            b -= 70 if b >= 70 else 0
 
-		self.couleurs = {
-			"clic_central": (max(r-5, 0), max(v-5, 0), max(b-5, 0)),
-			"clic_droit": (min(r+5, 255), min(v+5, 255), min(b+5, 255)),
-			"clic_gauche": (max(r-10, 0), max(v-10, 0), max(b-10, 0)),
-			"desactive": (max(r-20, 0), max(v-20, 0), max(b-20, 0)),
-			"normal": (r, v, b),
-			"survol": (min(r+10, 255), min(v+10, 255), min(b+10, 255))
-		}
+            self.etiquette.color = (r, v, b, a)
+        else:
+            self.etiquette.color = self.couleur
 
-	def obtenir_surface(self):
-		""" Crée une surface à partir du texte défini puis la retourne avec un
-			pygame.Rect associé. """
+    def quand_souris_appuie(self, x, y, bouton, modificateurs):
+        self.en_edition = self.est_dans_widget((x, y))
 
-		return self.police.render(self.texte, self.couleurs[self.etat], \
-			size=self.taille_police)
+    def quand_souris_relache(self, x, y, bouton, modificateurs):
+        pass
 
-	def actualiser(self):
-		""" Redessine le texte sur l'affichage et un curseur en mode édition. """
+    def quand_touche_appuie(self, symbole, modificateurs):
+        if self.en_edition:
+            touches = pyglet.window.key
+            p = self.position_curseur
 
-		super().actualiser()
+            if symbole == touches.BACKSPACE:
+                if p > 0:
+                    self.changer_texte(self.texte[:p-1] + self.texte[p:])
+                    self.deplacer_curseur(p - 1)
+            elif symbole == touches.DELETE:
+                self.changer_texte(self.texte[:p] + self.texte[p+1:])
+            elif symbole == touches.LEFT:
+                self.deplacer_curseur(p - 1)
+            elif symbole == touches.RIGHT:
+                self.deplacer_curseur(p + 1)
+            elif symbole == touches.UP:
+                self.deplacer_curseur(0)
+            elif symbole == touches.DOWN:
+                self.deplacer_curseur(len(self.texte))
+            elif symbole == touches.ESCAPE:
+                self.en_edition = False
+            elif symbole == touches.ENTER:
+                self.en_edition = False
+            else:
+                pass
 
-		if self.en_edition:
-			l, h = self.taille
-			x, y = self.obtenir_position_reelle()
+    def nettoyer(self):
+        fenetre = self.affichage.fenetre
+        fenetre.remove_handlers(on_mouse_motion=self.quand_souris_bouge,
+                                on_mouse_press=self.quand_souris_appuie,
+                                on_mouse_release=self.quand_souris_relache)
 
-			if self.texte:
-				cx = int(x + self.position_curseur * l / len(self.texte))
-			else:
-				cx = x
-			cy = y
-
-			l = max(l, self.largeur_min)
-			self.taille = (l, h)
-
-			pygame.draw.line(self.affichage.fenetre, self.couleur_curseur, \
-				(cx, cy), (cx, cy + h), 2)
-			pygame.draw.line(self.affichage.fenetre, self.couleur_curseur, \
-				(x, cy + h + 2), (x + l, cy + h + 2), 2)
-
-	def actualiser_evenement(self, evenement):
-		""" Détecte le survol et le clic de la souris pour changer l'état du 
-			texte et active ou désactive le mode édition lors du clic.
-
-			<evenement> (pygame.event.Event): L'évènement à tester. """
-
-		x, y = self.obtenir_position_reelle()
-		w, h = self.taille
-
-		if evenement.type == pygame.MOUSEBUTTONDOWN:
-			if self.est_dans_widget(evenement.pos):
-				if evenement.button == 1:
-					self.etat = "clic_gauche"
-					self.en_edition = True
-					self.position_curseur = int((evenement.pos[0] - x) / w * len(self.texte))
-				elif evenement.button == 2:
-					self.etat = "clic_central"
-				elif evenement.button == 3:
-					self.etat = "clic_droit"
-			elif evenement.button == 1:
-				self.en_edition = False
-
-		elif evenement.type == pygame.MOUSEMOTION:
-			if self.est_dans_widget(evenement.pos):
-				self.etat = "survol"
-			else:
-				self.etat = "normal"
-
-		elif evenement.type == pygame.KEYDOWN:
-			if self.en_edition:
-				if evenement.key == pygame.K_RETURN:
-					self.en_edition = False
-				
-				elif evenement.key == pygame.K_BACKSPACE:
-					if self.position_curseur:
-						self.texte = self.texte[:self.position_curseur-1] \
-							+ self.texte[self.position_curseur:]
-						self.position_curseur -= 1
-				
-				elif evenement.key == pygame.K_DELETE:
-					self.texte = self.texte[:self.position_curseur] \
-					+ self.texte[self.position_curseur+1:]
-				
-				elif evenement.key == pygame.K_UP:
-					self.position_curseur = 0
-				
-				elif evenement.key == pygame.K_DOWN:
-					self.position_curseur = len(self.texte)
-				
-				elif evenement.key == pygame.K_LEFT:
-					if self.position_curseur:
-						self.position_curseur -= 1
-				
-				elif evenement.key == pygame.K_RIGHT:
-					if self.position_curseur < len(self.texte):
-						self.position_curseur += 1
-				
-				else:
-					self.texte = self.texte[:self.position_curseur] \
-						+ evenement.unicode \
-						+ self.texte[self.position_curseur:]
-					self.position_curseur += 1
+        super().nettoyer()
 
 
 class TexteTemporaire(Texte):
-	""" Cette classe définit un texte qui disparait progressivement. Au bout
-		d'une certaine durée, il expire et est alors supprimé de l'affichage. """
+    def __init__(self, affichage, texte, duree, **kwargs):
+        """ Initialise un TexteTemporaire avec une durée de vie donnée.
 
-	def __init__(self, affichage, texte, duree, **kwargs):
-		""" Initialise un TexteTemporaire avec une durée de vie donnée.
+                <affichage> (affichage.Affichage): La fenêtre sur laquelle
+                        dessiner l'image.
+                <text> (str): Le texte à afficher.
+                <duree> (float): La durée de vie du texte.
+                [**kwargs] (object): Les attributs hérités de Texte. """
 
-			<affichage> (affichage.Affichage): La fenêtre sur laquelle
-				dessiner l'image.
-			<text> (str): Le texte à afficher.
-			<duree> (float): La durée de vie du texte.
-			[**kwargs] (object): Les attributs hérités de Texte. """
+        self.duree = duree
+        self.depart = time.time()
 
-		self.duree = duree
-		self.depart = time.time()
+        super().__init__(affichage, texte, **kwargs)
 
-		super().__init__(affichage, texte, **kwargs)
+    def redemarrer(self):
+        """ Remet à zéro le widget. """
 
-	def redemarrer(self):
-		""" Remet à zéro le widget. """
+        self.expire = False
+        self.depart = time.time()
 
-		self.expire = False
-		self.depart = time.time()
+    def actualiser(self):
+        """ Redessine le texte sur l'affichage et met à jour son état en
+                fonction du temps écoulé. """
 
-	def obtenir_surface(self):
-		""" Crée une surface à partir du texte défini puis la retourne avec un
-			pygame.Rect associé. """
+        temps_actuel = time.time()
 
-		if isinstance(self.couleur, str):
-			r, g, b = pygame.color.THECOLORS
-		elif len(self.couleur) == 3:
-			r, g, b = self.couleur
-		elif len(self.couleur) == 4:
-			r, g, b, a = self.couleur
+        if temps_actuel - self.depart >= self.duree:
+            self.expire = True
 
-		a = 255 - int((time.time() - self.depart) / self.duree * 255)
+        r, v, b, a = self.etiquette.color
 
-		if a > 255:
-			a = 255
-		elif a < 0:
-			a = 0
+        a = 255 - int((time.time() - self.depart) / self.duree * 255)
 
-		return self.police.render(self.texte, (r, g, b, a), \
-			size=self.taille_police)
-	
-	def actualiser(self):
-		""" Redessine le texte sur l'affichage et met à jour son état en
-			fonction du temps écoulé. """
-		
-		temps_actuel = time.time()
+        if a > 255:
+            a = 255
+        elif a < 0:
+            a = 0
 
-		if temps_actuel - self.depart >= self.duree:
-			self.expire = True
+        self.changer_couleur((r, v, b, a))
 
-		super().actualiser()
+        super().actualiser()

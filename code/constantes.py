@@ -40,6 +40,8 @@ class General:
 
 	NOM = "MetaWars"
 	ZOOM = 110
+	TAILLE_CASE = 0.3
+	EPAISSEUR_LIGNE = 0.01
 	POLICE = "police.ttf"
 	DEBUG = True
 	VERSION = "0.5.1 (Réseau) (sous GNU GPL v3)"
@@ -144,4 +146,8 @@ class Ressources:
 		("musique_menu.wav",),
 		("tir.wav",),
 		("musique_demarrage.wav",)
+	)
+
+	POLICES = (
+		"Ubuntu Light.ttf",
 	)
